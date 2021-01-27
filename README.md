@@ -1,6 +1,6 @@
 Tuya IoTOS Embeded SDK WiFi & BLE for BK7231T
 
-[English] | [中文版](https://github.com/tuya/tuya-iotos-embeded-sdk-wifi-ble-bk7231t/README_zh.md)
+[English] | [中文版](https://github.com/tuya/tuya-iotos-embeded-sdk-wifi-ble-bk7231t/blob/master/README_zh.md)
 
 ## Introduction
 
