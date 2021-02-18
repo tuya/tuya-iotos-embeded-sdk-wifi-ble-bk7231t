@@ -31,7 +31,7 @@
 /* Exported macro ------------------------------------------------------------*/
 // device information define
 #define DEV_SW_VERSION USER_SW_VER
-#define PRODECT_ID "8cisxkqalq9jevn8"
+#define PRODECT_ID "rg2urjcogbu14wci"
 
 /* Exported functions ------------------------------------------------------- */
 
