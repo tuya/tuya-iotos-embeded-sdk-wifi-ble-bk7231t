@@ -1,6 +1,6 @@
 Tuya IoTOS Embedded SDK Wi-iFi + BLE for BK7231T
 
-[中文版](README-zh.md) | [English](README.md)
+[中文版](README_zh.md) | [English](README_en.md)
 
 ## Overview
 
