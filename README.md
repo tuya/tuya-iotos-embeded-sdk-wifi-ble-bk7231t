@@ -22,7 +22,7 @@ Features of Tuya IoTOS embedded SDK
 ### Dependency
 Some package dependencies need to be installed before compiling.
 #### Debian/Ubuntu
-```bash
+``` bash
 $ sudo apt-get install wget git python libc6-i386 
 ```
 
@@ -33,19 +33,19 @@ Supports compilating in Cygwin, MinGW, WSL2 and more environments
 
 ### Get SDK
 Make sure to get SDK through git recursion:
-```bash
+``` bash
 $ git clone --recursive https://github.com/tuya/tuya-iotos-embeded-sdk-wifi-ble-bk7231t.git
 ```
 or
-```bash
+``` bash
 $ git clone https://github.com/tuya/tuya-iotos-embeded-sdk-wifi-ble-bk7231t.git
- $ git submodule update --init
+$ git submodule update --init
 ```
 
 ### Compile
 
 The compile project is in the apps directory, you can quickly compile, burn, and run the process through `template_demo`. Use the following command in the root directory to compile: 
-```bash
+``` bash
 $ sh build_app.sh apps/template_demo template_demo 1.0.0
 ```
 apps/template_demo: compile project path
@@ -58,7 +58,7 @@ template_demo: compile project name
 
 You can clear the compiled intermediate files with the following commands:
 
-```bash
+``` bash
 $ sh build_app.sh apps/template_demo template_demo 1.0.0 clean
 ```
 
