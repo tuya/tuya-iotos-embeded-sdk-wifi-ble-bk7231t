@@ -523,33 +523,7 @@ void myInit()
  */
 STATIC VOID wifi_state_led_reminder(IN CONST GW_WIFI_NW_STAT_E cur_stat)
 {
-    switch (cur_stat)
-    {
-        case STAT_LOW_POWER:    //wifi 连接超时，进入低功耗模式
-            tuya_set_led_light_type(wifi_led_handle, OL_LOW, 0, 0); //关闭提示灯
-        break;
-
-        case STAT_UNPROVISION: //SamrtConfig 配网模式，等待连接
-            tuya_set_led_light_type(wifi_led_handle, OL_FLASH_HIGH, WIFI_LED_FAST_FLASH_MS, 0xffff); //led 快闪
-        break;
-
-        case STAT_AP_STA_UNCFG: //ap 配网模式，等待连接
-            tuya_set_led_light_type(wifi_led_handle, OL_FLASH_HIGH, WIFI_LED_LOW_FLASH_MS, 0xffff); //led 慢闪
-        break;
-
-        case STAT_AP_STA_DISC:
-        case STAT_STA_DISC:     //SamrtConfig/ap 正在连接中
-            tuya_set_led_light_type(wifi_led_handle, OL_LOW, 0, 0); //关闭 led 
-        break;
-
-        case STAT_CLOUD_CONN:
-        case STAT_AP_CLOUD_CONN: //连接到涂鸦云
-            tuya_set_led_light_type(wifi_led_handle, OL_HIGH, 0, 0); //led 常量
-        break;
-
-        default:
-        break;
-    }
+   
 }
 
 /**
@@ -562,21 +536,7 @@ STATIC VOID wifi_state_led_reminder(IN CONST GW_WIFI_NW_STAT_E cur_stat)
  */
 STATIC VOID wifi_key_process(TY_GPIO_PORT_E port,PUSH_KEY_TYPE_E type,INT_T cnt)
 {
-    PR_DEBUG("port:%d,type:%d,cnt:%d",port,type,cnt);
-    OPERATE_RET op_ret = OPRT_OK;
-    UCHAR_T ucConnectMode = 0;
 
-    if (port = WIFI_KEY_PIN) {
-        if (LONG_KEY == type) { //press long enter linking network
-            PR_NOTICE("key long press");
-            /* 手动移除设备 */
-            tuya_iot_wf_gw_unactive();
-        } else if (NORMAL_KEY == type) {
-            PR_NOTICE("key normal press");
-        } else {
-            PR_NOTICE("key type is no deal");
-        }
-    }
 
     return;
 }
@@ -591,39 +551,7 @@ STATIC VOID wifi_key_process(TY_GPIO_PORT_E port,PUSH_KEY_TYPE_E type,INT_T cnt)
  */
 STATIC VOID wifi_config_init(VOID)
 {
-    OPERATE_RET op_ret = OPRT_OK;
-
-    /* LED 相关初始化 */ 
-    op_ret = tuya_create_led_handle(WIFI_LED_PIN, TRUE, &wifi_led_handle);
-    if (op_ret != OPRT_OK) {
-        PR_ERR("key_init err:%d", op_ret);
-        return;
-    }
-    tuya_set_led_light_type(wifi_led_handle, OL_LOW, 0, 0); //关闭 LED
-
-    /* 按键相关初始化 */
-    KEY_USER_DEF_S key_def;
-
-    op_ret = key_init(NULL, 0, WIFI_KEY_TIMER_MS);
-    if (op_ret != OPRT_OK) {
-        PR_ERR("key_init err:%d", op_ret);
-        return;
-    }
-
-    /* 初始化 key 相关参数 */
-    memset(&key_def, 0, SIZEOF(key_def));
-    key_def.port = WIFI_KEY_PIN;                            //按键引脚
-    key_def.long_key_time = WIFI_KEY_LONG_PRESS_MS;         //长按时间配置
-    key_def.low_level_detect = WIFI_KEY_LOW_LEVEL_ENABLE;   //TRUE:低电平算按下，FALSE：高电平算按下
-    key_def.lp_tp = LP_ONCE_TRIG;   //
-    key_def.call_back = wifi_key_process;                   //按键按下后回调函数
-    key_def.seq_key_detect_time = WIFI_KEY_SEQ_PRESS_MS;    //连按间隔时间配置
-
-    /* 注册按键 */
-    op_ret = reg_proc_key(&key_def);
-    if (op_ret != OPRT_OK) {
-        PR_ERR("reg_proc_key err:%d", op_ret);
-    }
+ 
 
     return;
 }
@@ -698,13 +626,7 @@ VOID prod_test(BOOL_T flag, SCHAR_T rssi)
 // NOTE: this is externally called from tuya_mainc
 VOID app_init(VOID)
 {
-    app_cfg_set(WIFI_WORK_MODE_SEL, prod_test);
 
-    /* 设置配网超时时间，未配网超时后退出配网模式 */
-    tuya_iot_wf_timeout_set(WIFI_CONNECT_OVERTIME_S);
-
-    /* WiFi 按键，led 初始化 */
-    wifi_config_init();
 }
 
 /**
@@ -736,13 +658,7 @@ VOID pre_device_init(VOID)
  */
 VOID status_changed_cb(IN CONST GW_STATUS_E status)
 {
-    PR_NOTICE("status_changed_cb is status:%d",status);
 
-    if(GW_NORMAL == status) {
-        hw_report_all_dp_status();
-    }else if(GW_RESET == status) {
-        PR_NOTICE("status is GW_RESET");
-    }
 }
 
 /**
@@ -757,8 +673,7 @@ VOID status_changed_cb(IN CONST GW_STATUS_E status)
  */
 VOID upgrade_notify_cb(IN CONST FW_UG_S *fw, IN CONST INT_T download_result, IN PVOID_T pri_data)
 {
-    PR_DEBUG("download  Finish");
-    PR_DEBUG("download_result:%d", download_result);
+
 }
 
 /**
@@ -776,9 +691,6 @@ VOID upgrade_notify_cb(IN CONST FW_UG_S *fw, IN CONST INT_T download_result, IN 
 OPERATE_RET get_file_data_cb(IN CONST FW_UG_S *fw, IN CONST UINT_T total_len, IN CONST UINT_T offset, \
                                      IN CONST BYTE_T *data, IN CONST UINT_T len, OUT UINT_T *remain_len, IN PVOID_T pri_data)
 {
-    PR_DEBUG("Rev File Data");
-    PR_DEBUG("Total_len:%d ", total_len);
-    PR_DEBUG("Offset:%d Len:%d", offset, len);
 
     return OPRT_OK;
 }
@@ -793,12 +705,8 @@ OPERATE_RET get_file_data_cb(IN CONST FW_UG_S *fw, IN CONST UINT_T total_len, IN
  */
 INT_T gw_ug_inform_cb(IN CONST FW_UG_S *fw)
 {
-    PR_DEBUG("Rev GW Upgrade Info");
-    PR_DEBUG("fw->fw_url:%s", fw->fw_url);
-    PR_DEBUG("fw->sw_ver:%s", fw->sw_ver);
-    PR_DEBUG("fw->file_size:%d", fw->file_size);
 
-    return tuya_iot_upgrade_gw(fw, get_file_data_cb, upgrade_notify_cb, NULL);
+    return 0;
 }
 
 /**
@@ -824,13 +732,7 @@ VOID hw_reset_flash_data(VOID)
  */
 VOID gw_reset_cb(IN CONST GW_RESET_TYPE_E type)
 {
-    PR_DEBUG("gw_reset_cb type:%d",type);
-    if(GW_REMOTE_RESET_FACTORY != type) {
-        PR_DEBUG("type is GW_REMOTE_RESET_FACTORY");
-        return;
-    }
 
-    hw_reset_flash_data();
 }
 
 /**
@@ -843,13 +745,7 @@ VOID gw_reset_cb(IN CONST GW_RESET_TYPE_E type)
  */
 VOID dev_obj_dp_cb(IN CONST TY_RECV_OBJ_DP_S *dp)
 {
-    PR_DEBUG("dp->cid:%s dp->dps_cnt:%d",dp->cid,dp->dps_cnt);
-    UCHAR_T i = 0;
 
-    for(i = 0;i < dp->dps_cnt;i++) {
-        //deal_dp_proc(&(dp->dps[i]));
-        dev_report_dp_json_async(get_gw_cntl()->gw_if.id, dp->dps, dp->dps_cnt);
-    }
 }
 
 /**
@@ -862,16 +758,7 @@ VOID dev_obj_dp_cb(IN CONST TY_RECV_OBJ_DP_S *dp)
  */
 VOID dev_raw_dp_cb(IN CONST TY_RECV_RAW_DP_S *dp)
 {
-    PR_DEBUG("raw data dpid:%d",dp->dpid);
-    PR_DEBUG("recv len:%d",dp->len);
-#if 1 
-    INT_T i = 0;
-    for(i = 0;i < dp->len;i++) {
-        PR_DEBUG_RAW("%02X ",dp->data[i]);
-    }
-#endif
-    PR_DEBUG_RAW("\n");
-    PR_DEBUG("end");
+
     return;
 }
 
@@ -885,9 +772,7 @@ VOID dev_raw_dp_cb(IN CONST TY_RECV_RAW_DP_S *dp)
  */
 STATIC VOID dev_dp_query_cb(IN CONST TY_DP_QUERY_S *dp_qry) 
 {
-    PR_NOTICE("Recv DP Query Cmd");
 
-    hw_report_all_dp_status();
 }
 
 /**
@@ -900,12 +785,7 @@ STATIC VOID dev_dp_query_cb(IN CONST TY_DP_QUERY_S *dp_qry)
  */
 VOID wf_nw_status_cb(IN CONST GW_WIFI_NW_STAT_E stat)
 {
-    PR_NOTICE("wf_nw_status_cb,wifi_status:%d", stat);
-    wifi_state_led_reminder(stat);
 
-    if(stat == STAT_AP_STA_CONN || stat >= STAT_STA_CONN) {
-        hw_report_all_dp_status();
-    }
 }
 
 /**
@@ -920,36 +800,14 @@ OPERATE_RET device_init(VOID)
 {
     OPERATE_RET op_ret = OPRT_OK;
 
-#ifdef MY_TUYA_STILL_ENABLED
-    TY_IOT_CBS_S wf_cbs = {
-        status_changed_cb,\ 
-        gw_ug_inform_cb,\   
-        gw_reset_cb,\
-        dev_obj_dp_cb,\
-        dev_raw_dp_cb,\
-        dev_dp_query_cb,\
-        NULL,
-    };
 
-    op_ret = tuya_iot_wf_soc_dev_init_param(WIFI_WORK_MODE_SEL, WF_START_SMART_FIRST, &wf_cbs, NULL, PRODECT_ID, DEV_SW_VERSION);
-    if(OPRT_OK != op_ret) {
-        PR_ERR("tuya_iot_wf_soc_dev_init_param error,err_num:%d",op_ret);
-        return op_ret;
-    }
-
-    op_ret = tuya_iot_reg_get_wf_nw_stat_cb(wf_nw_status_cb);
-    if(OPRT_OK != op_ret) {
-        PR_ERR("tuya_iot_reg_get_wf_nw_stat_cb is error,err_num:%d",op_ret);
-        return op_ret;
-    }
-#endif
 	
 	myInit();
 
 	connect_to_wifi(DEFAULT_WIFI_SSID,DEFAULT_WIFI_PASS);
 	//demo_start_upd();
 	demo_start_tcp();
-#if 1
+#if 0
 	// https://www.elektroda.pl/rtvforum/topic3804553.html
 	// SmartSwitch Tuya WL-SW01_16 16A
 	PIN_SetPinRoleForPinIndex(7, IOR_Relay);
