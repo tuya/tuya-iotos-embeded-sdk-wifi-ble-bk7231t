@@ -38,6 +38,7 @@
 #include "new_pins.h"
 
 #include "../../beken378/func/key/multi_button.h"
+#include "../../beken378/app/config/param_config.h"
 #include "lwip/apps/mqtt.h"
 
 static int cnt = 0;
@@ -772,6 +773,69 @@ VOID wf_nw_status_cb(IN CONST GW_WIFI_NW_STAT_E stat)
 
 }
 
+
+
+static int setup_wifi_open_access_point(void)
+{
+    #define APP_DRONE_DEF_SSID          "WIFI_UPV_000000"
+    #define APP_DRONE_DEF_NET_IP        "192.168.4.151"
+    #define APP_DRONE_DEF_NET_MASK      "255.255.255.0"
+    #define APP_DRONE_DEF_NET_GW        "192.168.4.151"
+    #define APP_DRONE_DEF_CHANNEL       1    
+    
+    general_param_t general;
+    ap_param_t ap_info;
+    network_InitTypeDef_st wNetConfig;
+    int len;
+    u8 *mac;
+    
+    os_memset(&general, 0, sizeof(general_param_t));
+    os_memset(&ap_info, 0, sizeof(ap_param_t)); 
+    os_memset(&wNetConfig, 0x0, sizeof(network_InitTypeDef_st));  
+    
+        general.role = 1,
+        general.dhcp_enable = 1,
+
+        os_strcpy((char *)wNetConfig.local_ip_addr, APP_DRONE_DEF_NET_IP);
+        os_strcpy((char *)wNetConfig.net_mask, APP_DRONE_DEF_NET_MASK);
+        os_strcpy((char *)wNetConfig.dns_server_ip_addr, APP_DRONE_DEF_NET_GW);
+ 
+
+        PR_NOTICE("no flash configuration, use default\r\n");
+        mac = (u8*)&ap_info.bssid.array;
+		// this is MAC for Access Point, it's different than Client one
+		// see wifi_get_mac_address source
+        wifi_get_mac_address(mac, CONFIG_ROLE_AP);
+        ap_info.chann = APP_DRONE_DEF_CHANNEL;
+        ap_info.cipher_suite = 0;
+        os_memcpy(ap_info.ssid.array, APP_DRONE_DEF_SSID, os_strlen(APP_DRONE_DEF_SSID));
+        ap_info.key_len = 0;
+        os_memset(&ap_info.key, 0, 65);   
+  
+
+    bk_wlan_ap_set_default_channel(ap_info.chann);
+
+    len = os_strlen(ap_info.ssid.array);
+
+    os_strcpy((char *)wNetConfig.wifi_ssid, ap_info.ssid.array);
+    os_strcpy((char *)wNetConfig.wifi_key, ap_info.key);
+    
+    wNetConfig.wifi_mode = SOFT_AP;
+    wNetConfig.dhcp_mode = DHCP_SERVER;
+    wNetConfig.wifi_retry_interval = 100;
+    
+    PR_NOTICE("set ip info: %s,%s,%s\r\n",
+            wNetConfig.local_ip_addr,
+            wNetConfig.net_mask,
+            wNetConfig.dns_server_ip_addr);
+    
+    PR_NOTICE("ssid:%s  key:%s\r\n", wNetConfig.wifi_ssid, wNetConfig.wifi_key);
+	bk_wlan_start(&wNetConfig);
+
+    return 0;    
+}
+
+
 /**
  * @Function: device_init
  * @Description: device initialization process 
@@ -788,7 +852,9 @@ OPERATE_RET device_init(VOID)
 	
 	myInit();
 
-	connect_to_wifi(DEFAULT_WIFI_SSID,DEFAULT_WIFI_PASS);
+	//connect_to_wifi(DEFAULT_WIFI_SSID,DEFAULT_WIFI_PASS);
+	setup_wifi_open_access_point();
+
 	//demo_start_upd();
 	demo_start_tcp();
 #if 0
