@@ -785,6 +785,8 @@ static void setup_deviceNameUnique()
 	sprintf(g_deviceName,"OpenBK7231T_%02X%02X%02X%02X",mac[0],mac[1],mac[2],mac[3]);
 	sprintf(g_shortDeviceName,"obk%02X%02X%02X%02X",mac[0],mac[1],mac[2],mac[3]);
 
+		// NOT WORKING, I done it other way, see ethernetif.c
+	//net_dhcp_hostname_set(g_shortDeviceName);
 }
 
 static int setup_wifi_open_access_point(void)
@@ -862,18 +864,19 @@ OPERATE_RET device_init(VOID)
 {
     OPERATE_RET op_ret = OPRT_OK;
 
-
-	
 	myInit();
 
 	setup_deviceNameUnique();
 
-	//connect_to_wifi(DEFAULT_WIFI_SSID,DEFAULT_WIFI_PASS);
-	setup_wifi_open_access_point();
+	connect_to_wifi(DEFAULT_WIFI_SSID,DEFAULT_WIFI_PASS);
+	//setup_wifi_open_access_point();
+
+		// NOT WORKING, I done it other way, see ethernetif.c
+	//net_dhcp_hostname_set(g_shortDeviceName);
 
 	//demo_start_upd();
 	demo_start_tcp();
-#if 0
+#if 1
 	// https://www.elektroda.pl/rtvforum/topic3804553.html
 	// SmartSwitch Tuya WL-SW01_16 16A
 	PIN_SetPinRoleForPinIndex(7, IOR_Relay);
