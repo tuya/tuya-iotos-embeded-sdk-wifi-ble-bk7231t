@@ -10,7 +10,9 @@ https://www.elektroda.com/rtvforum/topic3850712.html
 
 ## Supported devices
 [WB2S] NF101A "Intelligent Life" https://www.elektroda.pl/rtvforum/viewtopic.php?p=19743751#19743751
+
 [WB2S] WiFi Tuya SmartLife 4CH 10A https://www.elektroda.pl/rtvforum/topic3822484.html
+
 [WB3S] SmartSwitch Tuya WL-SW01_16 16A https://www.elektroda.pl/rtvforum/topic3804553.html
 
 	
