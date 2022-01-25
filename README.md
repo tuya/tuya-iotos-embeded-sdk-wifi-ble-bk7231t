@@ -1,10 +1,14 @@
 
 ## OpenBK7231T is an open source firmware for BK7231T-based Tuya modules, including WB2S, WB3S and much more
 Our goal is to provide Tasmota-like system for BK7231T smart devices.
+
 For compiling and generic SDK information see here:
 https://www.elektroda.com/rtvforum/topic3850712.html
+
 To support project, send a donation:
 https://paypal.me/openshwprojects
+
+
 If you have a device and want to get it support, send me message in:
 https://www.elektroda.com/rtvforum/topic3850712.html
 
