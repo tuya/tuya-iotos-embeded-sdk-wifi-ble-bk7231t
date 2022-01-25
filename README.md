@@ -19,7 +19,12 @@ https://www.elektroda.com/rtvforum/topic3850712.html
 
 [WB3S] SmartSwitch Tuya WL-SW01_16 16A https://www.elektroda.pl/rtvforum/topic3804553.html
 
+## Devices coming soon
 	
+[WB3S] TH06 Humidity Temperature Sensor with LCD https://www.elektroda.pl/rtvforum/viewtopic.php?p=19532446#19532446
+
+[WB3S] Bakeey WiFi LED Dimmer WIFI 371 https://www.elektroda.pl/rtvforum/topic3798114.html
+
 ## Original Tuya Readme below
 
 Tuya IoTOS Embedded Wi-Fi and BLE SDK for BK7231T
