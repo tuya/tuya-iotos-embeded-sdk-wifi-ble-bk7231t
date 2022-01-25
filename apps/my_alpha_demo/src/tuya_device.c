@@ -41,24 +41,7 @@
 #include "lwip/apps/mqtt.h"
 
 static int cnt = 0;
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-/* wifi 相关配置 */
-#define WIFI_WORK_MODE_SEL          GWCM_OLD_PROD   //wifi 工作模式选择
-#define WIFI_CONNECT_OVERTIME_S     180             //wifi 配网超时时间，单位：s
 
-/* 配网按键相关宏,长按进入配网模式 */
-#define WIFI_KEY_PIN                TY_GPIOA_14 //按键引脚 
-#define WIFI_KEY_TIMER_MS           100         //轮询扫描按键所需的时间，一般默认为 100ms
-#define WIFI_KEY_LONG_PRESS_MS      3000        //按键长按时间设置
-#define WIFI_KEY_SEQ_PRESS_MS       400         //按键连按时间设置
-#define WIFI_KEY_LOW_LEVEL_ENABLE   TRUE        //TRUE：按键按下为低，FALSE：按键按下为高
-
-/* 配网指示灯相关宏 */
-#define WIFI_LED_PIN                TY_GPIOA_26 //LED 引脚 
-#define WIFI_LED_LOW_LEVEL_ENABLE   FALSE       //TRUE：低电平点亮 led，FALSE：高电平点亮 led
-#define WIFI_LED_FAST_FLASH_MS      300         //快速闪烁时间 300ms 
-#define WIFI_LED_LOW_FLASH_MS       500         //慢闪时间 500ms
 
 /* Private variables ---------------------------------------------------------*/
 LED_HANDLE wifi_led_handle; //定义 wifi led 句柄 
@@ -413,6 +396,7 @@ static void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection
 	 /* Subscribe to a topic named "subtopic" with QoS level 1, call mqtt_sub_request_cb with result */
 
 
+  // + is a MQTT wildcard
     err = mqtt_sub_unsub(client,
             "wb2s/+/set", 1,
             mqtt_request_cb, LWIP_CONST_CAST(void*, client_info),
