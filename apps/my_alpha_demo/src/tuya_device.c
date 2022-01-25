@@ -43,6 +43,11 @@
 
 static int cnt = 0;
 
+// Long unique device name, like OpenBK7231T_AABBCCDD
+char g_deviceName[64];
+// Short unique device name, like obkAABBCCDD
+char g_shortDeviceName[64];
+
 
 /* Private variables ---------------------------------------------------------*/
 LED_HANDLE wifi_led_handle; //定义 wifi led 句柄 
@@ -773,11 +778,18 @@ VOID wf_nw_status_cb(IN CONST GW_WIFI_NW_STAT_E stat)
 
 }
 
+static void setup_deviceNameUnique()
+{
+	u8 mac[32];
+    wifi_get_mac_address(mac, CONFIG_ROLE_STA);
+	sprintf(g_deviceName,"OpenBK7231T_%02X%02X%02X%02X",mac[0],mac[1],mac[2],mac[3]);
+	sprintf(g_shortDeviceName,"obk%02X%02X%02X%02X",mac[0],mac[1],mac[2],mac[3]);
 
+}
 
 static int setup_wifi_open_access_point(void)
 {
-    #define APP_DRONE_DEF_SSID          "WIFI_UPV_000000"
+    //#define APP_DRONE_DEF_SSID          "WIFI_UPV_000000"
     #define APP_DRONE_DEF_NET_IP        "192.168.4.151"
     #define APP_DRONE_DEF_NET_MASK      "255.255.255.0"
     #define APP_DRONE_DEF_NET_GW        "192.168.4.151"
@@ -808,7 +820,9 @@ static int setup_wifi_open_access_point(void)
         wifi_get_mac_address(mac, CONFIG_ROLE_AP);
         ap_info.chann = APP_DRONE_DEF_CHANNEL;
         ap_info.cipher_suite = 0;
-        os_memcpy(ap_info.ssid.array, APP_DRONE_DEF_SSID, os_strlen(APP_DRONE_DEF_SSID));
+        //os_memcpy(ap_info.ssid.array, APP_DRONE_DEF_SSID, os_strlen(APP_DRONE_DEF_SSID));
+        os_memcpy(ap_info.ssid.array, g_deviceName, os_strlen(g_deviceName));
+		
         ap_info.key_len = 0;
         os_memset(&ap_info.key, 0, 65);   
   
@@ -851,6 +865,8 @@ OPERATE_RET device_init(VOID)
 
 	
 	myInit();
+
+	setup_deviceNameUnique();
 
 	//connect_to_wifi(DEFAULT_WIFI_SSID,DEFAULT_WIFI_PASS);
 	setup_wifi_open_access_point();
