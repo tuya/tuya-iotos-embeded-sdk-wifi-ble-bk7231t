@@ -29,7 +29,8 @@
 #include "lwip/ip_addr.h"
 #include "lwip/inet.h"
 
-#define UDP_LISTENER_PORT 55000
+#include "new_config.h"
+
 
 /* Private includes ----------------------------------------------------------*/
 #include "tuya_device.h"
@@ -270,10 +271,7 @@ void demo_start_tcp()
        os_printf("create \"TCP_server\" thread failed!\r\n");
     }
 }
-//reste is GPIO26
 
-#define MY_RELAY              GPIO24
-#define MY_LED_RED              GPIO7 
 
 beken_timer_t led_timer;
 
@@ -291,8 +289,8 @@ static mqtt_client_t* mqtt_client;
 static const struct mqtt_connect_client_info_t mqtt_client_info =
 {
   "test",
-  "homeassistant", /* user */
-  "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqssssasasasasa", /* pass */
+  DEFAULT_MQTT_USER, /* user */
+  DEFAULT_MQTT_PASS, /* pass */
   100,  /* keep alive */
   NULL, /* will_topic */
   NULL, /* will_msg */
@@ -331,7 +329,6 @@ void example_publish(mqtt_client_t *client, int channel, int iVal)
 		return;
   }
 
- //  sprintf(pub_payload,"{\"temperature\": \"%i\"}",(int)(20+20*sin(cnt*0.01f)));
   myValue = CHANNEL_Check(channel);
    sprintf(pub_payload,"%i",myValue);
    
@@ -444,11 +441,7 @@ void example_do_connect(mqtt_client_t *client)
 {
   err_t err;
 
-
-
-  	ipaddr_aton("192.168.0.113",&mqtt_ip);
-	//ipaddr_aton("192.168.0.110",&mqtt_ip);
-	//ipaddr_aton("192.168.0.114",&mqtt_ip);
+  	ipaddr_aton(DEFAULT_MQTT_IP,&mqtt_ip);
 
   /* Initiate client and connect to server, if this fails immediately an error code is returned
      otherwise mqtt_connection_cb will be called with connection result after attempting
@@ -486,89 +479,19 @@ int loopsWithDisconnected = 0;
 static void app_led_timer_handler(void *data)
 {
 	if(mqtt_client != 0 && mqtt_client_is_connected(mqtt_client) == 0) {
-		PR_NOTICE("Timer discovetrs disconnected mqtt %i\n",cnt);
+		PR_NOTICE("Timer discovetrs disconnected mqtt %i\n",loopsWithDisconnected);
 		loopsWithDisconnected++;
 		if(loopsWithDisconnected>10){ 
 			example_do_connect(mqtt_client);
 			loopsWithDisconnected = 0;
 		}
 	}
-	//if(g_my_reconnect_mqtt_after_time>0)
-	//{
-	//	g_my_reconnect_mqtt_after_time--;
-	//	if(g_my_reconnect_mqtt_after_time<=0){
-	//		///mqtt_example_connect();
-	//		g_my_reconnect_mqtt_after_time = -1;
-	//	}
-	//}
+
 	cnt ++;
-   // bk_gpio_output_reverse(MY_RELAY);
-	if( cnt % 2 )
-	{
-	//	bk_gpio_output_reverse(MY_LED_RED);
-		///example_publish(mqtt_client,0);
-	}
-	else
-	{
-		
-	}
 
     PR_NOTICE("Timer is %i\n",cnt);
 }
-//void button_r0_short_press(void *param)
-//{
-//	PR_NOTICE("r0 key_short_press\r\n");
-//}
-//void button_r0_double_press(void *param)
-//{
-//	PR_NOTICE("r0 key_double_press\r\n");
-//}
-//void button_r0_long_press_hold(void *param)
-//{
-//	PR_NOTICE("r0 key_long_press_hold\r\n");
-//}
-//#define KEY_R0 GPIO6
-//#define KEY_R1 GPIO26
-//#define KEY_R2 GPIO8
-//BUTTON_S button_r0;
-//BUTTON_S button_r1;
-//BUTTON_S button_r2;
-//uint8_t button_r0_get_gpio_value(void)
-//{
-//	return bk_gpio_input(KEY_R0);
-//}
-//void button_r1_short_press(void *param)
-//{
-//	PR_NOTICE("r1 key_short_press\r\n");
-//}
-//void button_r1_double_press(void *param)
-//{
-//	PR_NOTICE("r1 key_double_press\r\n");
-//}
-//void button_r1_long_press_hold(void *param)
-//{
-//	PR_NOTICE("r1 key_long_press_hold\r\n");
-//}
-//uint8_t button_r1_get_gpio_value(void)
-//{
-//	return bk_gpio_input(KEY_R1);
-//}
-//void button_r2_short_press(void *param)
-//{
-//	PR_NOTICE("r2 key_short_press\r\n");
-//}
-//void button_r2_double_press(void *param)
-//{
-//	PR_NOTICE("r2 key_double_press\r\n");
-//}
-//void button_r2_long_press_hold(void *param)
-//{
-//	PR_NOTICE("r2 key_long_press_hold\r\n");
-//}
-//uint8_t button_r2_get_gpio_value(void)
-//{
-//	return bk_gpio_input(KEY_R2);
-//}
+
 void myInit()
 {
 
@@ -577,39 +500,6 @@ void myInit()
 	PIN_Init();
 
 	CHANNEL_SetChangeCallback(app_my_channel_toggle_callback);
-	//key_configure();
-
-	//{
-	//	bk_gpio_config_input_pup(KEY_R0);
-	//	button_init(&button_r0, button_r0_get_gpio_value, 0);
-	//	button_attach(&button_r0, SINGLE_CLICK,     button_r0_short_press);
-	//	button_attach(&button_r0, DOUBLE_CLICK,     button_r0_double_press);
-	//	button_attach(&button_r0, LONG_PRESS_HOLD,  button_r0_long_press_hold);
-	//	button_start(&button_r0);
-	//}
-	//{
-	//	bk_gpio_config_input_pup(KEY_R1);
-	//	button_init(&button_r1, button_r1_get_gpio_value, 0);
-	//	button_attach(&button_r1, SINGLE_CLICK,     button_r1_short_press);
-	//	button_attach(&button_r1, DOUBLE_CLICK,     button_r1_double_press);
-	//	button_attach(&button_r1, LONG_PRESS_HOLD,  button_r1_long_press_hold);
-	//	button_start(&button_r1);
-	//}
-	//{
-	//	bk_gpio_config_input_pup(KEY_R2);
-	//	button_init(&button_r2, button_r2_get_gpio_value, 0);
-	//	button_attach(&button_r2, SINGLE_CLICK,     button_r2_short_press);
-	//	button_attach(&button_r2, DOUBLE_CLICK,     button_r2_double_press);
-	//	button_attach(&button_r2, LONG_PRESS_HOLD,  button_r2_long_press_hold);
-	//	button_start(&button_r2);
-	//}
-	//
-
-    bk_gpio_config_output(MY_RELAY);
-    bk_gpio_output(MY_RELAY, 0);
-	
-    bk_gpio_config_output(MY_LED_RED);
-    bk_gpio_output(MY_LED_RED, 0);
 
     err = rtos_init_timer(&led_timer,
                           1 * 1000,
@@ -1056,10 +946,10 @@ OPERATE_RET device_init(VOID)
 	
 	myInit();
 
-	connect_to_wifi("ssid","pass");
+	connect_to_wifi(DEFAULT_WIFI_SSID,DEFAULT_WIFI_PASS);
 	//demo_start_upd();
 	demo_start_tcp();
-#if 0
+#if 1
 	// https://www.elektroda.pl/rtvforum/topic3804553.html
 	// SmartSwitch Tuya WL-SW01_16 16A
 	PIN_SetPinRoleForPinIndex(7, IOR_Relay);
