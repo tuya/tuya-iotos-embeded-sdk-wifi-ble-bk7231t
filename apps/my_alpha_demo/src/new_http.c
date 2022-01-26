@@ -155,7 +155,7 @@ void setupAllWB2SPinsAsButtons() {
 
 
 
-void HTTP_ProcessPacket(const char *recvbuf, char *outbuf) {
+void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 	int i, j;
 	char tmpA[64];
 	char tmpB[32];
@@ -172,31 +172,31 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf) {
 	http_getArg(urlStr,"c",tmpC,sizeof(tmpC));
 	if(http_checkUrlBase(urlStr,"about")) {
 		http_setup(outbuf, httpMimeTypeHTML);
-		strcat(outbuf,htmlHeader);
-		strcat(outbuf,"About us page.");
-		strcat(outbuf,htmlReturnToMenu);
-		strcat(outbuf,htmlEnd);
+		strcat_safe(outbuf,htmlHeader,outBufSize);
+		strcat_safe(outbuf,"About us page.",outBufSize);
+		strcat_safe(outbuf,htmlReturnToMenu,outBufSize);
+		strcat_safe(outbuf,htmlEnd,outBufSize);
 	} else if(http_checkUrlBase(urlStr,"cfg_wifi_set")) {
 		http_setup(outbuf, httpMimeTypeHTML);
-		strcat(outbuf,htmlHeader);
-		strcat(outbuf,"Please wait for module to reset...");
-		strcat(outbuf,htmlReturnToMenu);
-		strcat(outbuf,htmlEnd);
+		strcat_safe(outbuf,htmlHeader,outBufSize);
+		strcat_safe(outbuf,"Please wait for module to reset...",outBufSize);
+		strcat_safe(outbuf,htmlReturnToMenu,outBufSize);
+		strcat_safe(outbuf,htmlEnd,outBufSize);
 	} else if(http_checkUrlBase(urlStr,"cfg_wifi")) {
 		http_setup(outbuf, httpMimeTypeHTML);
-		strcat(outbuf,htmlHeader);
-		strcat(outbuf,"<h1>OpenBK2731T</h1>");
-		strcat(outbuf,"<form action=\"/cfg_wifi_set\">\
+		strcat_safe(outbuf,htmlHeader,outBufSize);
+		strcat_safe(outbuf,"<h1>OpenBK2731T</h1>",outBufSize);
+		strcat_safe(outbuf,"<form action=\"/cfg_wifi_set\">\
 			  <label for=\"ssid\">SSID:</label><br>\
 			  <input type=\"text\" id=\"ssid\" name=\"ssid\" value=\"\"><br>\
 			  <label for=\"pass\">Pass:</label><br>\
 			  <input type=\"text\" id=\"pass\" name=\"pass\" value=\"\"><br><br>\
 			  <input type=\"submit\" value=\"Submit\">\
-			</form> ");
+			</form> ",outBufSize);
 
 
-		strcat(outbuf,htmlReturnToMenu);
-		strcat(outbuf,htmlEnd);
+		strcat_safe(outbuf,htmlReturnToMenu,outBufSize);
+		strcat_safe(outbuf,htmlEnd,outBufSize);
 	} else if(http_checkUrlBase(urlStr,"flash_read_tool")) {
 		int len = 16;
 		int ofs = 1970176;
@@ -205,16 +205,16 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf) {
 		int now;
 		int nowOfs;
 		http_setup(outbuf, httpMimeTypeHTML);
-		strcat(outbuf,htmlHeader);
-		strcat(outbuf,"<h1>Flash Read Tool</h1>");
+		strcat_safe(outbuf,htmlHeader,outBufSize);
+		strcat_safe(outbuf,"<h1>Flash Read Tool</h1>",outBufSize);
 
 		if(http_getArg(recvbuf,"offset",tmpA,sizeof(tmpA))&&http_getArg(recvbuf,"len",tmpB,sizeof(tmpB))) {
 			u8 buffer[128];
 			len = atoi(tmpB);
 			ofs = atoi(tmpA);
 			sprintf(tmpA,"Memory at %i with len %i reads: ",ofs,len);
-			strcat(outbuf,tmpA);
-			strcat(outbuf,"<br>");
+			strcat_safe(outbuf,tmpA,outBufSize);
+			strcat_safe(outbuf,"<br>",outBufSize);
 
 			///res = tuya_hal_flash_read (ofs, buffer,len);
 			//sprintf(tmpA,"Result %i",res);
@@ -232,7 +232,7 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf) {
 				res = tuya_hal_flash_read (nowOfs, buffer,now);
 				for(i = 0; i < now; i++) {
 					sprintf(tmpA,"%02X ",buffer[i]);
-					strcat(outbuf,tmpA);
+					strcat_safe(outbuf,tmpA,outBufSize);
 				}
 				rem -= now;
 				nowOfs += now;
@@ -241,57 +241,57 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf) {
 				}
 			}
 
-			strcat(outbuf,"<br>");
+			strcat_safe(outbuf,"<br>",outBufSize);
 		}
-		strcat(outbuf,"<form action=\"/flash_read_tool\">\
+		strcat_safe(outbuf,"<form action=\"/flash_read_tool\">\
 			  <label for=\"offset\">offset:</label><br>\
-			  <input type=\"number\" id=\"offset\" name=\"offset\"");
+			  <input type=\"number\" id=\"offset\" name=\"offset\"",outBufSize);
 		sprintf(tmpA," value=\"%i\"><br>",ofs);
-		strcat(outbuf,tmpA);
-		strcat(outbuf,"<label for=\"lenght\">lenght:</label><br>\
-			  <input type=\"number\" id=\"len\" name=\"len\" ");
+		strcat_safe(outbuf,tmpA,outBufSize);
+		strcat_safe(outbuf,"<label for=\"lenght\">lenght:</label><br>\
+			  <input type=\"number\" id=\"len\" name=\"len\" ",outBufSize);
 		sprintf(tmpA,"value=\"%i\">",len);
-		strcat(outbuf,tmpA);
-		strcat(outbuf,"<br><br>\
+		strcat_safe(outbuf,tmpA,outBufSize);
+		strcat_safe(outbuf,"<br><br>\
 			  <input type=\"submit\" value=\"Submit\">\
-			</form> ");
+			</form> ",outBufSize);
 
-		strcat(outbuf,htmlReturnToMenu);
-		strcat(outbuf,htmlEnd);
+		strcat_safe(outbuf,htmlReturnToMenu,outBufSize);
+		strcat_safe(outbuf,htmlEnd,outBufSize);
 	} else if(http_checkUrlBase(urlStr,"cfg")) {
 		http_setup(outbuf, httpMimeTypeHTML);
-		strcat(outbuf,htmlHeader);
-		strcat(outbuf,"<h1>Test</h1>");
-		strcat(outbuf,"<form action=\"cfg_pins\"><input type=\"submit\" value=\"Configure Module\"/></form>");
-		strcat(outbuf,"<form action=\"cfg_wifi\"><input type=\"submit\" value=\"Configure WiFi\"/></form>");
-		strcat(outbuf,"<form action=\"cmd_single\"><input type=\"submit\" value=\"Execute custom command\"/></form>");
-		strcat(outbuf,"<form action=\"flash_read_tool\"><input type=\"submit\" value=\"Flash Read Tool\"/></form>");
+		strcat_safe(outbuf,htmlHeader,outBufSize);
+		strcat_safe(outbuf,"<h1>Test</h1>",outBufSize);
+		strcat_safe(outbuf,"<form action=\"cfg_pins\"><input type=\"submit\" value=\"Configure Module\"/></form>",outBufSize);
+		strcat_safe(outbuf,"<form action=\"cfg_wifi\"><input type=\"submit\" value=\"Configure WiFi\"/></form>",outBufSize);
+		strcat_safe(outbuf,"<form action=\"cmd_single\"><input type=\"submit\" value=\"Execute custom command\"/></form>",outBufSize);
+		strcat_safe(outbuf,"<form action=\"flash_read_tool\"><input type=\"submit\" value=\"Flash Read Tool\"/></form>",outBufSize);
 
 
-		strcat(outbuf,htmlReturnToMenu);
-		strcat(outbuf,htmlEnd);
+		strcat_safe(outbuf,htmlReturnToMenu,outBufSize);
+		strcat_safe(outbuf,htmlEnd,outBufSize);
 	} else if(http_checkUrlBase(urlStr,"setWB2SInputs")) {
 		http_setup(outbuf, httpMimeTypeHTML);
-		strcat(outbuf,htmlHeader);
+		strcat_safe(outbuf,htmlHeader,outBufSize);
 
 		setupAllWB2SPinsAsButtons();
 
 		http_setup(outbuf, httpMimeTypeHTML);
-		strcat(outbuf,"Set all inputs for dbg .");
-		strcat(outbuf,htmlReturnToMenu);
-		strcat(outbuf,htmlEnd);
+		strcat_safe(outbuf,"Set all inputs for dbg .",outBufSize);
+		strcat_safe(outbuf,htmlReturnToMenu,outBufSize);
+		strcat_safe(outbuf,htmlEnd,outBufSize);
 	} else if(http_checkUrlBase(urlStr,"setAllInputs")) {
 		http_setup(outbuf, httpMimeTypeHTML);
-		strcat(outbuf,htmlHeader);
+		strcat_safe(outbuf,htmlHeader,outBufSize);
 		// it breaks UART pins as well, omg!
 		for(i = 0; i < GPIO_MAX; i++) {
 			PIN_SetPinRoleForPinIndex(i,IOR_Button);
 			PIN_SetPinChannelForPinIndex(i,1);
 		}
 		http_setup(outbuf, httpMimeTypeHTML);
-		strcat(outbuf,"Set all inputs for dbg .");
-		strcat(outbuf,htmlReturnToMenu);
-		strcat(outbuf,htmlEnd);
+		strcat_safe(outbuf,"Set all inputs for dbg .",outBufSize);
+		strcat_safe(outbuf,htmlReturnToMenu,outBufSize);
+		strcat_safe(outbuf,htmlEnd,outBufSize);
 	} else if(http_checkUrlBase(urlStr,"cfg_pins")) {
 		int iChanged = 0;
 		int iChangedRequested = 0;

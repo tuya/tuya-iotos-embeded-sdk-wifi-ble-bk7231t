@@ -21,6 +21,25 @@
 #include "new_http.h"
 #include "new_pins.h"
 
+void strcat_safe_test(){
+	char tmpA[16];
+	char tmpB[16];
+	int res0, res1, res2, res3, res4, res5;
+	tmpA[0] = 0;
+	res0 = strcat_safe(tmpA,"Test1",sizeof(tmpA));
+	res1 = strcat_safe(tmpA," ",sizeof(tmpA));
+	res2 = strcat_safe(tmpA,"is now processing",sizeof(tmpA));
+	res3 = strcat_safe(tmpA," very long string",sizeof(tmpA));
+	res4 = strcat_safe(tmpA," and it",sizeof(tmpA));
+	res5 = strcat_safe(tmpA," and it",sizeof(tmpA));
+	tmpB[0] = 0;
+	res0 = strcat_safe(tmpB,"Test1",sizeof(tmpB));
+	res1 = strcat_safe(tmpB," ",sizeof(tmpB));
+	res2 = strcat_safe(tmpB,"is now processing",sizeof(tmpB));
+	res3 = strcat_safe(tmpB," very long string",sizeof(tmpB));
+	res4 = strcat_safe(tmpB," and it",sizeof(tmpB));
+	res5 = strcat_safe(tmpB," and it",sizeof(tmpB));
+}
 
 int __cdecl main(void) 
 {
@@ -38,6 +57,8 @@ int __cdecl main(void)
     char outbuf[DEFAULT_BUFLEN];
     int recvbuflen = DEFAULT_BUFLEN;
     
+	strcat_safe_test();
+
 	PIN_ClearPins();
 	PIN_SetPinChannelForPinIndex(1,1);
 	PIN_SetPinRoleForPinIndex(1,IOR_Relay);
@@ -110,7 +131,7 @@ int __cdecl main(void)
 			iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
 			if (iResult > 0) {
 				int leen;
-				HTTP_ProcessPacket(recvbuf,outbuf);
+				HTTP_ProcessPacket(recvbuf,outbuf,sizeof(outbuf));
 
 				printf("Bytes received: %d\n", iResult);
 				printf("%s\n",outbuf);

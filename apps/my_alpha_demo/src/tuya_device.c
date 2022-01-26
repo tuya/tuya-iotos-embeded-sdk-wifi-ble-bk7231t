@@ -92,11 +92,13 @@ void tcp_client_thread( beken_thread_arg_t arg )
     fd_set readfds, errfds, readfds2; 
     char *buf = NULL;
     char *reply = NULL;
+	int replyBufferSize = 10000;
+	int res;
 	//char reply[8192];
 
     my_fd = fd;
 
-    reply = (char*) os_malloc( 8192+2048 );
+    reply = (char*) os_malloc( replyBufferSize );
     buf = (char*) os_malloc( 1024 );
     ASSERT(buf);
     
@@ -116,7 +118,7 @@ void tcp_client_thread( beken_thread_arg_t arg )
   
       PR_NOTICE( "TCP received string %s\n",buf );
 		  
-		  HTTP_ProcessPacket(buf, reply);
+		HTTP_ProcessPacket(buf, reply, replyBufferSize);
 
 		///	strcpy(buf,"[WB2S example TCP reply!]");
 			len = strlen(reply);
