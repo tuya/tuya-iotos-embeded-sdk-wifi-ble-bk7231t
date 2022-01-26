@@ -13,7 +13,9 @@ typedef enum{
     IP_CONFIG_ITEM		= 0x66666666,
 	RF_CFG_TSSI_ITEM	= 0x77777777,
 	RF_CFG_DIST_ITEM	= 0x88888888,
-	RF_CFG_MODE_ITEM    = 0x99999999
+	RF_CFG_MODE_ITEM    = 0x99999999,
+	// added for OpenBK7231T
+	NEW_PINS_CONFIG     = 0xAAAAAAAA
 }NET_INFO_ITEM;
 
 typedef struct info_item_st
@@ -49,6 +51,13 @@ typedef struct item_ip_config_st
 	char net_mask[16];
     char gateway_ip_addr[16];    
 }ITEM_IP_CONFIG_ST,*ITEM_IP_CONFIG_ST_PTR;
+
+//NEW_PINS_CONFIG
+typedef struct item_new_pins_config
+{
+	INFO_ITEM_ST head;
+	u8 data[64];    
+}ITEM_NEW_PINS_CONFIG,*ITEM_NEW_PINS_CONFIG_PTR;
 
 UINT32 test_get_whole_tbl(UINT8 *ptr);
 UINT32 save_info_item(NET_INFO_ITEM item,UINT8 *ptr0,UINT8*ptr1,UINT8 *ptr2);
