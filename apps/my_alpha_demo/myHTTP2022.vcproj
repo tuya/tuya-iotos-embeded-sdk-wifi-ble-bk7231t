@@ -164,6 +164,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\src\new_builtin_devices.c"
+				>
+			</File>
+			<File
 				RelativePath=".\src\new_common.c"
 				>
 			</File>
@@ -224,6 +228,10 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
+				RelativePath="..\..\platforms\bk7231t\bk7231t_os\application.mk"
+				>
+			</File>
+			<File
 				RelativePath="..\..\platforms\bk7231t\bk7231t_os\beken378\func\lwip_intf\lwip-2.0.2\port\ethernetif.c"
 				>
 				<FileConfiguration
@@ -273,6 +281,30 @@
 			</File>
 			<File
 				RelativePath="..\..\platforms\bk7231t\bk7231t_os\beken378\func\key\multi_button.h"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\platforms\bk7231t\bk7231t_os\beken378\func\net_param_intf\net_param.c"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\platforms\bk7231t\bk7231t_os\beken378\func\include\net_param_pub.h"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"

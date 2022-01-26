@@ -356,6 +356,7 @@ SRC_C += ./beken378/func/lwip_intf/dhcpd/dhcp-server.c
 SRC_C += ./beken378/func/lwip_intf/dhcpd/dhcp-server-main.c
 SRC_C += ./beken378/func/misc/fake_clock.c
 SRC_C += ./beken378/func/misc/target_util.c
+SRC_C += ./beken378/func/net_param_intf/net_param.c
 SRC_C += ./beken378/func/key/multi_button.c
 SRC_C += ./beken378/func/key/key_main.c
 SRC_C += ./beken378/func/misc/start_type.c

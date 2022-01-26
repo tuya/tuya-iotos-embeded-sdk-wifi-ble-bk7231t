@@ -856,6 +856,10 @@ static int setup_wifi_open_access_point(void)
  * @Return: OPRT_OK: success  Other: fail
  * @Others: none
  */
+
+
+
+
 OPERATE_RET device_init(VOID)
 {
     OPERATE_RET op_ret = OPRT_OK;
@@ -873,34 +877,9 @@ OPERATE_RET device_init(VOID)
 	//demo_start_upd();
 	demo_start_tcp();
 #if 1
-	// https://www.elektroda.pl/rtvforum/topic3804553.html
-	// SmartSwitch Tuya WL-SW01_16 16A
-	PIN_SetPinRoleForPinIndex(7, IOR_Relay);
-	PIN_SetPinChannelForPinIndex(7, 1);
-
-	PIN_SetPinRoleForPinIndex(26, IOR_Button);
-	PIN_SetPinChannelForPinIndex(26, 1);
+	PIN_LoadFromFlash();
 #else
-	// https://www.elektroda.pl/rtvforum/topic3822484.html
-	//  WiFi Tuya SmartLife 4CH 10A
 
-	PIN_SetPinRoleForPinIndex(7, IOR_Button);
-	PIN_SetPinChannelForPinIndex(7, 1);
-	PIN_SetPinRoleForPinIndex(8, IOR_Button);
-	PIN_SetPinChannelForPinIndex(8, 2);
-	PIN_SetPinRoleForPinIndex(9, IOR_Button);
-	PIN_SetPinChannelForPinIndex(9, 3);
-	PIN_SetPinRoleForPinIndex(1, IOR_Button);
-	PIN_SetPinChannelForPinIndex(1, 4);
-
-	PIN_SetPinRoleForPinIndex(14, IOR_Relay);
-	PIN_SetPinChannelForPinIndex(14, 1);
-	PIN_SetPinRoleForPinIndex(6, IOR_Relay);
-	PIN_SetPinChannelForPinIndex(6, 2);
-	PIN_SetPinRoleForPinIndex(24, IOR_Relay);
-	PIN_SetPinChannelForPinIndex(24, 3);
-	PIN_SetPinRoleForPinIndex(26, IOR_Relay);
-	PIN_SetPinChannelForPinIndex(26, 4);
 
 #endif
 

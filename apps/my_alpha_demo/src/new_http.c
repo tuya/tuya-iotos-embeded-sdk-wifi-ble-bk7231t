@@ -153,6 +153,17 @@ void setupAllWB2SPinsAsButtons() {
 		PIN_SetPinChannelForPinIndex(27,1);
 }
 
+typedef struct template_s {
+	void (*setter)();
+	const char *name;
+} template_t;
+
+template_t g_templates [] = {
+	{ Setup_Device_Empty, "Empty"},
+	{ Setup_Device_TuyaWL_SW01_16A, "WL SW01 16A"},
+	{ Setup_Device_TuyaSmartLife4CH10A, "Smart Life 4CH 10A"},
+};
+int g_total_templates = sizeof(g_templates)/sizeof(g_templates[0]);
 
 
 void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
@@ -258,11 +269,37 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 
 		strcat_safe(outbuf,htmlReturnToMenu,outBufSize);
 		strcat_safe(outbuf,htmlEnd,outBufSize);
+
+	} else if(http_checkUrlBase(urlStr,"cfg_quick")) {
+		http_setup(outbuf, httpMimeTypeHTML);
+		strcat_safe(outbuf,htmlHeader,outBufSize);
+		strcat_safe(outbuf,"<h1>Quick Config</h1>",outBufSize);
+		
+		if(http_getArg(urlStr,"dev",tmpA,sizeof(tmpA))) {
+			j = atoi(tmpA);
+			sprintf(tmpA,"<h3>Set dev %i!</h3>",j);
+			strcat(outbuf,tmpA);
+			
+			g_templates[j].setter();
+		}
+		strcat_safe(outbuf,"<form action=\"cfg_quick\">",outBufSize);		
+		sprintf(tmpA, "<select name=\"dev\">");
+		strcat(outbuf,tmpA);
+		for(j = 0; j < g_total_templates; j++) {
+			sprintf(tmpA, "<option value=\"%i\">%s</option>",j,g_templates[j].name);
+			strcat(outbuf,tmpA);
+		}
+		strcat(outbuf, "</select>");
+		strcat_safe(outbuf,"<input type=\"submit\" value=\"Set\"/></form>",outBufSize);
+		
+		strcat_safe(outbuf,htmlReturnToMenu,outBufSize);
+		strcat_safe(outbuf,htmlEnd,outBufSize);
 	} else if(http_checkUrlBase(urlStr,"cfg")) {
 		http_setup(outbuf, httpMimeTypeHTML);
 		strcat_safe(outbuf,htmlHeader,outBufSize);
 		strcat_safe(outbuf,"<h1>Test</h1>",outBufSize);
 		strcat_safe(outbuf,"<form action=\"cfg_pins\"><input type=\"submit\" value=\"Configure Module\"/></form>",outBufSize);
+		strcat_safe(outbuf,"<form action=\"cfg_quick\"><input type=\"submit\" value=\"Quick Config\"/></form>",outBufSize);
 		strcat_safe(outbuf,"<form action=\"cfg_wifi\"><input type=\"submit\" value=\"Configure WiFi\"/></form>",outBufSize);
 		strcat_safe(outbuf,"<form action=\"cmd_single\"><input type=\"submit\" value=\"Execute custom command\"/></form>",outBufSize);
 		strcat_safe(outbuf,"<form action=\"flash_read_tool\"><input type=\"submit\" value=\"Flash Read Tool\"/></form>",outBufSize);
@@ -332,6 +369,7 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 			}
 		}
 		if(iChangedRequested>0) {
+			PIN_SaveToFlash();
 			sprintf(tmpA, "Pins update - %i reqs, %i changed!<br><br>",iChangedRequested,iChanged);
 			strcat(outbuf,tmpA);
 		}

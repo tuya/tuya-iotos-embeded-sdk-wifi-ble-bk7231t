@@ -52,11 +52,12 @@ typedef struct item_ip_config_st
     char gateway_ip_addr[16];    
 }ITEM_IP_CONFIG_ST,*ITEM_IP_CONFIG_ST_PTR;
 
+#define NEW_PINS_CONFIG_SIZE 64
 //NEW_PINS_CONFIG
 typedef struct item_new_pins_config
 {
 	INFO_ITEM_ST head;
-	u8 data[64];    
+	u8 data[NEW_PINS_CONFIG_SIZE];    
 }ITEM_NEW_PINS_CONFIG,*ITEM_NEW_PINS_CONFIG_PTR;
 
 UINT32 test_get_whole_tbl(UINT8 *ptr);

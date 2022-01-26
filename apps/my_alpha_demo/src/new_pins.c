@@ -6,6 +6,11 @@
 #include "new_http.h"
 #include "new_pins.h"
 
+#if WINDOWS
+
+#else
+#include "../../beken378/func/include/net_param_pub.h"
+#endif
 
 int g_channelStates;
 #ifdef WINDOWS
@@ -21,6 +26,22 @@ typedef struct pinsState_s {
 
 pinsState_t g_pins;
 
+void PIN_SaveToFlash() {
+#if WINDOWS
+#else
+	save_info_item(NEW_PINS_CONFIG,&g_pins, 0, 0);
+#endif
+}
+void PIN_LoadFromFlash() {
+	int i;
+#if WINDOWS
+#else
+	get_info_item(NEW_PINS_CONFIG,&g_pins, 0, 0);
+#endif
+	for(i = 0; i < GPIO_MAX; i++) {
+		PIN_SetPinRoleForPinIndex(i,g_pins.roles[i]);
+	}
+}
 void PIN_ClearPins() {
 	memset(&g_pins,0,sizeof(g_pins));
 }

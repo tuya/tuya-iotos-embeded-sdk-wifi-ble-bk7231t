@@ -29,6 +29,13 @@ void CHANNEL_Toggle(int ch);
 bool CHANNEL_Check(int ch);
 void CHANNEL_SetChangeCallback(void (*cb)(int idx, int iVal));
 void CHANNEL_Set(int ch, int iVal);
+void PIN_SaveToFlash();
+void PIN_LoadFromFlash();
+
+void Setup_Device_Empty();
+void Setup_Device_TuyaWL_SW01_16A();
+void Setup_Device_TuyaSmartLife4CH10A();
+
 
 #endif
 
