@@ -49,14 +49,8 @@ char g_deviceName[64];
 char g_shortDeviceName[64];
 
 
-/* Private variables ---------------------------------------------------------*/
-LED_HANDLE wifi_led_handle; //定义 wifi led 句柄 
 
-/* Private function prototypes -----------------------------------------------*/
-VOID hw_report_all_dp_status(VOID);
-
-
-#define SERVER_PORT            80 /*set up a tcp server,port at 20000*/
+#define HTTP_SERVER_PORT            80 /*set up a tcp server,port at 20000*/
 
 int my_fd = -1; 
 
@@ -170,7 +164,7 @@ void tcp_server_thread( beken_thread_arg_t arg )
 
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = INADDR_ANY;/* Accept conenction request on all network interface */
-    server_addr.sin_port = htons( SERVER_PORT );/* Server listen on port: 20000 */
+    server_addr.sin_port = htons( HTTP_SERVER_PORT );/* Server listen on port: 20000 */
     err = bind( tcp_listen_fd, (struct sockaddr *) &server_addr, sizeof(server_addr) );
     
     err = listen( tcp_listen_fd, 0 );
