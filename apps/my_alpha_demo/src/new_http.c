@@ -197,12 +197,56 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf) {
 
 		strcat(outbuf,htmlReturnToMenu);
 		strcat(outbuf,htmlEnd);
+	} else if(http_checkUrlBase(urlStr,"flash_read_tool")) {
+		int len = 16;
+		int ofs = 1970176;
+		int res;
+		http_setup(outbuf, httpMimeTypeHTML);
+		strcat(outbuf,htmlHeader);
+		strcat(outbuf,"<h1>Flash Read Tool</h1>");
+
+		if(http_getArg(recvbuf,"offset",tmpA,sizeof(tmpA))&&http_getArg(recvbuf,"len",tmpB,sizeof(tmpB))) {
+			u8 buffer[128];
+			len = atoi(tmpB);
+			ofs = atoi(tmpA);
+			sprintf(tmpA,"Memory at %i with len %i reads: ",ofs,len);
+			strcat(outbuf,tmpA);
+			strcat(outbuf,"<br>");
+
+			res = tuya_hal_flash_read (ofs, buffer,len);
+			sprintf(tmpA,"Result %i",res);
+			strcat(outbuf,tmpA);
+			strcat(outbuf,"<br>");
+
+			for(i = 0; i < len; i++) {
+				sprintf(tmpA,"%02X ",buffer[i]);
+				strcat(outbuf,tmpA);
+			}
+			strcat(outbuf,"<br>");
+		}
+		strcat(outbuf,"<form action=\"/flash_read_tool\">\
+			  <label for=\"offset\">offset:</label><br>\
+			  <input type=\"number\" id=\"offset\" name=\"offset\"");
+		sprintf(tmpA," value=\"%i\"><br>",ofs);
+		strcat(outbuf,tmpA);
+		strcat(outbuf,"<label for=\"lenght\">lenght:</label><br>\
+			  <input type=\"number\" id=\"len\" name=\"len\" ");
+		sprintf(tmpA,"value=\"%i\">",len);
+		strcat(outbuf,tmpA);
+		strcat(outbuf,"<br><br>\
+			  <input type=\"submit\" value=\"Submit\">\
+			</form> ");
+
+		strcat(outbuf,htmlReturnToMenu);
+		strcat(outbuf,htmlEnd);
 	} else if(http_checkUrlBase(urlStr,"cfg")) {
 		http_setup(outbuf, httpMimeTypeHTML);
 		strcat(outbuf,htmlHeader);
 		strcat(outbuf,"<h1>Test</h1>");
 		strcat(outbuf,"<form action=\"cfg_pins\"><input type=\"submit\" value=\"Configure Module\"/></form>");
 		strcat(outbuf,"<form action=\"cfg_wifi\"><input type=\"submit\" value=\"Configure WiFi\"/></form>");
+		strcat(outbuf,"<form action=\"cmd_single\"><input type=\"submit\" value=\"Execute custom command\"/></form>");
+		strcat(outbuf,"<form action=\"flash_read_tool\"><input type=\"submit\" value=\"Flash Read Tool\"/></form>");
 
 
 		strcat(outbuf,htmlReturnToMenu);
