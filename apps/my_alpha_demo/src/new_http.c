@@ -201,6 +201,9 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf) {
 		int len = 16;
 		int ofs = 1970176;
 		int res;
+		int rem;
+		int now;
+		int nowOfs;
 		http_setup(outbuf, httpMimeTypeHTML);
 		strcat(outbuf,htmlHeader);
 		strcat(outbuf,"<h1>Flash Read Tool</h1>");
@@ -213,15 +216,31 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf) {
 			strcat(outbuf,tmpA);
 			strcat(outbuf,"<br>");
 
-			res = tuya_hal_flash_read (ofs, buffer,len);
-			sprintf(tmpA,"Result %i",res);
-			strcat(outbuf,tmpA);
-			strcat(outbuf,"<br>");
+			///res = tuya_hal_flash_read (ofs, buffer,len);
+			//sprintf(tmpA,"Result %i",res);
+		//	strcat(outbuf,tmpA);
+		///	strcat(outbuf,"<br>");
 
-			for(i = 0; i < len; i++) {
-				sprintf(tmpA,"%02X ",buffer[i]);
-				strcat(outbuf,tmpA);
+			nowOfs = ofs;
+			rem = len;
+			while(1) {
+				if(rem > sizeof(buffer)) {
+					now = sizeof(buffer);
+				} else {
+					now = rem;
+				}
+				res = tuya_hal_flash_read (nowOfs, buffer,now);
+				for(i = 0; i < now; i++) {
+					sprintf(tmpA,"%02X ",buffer[i]);
+					strcat(outbuf,tmpA);
+				}
+				rem -= now;
+				nowOfs += now;
+				if(rem <= 0) {
+					break;
+				}
 			}
+
 			strcat(outbuf,"<br>");
 		}
 		strcat(outbuf,"<form action=\"/flash_read_tool\">\
