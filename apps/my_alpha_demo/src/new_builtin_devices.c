@@ -53,6 +53,8 @@ void Setup_Device_TuyaSmartLife4CH10A() {
 void Setup_Device_IntelligentLife_NF101A() {
 	PIN_ClearPins();
 
+	// TODO: LED
+
 	PIN_SetPinRoleForPinIndex(24, IOR_Relay);
 	PIN_SetPinChannelForPinIndex(24, 1);
 
