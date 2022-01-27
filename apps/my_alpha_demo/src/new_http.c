@@ -162,7 +162,9 @@ template_t g_templates [] = {
 	{ Setup_Device_Empty, "Empty"},
 	{ Setup_Device_TuyaWL_SW01_16A, "WL SW01 16A"},
 	{ Setup_Device_TuyaSmartLife4CH10A, "Smart Life 4CH 10A"},
+	{ Setup_Device_IntelligentLife_NF101A, "Intelligent Life NF101A"},
 };
+
 int g_total_templates = sizeof(g_templates)/sizeof(g_templates[0]);
 
 

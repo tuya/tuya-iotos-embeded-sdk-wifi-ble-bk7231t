@@ -49,3 +49,16 @@ void Setup_Device_TuyaSmartLife4CH10A() {
 
 	PIN_SaveToFlash();
 }
+// https://www.elektroda.pl/rtvforum/viewtopic.php?p=19743751#19743751
+void Setup_Device_IntelligentLife_NF101A() {
+	PIN_ClearPins();
+
+	PIN_SetPinRoleForPinIndex(24, IOR_Relay);
+	PIN_SetPinChannelForPinIndex(24, 1);
+
+	PIN_SetPinRoleForPinIndex(6, IOR_Button);
+	PIN_SetPinChannelForPinIndex(6, 1);
+
+
+	PIN_SaveToFlash();
+}

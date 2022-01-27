@@ -35,7 +35,7 @@ void PIN_LoadFromFlash();
 void Setup_Device_Empty();
 void Setup_Device_TuyaWL_SW01_16A();
 void Setup_Device_TuyaSmartLife4CH10A();
-
+void Setup_Device_IntelligentLife_NF101A();
 
 #endif
 
