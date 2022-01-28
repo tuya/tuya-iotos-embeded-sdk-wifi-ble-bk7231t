@@ -200,8 +200,8 @@ int g_total_templates = sizeof(g_templates)/sizeof(g_templates[0]);
 void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 	int i, j;
 	char tmpA[128];
-	char tmpB[32];
-	char tmpC[32];
+	char tmpB[64];
+	char tmpC[64];
 	int bChanged = 0;
 
 	const char *urlStr = recvbuf + 5;
@@ -220,11 +220,11 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 		strcat_safe(outbuf,htmlReturnToMenu,outBufSize);
 		strcat_safe(outbuf,htmlEnd,outBufSize);
 	} else if(http_checkUrlBase(urlStr,"cfg_mqtt")) {
-		http_setup(outbuf, httpMimeTypeHTML);
+			/*http_setup(outbuf, httpMimeTypeHTML);
 		strcat_safe(outbuf,htmlHeader,outBufSize);
 		strcat_safe(outbuf,"<h1>OpenBK2731T</h1>",outBufSize);
 		strcat_safe(outbuf,"<h2> Use this to connect to your MQTT</h2>",outBufSize);
-		strcat_safe(outbuf,"<form action=\"/cfg_wifi_set\">\
+		strcat_safe(outbuf,"<form action=\"/cfg_mqtt_set\">\
 			  <label for=\"host\">Host:</label><br>\
 			  <input type=\"text\" id=\"host\" name=\"host\" value=\"",outBufSize);
 			  
@@ -252,7 +252,39 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 			  <input type=\"submit\" value=\"Submit\" onclick=\"return confirm('Are you sure? Please check MQTT data twice?')\">\
 			</form> ",outBufSize);
 		strcat_safe(outbuf,htmlReturnToMenu,outBufSize);
+		strcat_safe(outbuf,htmlEnd,outBufSize);*/
+	} else if(http_checkUrlBase(urlStr,"cfg_mqtt_set")) {
+	/*
+		http_setup(outbuf, httpMimeTypeHTML);
+		strcat_safe(outbuf,htmlHeader,outBufSize);
+	
+		if(http_getArg(recvbuf,"host",tmpA,sizeof(tmpA))) {
+			CFG_SetMQTTHost(tmpA);
+		}
+		if(http_getArg(recvbuf,"port",tmpA,sizeof(tmpA))) {
+			CFG_SetMQTTPort(atoi(tmpA));
+		}
+		if(http_getArg(recvbuf,"user",tmpA,sizeof(tmpA))) {
+			CFG_SetMQTTUserName(tmpA);
+		}
+		if(http_getArg(recvbuf,"password",tmpA,sizeof(tmpA))) {
+			CFG_SetMQTTPass(tmpA);
+		}
+		if(http_getArg(recvbuf,"client",tmpA,sizeof(tmpA))) {
+			CFG_SetMQTTBrokerName(tmpA);
+		}
+		strcat_safe(outbuf,"MQTT mode set!",outBufSize);
+		
+		CFG_SaveMQTT();
+
+		strcat_safe(outbuf,"Please wait for module to connect... if there is problem, restart it...",outBufSize);
+		
+		strcat_safe(outbuf,"<br>",outBufSize);
+		strcat_safe(outbuf,"<a href=\"cfg_mqtt\">Return to MQTT settings</a>",outBufSize);
+		strcat_safe(outbuf,"<br>",outBufSize);
+		strcat_safe(outbuf,htmlReturnToMenu,outBufSize);
 		strcat_safe(outbuf,htmlEnd,outBufSize);
+		*/
 	} else if(http_checkUrlBase(urlStr,"cfg_wifi_set")) {
 		http_setup(outbuf, httpMimeTypeHTML);
 		strcat_safe(outbuf,htmlHeader,outBufSize);

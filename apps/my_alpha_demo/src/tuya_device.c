@@ -29,9 +29,6 @@
 #include "lwip/ip_addr.h"
 #include "lwip/inet.h"
 
-#include "new_config.h"
-
-
 /* Private includes ----------------------------------------------------------*/
 #include "tuya_device.h"
 #include "new_http.h"
