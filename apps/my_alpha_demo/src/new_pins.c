@@ -26,6 +26,10 @@ typedef struct pinsState_s {
 
 pinsState_t g_pins;
 
+void (*g_channelChangeCallback)(int idx, int iVal) = 0;
+void (*g_doubleClickCallback)(int pinIndex) = 0;
+
+
 void PIN_SaveToFlash() {
 #if WINDOWS
 #else
@@ -68,6 +72,9 @@ void button_generic_double_press(int index)
 {
 	CHANNEL_Toggle(g_pins.channels[index]);
 
+	if(g_doubleClickCallback!=0) {
+		g_doubleClickCallback(index);
+	}
 	PR_NOTICE("%i key_double_press\r\n", index);
 }
 void button_generic_long_press_hold(int index)
@@ -134,8 +141,9 @@ void PIN_SetPinRoleForPinIndex(int index, int role) {
 void PIN_SetPinChannelForPinIndex(int index, int ch) {
 	g_pins.channels[index] = ch;
 }
-void (*g_channelChangeCallback)(int idx, int iVal) = 0;
-
+void PIN_SetGenericDoubleClickCallback(void (*cb)(int pinIndex)) {
+	g_doubleClickCallback = cb;
+}
 void CHANNEL_SetChangeCallback(void (*cb)(int idx, int iVal)) {
 	g_channelChangeCallback = cb;
 }
@@ -162,7 +170,17 @@ void Channel_OnChanged(int ch) {
 	}
 
 }
-void CHANNEL_Set(int ch, int iVal) {
+void CHANNEL_Set(int ch, int iVal, int bForce) {
+	if(bForce == 0) {
+		int prevVal;
+
+		prevVal = BIT_CHECK(g_channelStates, ch);
+		if(prevVal == iVal) {
+			PR_NOTICE("No change in channel %i - ignoring\n\r",ch);
+			return;
+		}
+	}
+	PR_NOTICE("CHANNEL_Set channel %i has changed to %i\n\r",ch,iVal);
 	if(iVal) {
 		BIT_SET(g_channelStates,ch);
 	} else {

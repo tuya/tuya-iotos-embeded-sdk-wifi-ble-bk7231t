@@ -196,6 +196,7 @@ template_t g_templates [] = {
 
 int g_total_templates = sizeof(g_templates)/sizeof(g_templates[0]);
 
+const char *g_header = "<h1><a href=\"https://github.com/openshwprojects/OpenBK7231T/\">OpenBK7231</a></h1><h3><a href=\"https://www.elektroda.com/rtvforum/viewtopic.php?p=19841301#19841301\">[Read more]</a><a href=\"https://paypal.me/openshwprojects\">[Support project]</a></h3>";
 
 void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 	int i, j;
@@ -216,13 +217,14 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 	if(http_checkUrlBase(urlStr,"about")) {
 		http_setup(outbuf, httpMimeTypeHTML);
 		strcat_safe(outbuf,htmlHeader,outBufSize);
+		strcat_safe(outbuf,g_header,outBufSize);
 		strcat_safe(outbuf,"About us page.",outBufSize);
 		strcat_safe(outbuf,htmlReturnToMenu,outBufSize);
 		strcat_safe(outbuf,htmlEnd,outBufSize);
 	} else if(http_checkUrlBase(urlStr,"cfg_mqtt")) {
-			/*http_setup(outbuf, httpMimeTypeHTML);
+		http_setup(outbuf, httpMimeTypeHTML);
 		strcat_safe(outbuf,htmlHeader,outBufSize);
-		strcat_safe(outbuf,"<h1>OpenBK2731T</h1>",outBufSize);
+		strcat_safe(outbuf,g_header,outBufSize);
 		strcat_safe(outbuf,"<h2> Use this to connect to your MQTT</h2>",outBufSize);
 		strcat_safe(outbuf,"<form action=\"/cfg_mqtt_set\">\
 			  <label for=\"host\">Host:</label><br>\
@@ -252,11 +254,11 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 			  <input type=\"submit\" value=\"Submit\" onclick=\"return confirm('Are you sure? Please check MQTT data twice?')\">\
 			</form> ",outBufSize);
 		strcat_safe(outbuf,htmlReturnToMenu,outBufSize);
-		strcat_safe(outbuf,htmlEnd,outBufSize);*/
+		strcat_safe(outbuf,htmlEnd,outBufSize);
 	} else if(http_checkUrlBase(urlStr,"cfg_mqtt_set")) {
-	/*
 		http_setup(outbuf, httpMimeTypeHTML);
 		strcat_safe(outbuf,htmlHeader,outBufSize);
+		strcat_safe(outbuf,g_header,outBufSize);
 	
 		if(http_getArg(recvbuf,"host",tmpA,sizeof(tmpA))) {
 			CFG_SetMQTTHost(tmpA);
@@ -284,10 +286,10 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 		strcat_safe(outbuf,"<br>",outBufSize);
 		strcat_safe(outbuf,htmlReturnToMenu,outBufSize);
 		strcat_safe(outbuf,htmlEnd,outBufSize);
-		*/
 	} else if(http_checkUrlBase(urlStr,"cfg_wifi_set")) {
 		http_setup(outbuf, httpMimeTypeHTML);
 		strcat_safe(outbuf,htmlHeader,outBufSize);
+		strcat_safe(outbuf,g_header,outBufSize);
 		if(http_getArg(recvbuf,"open",tmpA,sizeof(tmpA))) {
 			CFG_SetWiFiSSID("");
 			CFG_SetWiFiPass("");
@@ -317,7 +319,7 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 
 		http_setup(outbuf, httpMimeTypeHTML);
 		strcat_safe(outbuf,htmlHeader,outBufSize);
-		strcat_safe(outbuf,"<h1>OpenBK2731T</h1>",outBufSize);
+		strcat_safe(outbuf,g_header,outBufSize);
 		/*bChanged = 0;
 		if(http_getArg(recvbuf,"ssid",tmpA,sizeof(tmpA))) {
 			CFG_SetWiFiSSID(tmpA);
@@ -364,7 +366,8 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 		int nowOfs;
 		http_setup(outbuf, httpMimeTypeHTML);
 		strcat_safe(outbuf,htmlHeader,outBufSize);
-		strcat_safe(outbuf,"<h1>Flash Read Tool</h1>",outBufSize);
+		strcat_safe(outbuf,g_header,outBufSize);
+		strcat_safe(outbuf,"<h4>Flash Read Tool</h4>",outBufSize);
 
 		if(http_getArg(recvbuf,"offset",tmpA,sizeof(tmpA))&&http_getArg(recvbuf,"len",tmpB,sizeof(tmpB))) {
 			u8 buffer[128];
@@ -420,7 +423,8 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 	} else if(http_checkUrlBase(urlStr,"cfg_quick")) {
 		http_setup(outbuf, httpMimeTypeHTML);
 		strcat_safe(outbuf,htmlHeader,outBufSize);
-		strcat_safe(outbuf,"<h1>Quick Config</h1>",outBufSize);
+		strcat_safe(outbuf,g_header,outBufSize);
+		strcat_safe(outbuf,"<h4>Quick Config</h4>",outBufSize);
 		
 		if(http_getArg(urlStr,"dev",tmpA,sizeof(tmpA))) {
 			j = atoi(tmpA);
@@ -441,14 +445,61 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 		
 		strcat_safe(outbuf,htmlReturnToMenu,outBufSize);
 		strcat_safe(outbuf,htmlEnd,outBufSize);
+
+
+	} else if(http_checkUrlBase(urlStr,"cfg_ha")) {
+		int relayFlags = 0;
+		const char *baseName;
+
+		baseName = CFG_GetShortDeviceName();
+
+		http_setup(outbuf, httpMimeTypeHTML);
+		strcat_safe(outbuf,htmlHeader,outBufSize);
+		strcat_safe(outbuf,g_header,outBufSize);
+		strcat_safe(outbuf,"<h4>Home Assistant Cfg</h4>",outBufSize);
+		strcat_safe(outbuf,"<h4>Paste this to configuration yaml</h4>",outBufSize);
+		
+		strcat_safe(outbuf,"<textarea rows=\"40\" cols=\"50\">",outBufSize);
+
+		for(i = 0; i < GPIO_MAX; i++) {
+			int role = PIN_GetPinRoleForPinIndex(i);
+			int ch = PIN_GetPinChannelForPinIndex(i);
+			if(role == IOR_Relay || role == IOR_Relay_n || role == IOR_LED || role == IOR_LED_n) {
+				BIT_SET(relayFlags,ch);
+			}
+		}
+		strcat_safe(outbuf,"switch:\n",outBufSize);
+		for(i = 0; i < CHANNEL_MAX; i++) {
+			if(BIT_CHECK(relayFlags,i)) {
+				strcat_safe(outbuf,"  - platform: mqtt\n",outBufSize);
+				sprintf(tmpA,"    name: \"%s %i\"\n",baseName,i);
+				strcat_safe(outbuf,tmpA,outBufSize);
+				sprintf(tmpA,"    state_topic: \"%s/%i/get\"\n",baseName,i);
+				strcat_safe(outbuf,tmpA,outBufSize);
+				sprintf(tmpA,"    command_topic: \"%s/%i/set\"\n",baseName,i);
+				strcat_safe(outbuf,tmpA,outBufSize);
+				strcat_safe(outbuf,"    qos: 1\n",outBufSize);
+				strcat_safe(outbuf,"    payload_on: 0\n",outBufSize);
+				strcat_safe(outbuf,"    payload_off: 1\n",outBufSize);
+				strcat_safe(outbuf,"    retain: true\n",outBufSize);
+			}
+		}
+
+		strcat_safe(outbuf,"</textarea>",outBufSize);
+
+		strcat_safe(outbuf,htmlReturnToMenu,outBufSize);
+		strcat_safe(outbuf,htmlEnd,outBufSize);
+
+		
 	} else if(http_checkUrlBase(urlStr,"cfg")) {
 		http_setup(outbuf, httpMimeTypeHTML);
 		strcat_safe(outbuf,htmlHeader,outBufSize);
-		strcat_safe(outbuf,"<h1>Test</h1>",outBufSize);
+		strcat_safe(outbuf,g_header,outBufSize);
 		strcat_safe(outbuf,"<form action=\"cfg_pins\"><input type=\"submit\" value=\"Configure Module\"/></form>",outBufSize);
 		strcat_safe(outbuf,"<form action=\"cfg_quick\"><input type=\"submit\" value=\"Quick Config\"/></form>",outBufSize);
 		strcat_safe(outbuf,"<form action=\"cfg_wifi\"><input type=\"submit\" value=\"Configure WiFi\"/></form>",outBufSize);
 		strcat_safe(outbuf,"<form action=\"cfg_mqtt\"><input type=\"submit\" value=\"Configure MQTT\"/></form>",outBufSize);
+		strcat_safe(outbuf,"<form action=\"cfg_ha\"><input type=\"submit\" value=\"Generate Home Assistant cfg\"/></form>",outBufSize);
 		strcat_safe(outbuf,"<form action=\"cmd_single\"><input type=\"submit\" value=\"Execute custom command\"/></form>",outBufSize);
 		strcat_safe(outbuf,"<form action=\"flash_read_tool\"><input type=\"submit\" value=\"Flash Read Tool\"/></form>",outBufSize);
 
@@ -483,7 +534,7 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 
 		http_setup(outbuf, httpMimeTypeHTML);
 		strcat(outbuf,htmlHeader);
-		strcat(outbuf,"<h1>Test</h1>");
+		strcat_safe(outbuf,g_header,outBufSize);
 		for(i = 0; i < GPIO_MAX; i++) {
 			sprintf(tmpA, "%i",i);
 			if(http_getArg(recvbuf,tmpA,tmpB,sizeof(tmpB))) {
@@ -558,7 +609,7 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 		http_setup(outbuf, httpMimeTypeHTML);
 		strcat(outbuf,htmlHeader);
 		strcat(outbuf,"<style>.r { background-color: red; } .g { background-color: green; }</style>");
-		strcat(outbuf,"<h1>Test</h1>");
+		strcat_safe(outbuf,g_header,outBufSize);
 		if(http_getArg(urlStr,"tgl",tmpA,sizeof(tmpA))) {
 			j = atoi(tmpA);
 			sprintf(tmpA,"<h3>Toggled %i!</h3>",j);
@@ -598,6 +649,7 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 	} else {
 		http_setup(outbuf, httpMimeTypeHTML);
 		strcat(outbuf,htmlHeader);
+		strcat_safe(outbuf,g_header,outBufSize);
 		strcat(outbuf,"Not found.");
 		strcat(outbuf,htmlReturnToMenu);
 		strcat(outbuf,htmlEnd);

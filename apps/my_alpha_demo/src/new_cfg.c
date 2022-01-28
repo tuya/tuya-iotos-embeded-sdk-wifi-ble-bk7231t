@@ -10,15 +10,42 @@
 
 #else
 #include "../../beken378/func/include/net_param_pub.h"
+#include "../../beken378/app/config/param_config.h"
 #endif
 
 static int g_mqtt_port = 1883;
 static char g_mqtt_host[64] = "192.168.0.113";
 static char g_mqtt_brokerName[64] = "test";
-static char g_mqtt_userName[64] = "home-assistant"; 
+static char g_mqtt_userName[64] = "homeassistant"; 
 static char g_mqtt_pass[128] = "qqqqqqqqqq"; 
 static char g_wifi_ssid[64] = { 0 };
 static char g_wifi_pass[64] = { 0 };
+
+// Long unique device name, like OpenBK7231T_AABBCCDD
+char g_deviceName[64] = "testDev";
+// Short unique device name, like obkAABBCCDD
+char g_shortDeviceName[64] = "td01";
+
+const char *CFG_GetDeviceName(){
+	return g_deviceName;
+}
+const char *CFG_GetShortDeviceName(){
+	return g_shortDeviceName;
+}
+void CFG_CreateDeviceNameUnique()
+{
+	u8 mac[32];
+#if WINDOWS
+
+#else
+    wifi_get_mac_address(mac, CONFIG_ROLE_STA);
+#endif
+	sprintf(g_deviceName,"OpenBK7231T_%02X%02X%02X%02X",mac[0],mac[1],mac[2],mac[3]);
+	sprintf(g_shortDeviceName,"obk%02X%02X%02X%02X",mac[0],mac[1],mac[2],mac[3]);
+
+		// NOT WORKING, I done it other way, see ethernetif.c
+	//net_dhcp_hostname_set(g_shortDeviceName);
+}
 
 int CFG_GetMQTTPort() {
 	return g_mqtt_port;

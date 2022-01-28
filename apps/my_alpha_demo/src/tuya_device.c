@@ -38,12 +38,7 @@
 #include "../../beken378/app/config/param_config.h"
 #include "lwip/apps/mqtt.h"
 
-static int cnt = 0;
-
-// Long unique device name, like OpenBK7231T_AABBCCDD
-char g_deviceName[64];
-// Short unique device name, like obkAABBCCDD
-char g_shortDeviceName[64];
+static int g_secondsElapsed = 0;
 
 
 
@@ -306,6 +301,7 @@ void example_publish(mqtt_client_t *client, int channel, int iVal)
   int myValue;
   u8_t qos = 2; /* 0 1 or 2, see MQTT specification */
   u8_t retain = 0; /* No don't retain such crappy payload... */
+	const char *baseName;
   
   if(client==0)
 	  return;
@@ -318,7 +314,11 @@ void example_publish(mqtt_client_t *client, int channel, int iVal)
    sprintf(pub_payload,"%i",myValue);
    
     PR_NOTICE("calling pub: \n");
-	sprintf(pub_topic,"wb2s/%i/get",channel);
+
+	baseName = CFG_GetShortDeviceName();
+
+	//sprintf(pub_topic,"wb2s/%i/get",channel);
+	sprintf(pub_topic,"%s/%i/get",baseName,channel);
   err = mqtt_publish(client, pub_topic, pub_payload, strlen(pub_payload), qos, retain, mqtt_pub_request_cb, 0);
   if(err != ERR_OK) {
     PR_NOTICE("Publish err: %d\n", err);
@@ -342,18 +342,28 @@ static void mqtt_incoming_data_cb(void *arg, const u8_t *data, u16_t len, u8_t f
   PR_NOTICE("MQTT client in mqtt_incoming_data_cb data is %s for ch %i\n",data,g_incoming_channel_mqtt);
 
   iValue = atoi(data);
-  CHANNEL_Set(g_incoming_channel_mqtt,iValue);
+  CHANNEL_Set(g_incoming_channel_mqtt,iValue,0);
 
  // PR_NOTICE(("MQTT client \"%s\" data cb: len %d, flags %d\n", client_info->client_id, (int)len, (int)flags));
 }
 
 static void mqtt_incoming_publish_cb(void *arg, const char *topic, u32_t tot_len)
 {
+	const char *p;
   const struct mqtt_connect_client_info_t* client_info = (const struct mqtt_connect_client_info_t*)arg;
   //PR_NOTICE("MQTT client in mqtt_incoming_publish_cb\n");
   PR_NOTICE("MQTT client in mqtt_incoming_publish_cb topic %s\n",topic);
-// TODO: better
-  g_incoming_channel_mqtt = topic[5] - '0';
+// TODO: better 
+//  g_incoming_channel_mqtt = topic[5] - '0';
+  p = topic;
+  while(*p != '/') {
+	  if(*p == 0)
+		  return;
+		p++;
+  }
+  p++;
+  g_incoming_channel_mqtt = *p - '0';
+
  // PR_NOTICE(("MQTT client \"%s\" publish cb: topic %s, len %d\n", client_info->client_id, topic, (int)tot_len));
 }
 
@@ -375,7 +385,8 @@ void example_do_connect(mqtt_client_t *client);
 static void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection_status_t status)
 {
 	int i;
-	char tmp[32];
+	char tmp[64];
+	const char *baseName;
   err_t err = ERR_OK;
   const struct mqtt_connect_client_info_t* client_info = (const struct mqtt_connect_client_info_t*)arg;
   LWIP_UNUSED_ARG(client);
@@ -394,10 +405,12 @@ static void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection
 
 	 /* Subscribe to a topic named "subtopic" with QoS level 1, call mqtt_sub_request_cb with result */
 
-
+	baseName = CFG_GetShortDeviceName();
   // + is a MQTT wildcard
+	sprintf(tmp,"%s/+/set",baseName);
     err = mqtt_sub_unsub(client,
-            "wb2s/+/set", 1,
+          //  "wb2s/+/set", 1,
+		  tmp, 1,
             mqtt_request_cb, LWIP_CONST_CAST(void*, client_info),
             1);
     if(err != ERR_OK) {
@@ -485,11 +498,18 @@ static void app_led_timer_handler(void *data)
 		}
 	}
 
-	cnt ++;
+	g_secondsElapsed ++;
 
-    PR_NOTICE("Timer is %i\n",cnt);
+    PR_NOTICE("Timer is %i\n",g_secondsElapsed);
 }
 
+void app_on_generic_dbl_click(int btnIndex)
+{
+	if(g_secondsElapsed < 5) {
+		CFG_SetOpenAccessPoint();
+		CFG_SaveWiFi();
+	}
+}
 
 /* Private functions ---------------------------------------------------------*/
 /**
@@ -767,16 +787,7 @@ VOID wf_nw_status_cb(IN CONST GW_WIFI_NW_STAT_E stat)
 
 }
 
-static void setup_deviceNameUnique()
-{
-	u8 mac[32];
-    wifi_get_mac_address(mac, CONFIG_ROLE_STA);
-	sprintf(g_deviceName,"OpenBK7231T_%02X%02X%02X%02X",mac[0],mac[1],mac[2],mac[3]);
-	sprintf(g_shortDeviceName,"obk%02X%02X%02X%02X",mac[0],mac[1],mac[2],mac[3]);
 
-		// NOT WORKING, I done it other way, see ethernetif.c
-	//net_dhcp_hostname_set(g_shortDeviceName);
-}
 
 static int setup_wifi_open_access_point(void)
 {
@@ -812,7 +823,7 @@ static int setup_wifi_open_access_point(void)
         ap_info.chann = APP_DRONE_DEF_CHANNEL;
         ap_info.cipher_suite = 0;
         //os_memcpy(ap_info.ssid.array, APP_DRONE_DEF_SSID, os_strlen(APP_DRONE_DEF_SSID));
-        os_memcpy(ap_info.ssid.array, g_deviceName, os_strlen(g_deviceName));
+        os_memcpy(ap_info.ssid.array, CFG_GetDeviceName(), os_strlen(CFG_GetDeviceName()));
 		
         ap_info.key_len = 0;
         os_memset(&ap_info.key, 0, 65);   
@@ -865,7 +876,7 @@ OPERATE_RET device_init(VOID)
 
     OPERATE_RET op_ret = OPRT_OK;
 
-	setup_deviceNameUnique();
+	CFG_CreateDeviceNameUnique();
 
 	CFG_LoadWiFi();
 	CFG_LoadMQTT();
@@ -897,12 +908,14 @@ OPERATE_RET device_init(VOID)
 
 	//demo_start_upd();
 	demo_start_tcp();
-
-	mqtt_example_init();
 	
 	PIN_Init();
 
+
+	PIN_SetGenericDoubleClickCallback(app_on_generic_dbl_click);
 	CHANNEL_SetChangeCallback(app_my_channel_toggle_callback);
+
+	mqtt_example_init();
 
     err = rtos_init_timer(&led_timer,
                           1 * 1000,
