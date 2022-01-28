@@ -30,3 +30,22 @@ int strcat_safe(char *tg, const char *src, int tgMaxLen) {
 	return tgMaxLen-curOfs;
 }
 
+
+int strcpy_safe(char *tg, const char *src, int tgMaxLen) {
+	// keep space for 1 more char
+	int curOfs = 1;
+	// copy
+	while(*src != 0) {
+		*tg = *src;
+		src++;
+		tg++;
+		curOfs++;
+		if(curOfs >= tgMaxLen) {
+			*tg = 0;
+			return 0;
+		}
+	}
+	*tg = 0;
+	return tgMaxLen-curOfs;
+}
+

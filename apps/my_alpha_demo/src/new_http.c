@@ -170,9 +170,10 @@ int g_total_templates = sizeof(g_templates)/sizeof(g_templates[0]);
 
 void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 	int i, j;
-	char tmpA[64];
+	char tmpA[128];
 	char tmpB[32];
 	char tmpC[32];
+	int bChanged = 0;
 
 	const char *urlStr = recvbuf + 5;
 	if(http_startsWith(recvbuf,"GET")) {
@@ -189,25 +190,106 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 		strcat_safe(outbuf,"About us page.",outBufSize);
 		strcat_safe(outbuf,htmlReturnToMenu,outBufSize);
 		strcat_safe(outbuf,htmlEnd,outBufSize);
-	} else if(http_checkUrlBase(urlStr,"cfg_wifi_set")) {
-		http_setup(outbuf, httpMimeTypeHTML);
-		strcat_safe(outbuf,htmlHeader,outBufSize);
-		strcat_safe(outbuf,"Please wait for module to reset...",outBufSize);
-		strcat_safe(outbuf,htmlReturnToMenu,outBufSize);
-		strcat_safe(outbuf,htmlEnd,outBufSize);
-	} else if(http_checkUrlBase(urlStr,"cfg_wifi")) {
+	} else if(http_checkUrlBase(urlStr,"cfg_mqtt")) {
 		http_setup(outbuf, httpMimeTypeHTML);
 		strcat_safe(outbuf,htmlHeader,outBufSize);
 		strcat_safe(outbuf,"<h1>OpenBK2731T</h1>",outBufSize);
+		strcat_safe(outbuf,"<h2> Use this to connect to your MQTT</h2>",outBufSize);
+		strcat_safe(outbuf,"<form action=\"/cfg_wifi_set\">\
+			  <label for=\"host\">Host:</label><br>\
+			  <input type=\"text\" id=\"host\" name=\"host\" value=\"",outBufSize);
+			  
+		strcat_safe(outbuf,CFG_GetMQTTHost(),outBufSize);
+		strcat_safe(outbuf,"\"><br>\
+			  <label for=\"port\">Port:</label><br>\
+			  <input type=\"text\" id=\"port\" name=\"port\" value=\"",outBufSize);
+		i = CFG_GetMQTTPort();
+		sprintf(tmpA,"%i",i);
+		strcat_safe(outbuf,tmpA,outBufSize);
+		strcat_safe(outbuf,"\"><br><br>\
+			  <label for=\"port\">Client:</label><br>\
+			  <input type=\"text\" id=\"client\" name=\"client\" value=\"",outBufSize);
+			  
+		strcat_safe(outbuf,CFG_GetMQTTBrokerName(),outBufSize);
+		strcat_safe(outbuf,"\"><br>\
+			  <label for=\"user\">User:</label><br>\
+			  <input type=\"text\" id=\"user\" name=\"user\" value=\"",outBufSize);
+		strcat_safe(outbuf,CFG_GetMQTTUserName(),outBufSize);
+		strcat_safe(outbuf,"\"><br>\
+			  <label for=\"port\">Password:</label><br>\
+			  <input type=\"text\" id=\"password\" name=\"password\" value=\"",outBufSize);
+		strcat_safe(outbuf,CFG_GetMQTTPass(),outBufSize);
+		strcat_safe(outbuf,"\"><br>\
+			  <input type=\"submit\" value=\"Submit\" onclick=\"return confirm('Are you sure? Please check MQTT data twice?')\">\
+			</form> ",outBufSize);
+		strcat_safe(outbuf,htmlReturnToMenu,outBufSize);
+		strcat_safe(outbuf,htmlEnd,outBufSize);
+	} else if(http_checkUrlBase(urlStr,"cfg_wifi_set")) {
+		http_setup(outbuf, httpMimeTypeHTML);
+		strcat_safe(outbuf,htmlHeader,outBufSize);
+		if(http_getArg(recvbuf,"open",tmpA,sizeof(tmpA))) {
+			CFG_SetWiFiSSID("");
+			CFG_SetWiFiPass("");
+			strcat_safe(outbuf,"WiFi mode set: open access point.",outBufSize);
+		} else {
+			if(http_getArg(recvbuf,"ssid",tmpA,sizeof(tmpA))) {
+				CFG_SetWiFiSSID(tmpA);
+			}
+			if(http_getArg(recvbuf,"pass",tmpA,sizeof(tmpA))) {
+				CFG_SetWiFiPass(tmpA);
+			}
+			strcat_safe(outbuf,"WiFi mode set: connect to WLAN.",outBufSize);
+		}
+		strcat_safe(outbuf,"Please wait for module to reset...",outBufSize);
+		
+		strcat_safe(outbuf,"<br>",outBufSize);
+		strcat_safe(outbuf,"<a href=\"cfg_wifi\">Return to WiFi settings</a>",outBufSize);
+		strcat_safe(outbuf,"<br>",outBufSize);
+		strcat_safe(outbuf,htmlReturnToMenu,outBufSize);
+		strcat_safe(outbuf,htmlEnd,outBufSize);
+	} else if(http_checkUrlBase(urlStr,"cfg_wifi")) {
+		// for a test, show password as well...
+		const char *cur_ssid, *cur_pass;
+
+
+		http_setup(outbuf, httpMimeTypeHTML);
+		strcat_safe(outbuf,htmlHeader,outBufSize);
+		strcat_safe(outbuf,"<h1>OpenBK2731T</h1>",outBufSize);
+		/*bChanged = 0;
+		if(http_getArg(recvbuf,"ssid",tmpA,sizeof(tmpA))) {
+			CFG_SetWiFiSSID(tmpA);
+			strcat_safe(outbuf,"<h4> WiFi SSID set!</h4>",outBufSize);
+			bChanged = 1;
+		}
+		if(http_getArg(recvbuf,"pass",tmpA,sizeof(tmpA))) {
+			CFG_SetWiFiPass(tmpA);
+			strcat_safe(outbuf,"<h4> WiFi Password set!</h4>",outBufSize);
+			bChanged = 1;
+		}
+		if(bChanged) {
+			strcat_safe(outbuf,"<h4> Device will reconnect after restarting</h4>",outBufSize);
+		}*/
+		strcat_safe(outbuf,"<h2> Use this to disconnect from your WiFi</h2>",outBufSize);
+		strcat_safe(outbuf,"<form action=\"/cfg_wifi_set\">\
+			  <input type=\"hidden\" id=\"open\" name=\"open\" value=\"1\">\
+			  <input type=\"submit\" value=\"Convert to open access wifi\" onclick=\"return confirm('Are you sure to convert module to open access wifi?')\">\
+			</form> ",outBufSize);
+		strcat_safe(outbuf,"<h2> Use this to connect to your WiFi</h2>",outBufSize);
 		strcat_safe(outbuf,"<form action=\"/cfg_wifi_set\">\
 			  <label for=\"ssid\">SSID:</label><br>\
-			  <input type=\"text\" id=\"ssid\" name=\"ssid\" value=\"\"><br>\
+			  <input type=\"text\" id=\"ssid\" name=\"ssid\" value=\"",outBufSize);
+		cur_ssid = CFG_GetWiFiSSID();
+		strcat_safe(outbuf,cur_ssid,outBufSize);
+			  
+			 strcat_safe(outbuf, "\"><br>\
 			  <label for=\"pass\">Pass:</label><br>\
-			  <input type=\"text\" id=\"pass\" name=\"pass\" value=\"\"><br><br>\
-			  <input type=\"submit\" value=\"Submit\">\
+			  <input type=\"text\" id=\"pass\" name=\"pass\" value=\"",outBufSize);
+		cur_pass = CFG_GetWiFiPass();
+		strcat_safe(outbuf,cur_pass,outBufSize);
+			  
+		strcat_safe(outbuf,"\"><br><br>\
+			  <input type=\"submit\" value=\"Submit\" onclick=\"return confirm('Are you sure? Please check SSID and pass twice?')\">\
 			</form> ",outBufSize);
-
-
 		strcat_safe(outbuf,htmlReturnToMenu,outBufSize);
 		strcat_safe(outbuf,htmlEnd,outBufSize);
 	} else if(http_checkUrlBase(urlStr,"flash_read_tool")) {
@@ -303,6 +385,7 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 		strcat_safe(outbuf,"<form action=\"cfg_pins\"><input type=\"submit\" value=\"Configure Module\"/></form>",outBufSize);
 		strcat_safe(outbuf,"<form action=\"cfg_quick\"><input type=\"submit\" value=\"Quick Config\"/></form>",outBufSize);
 		strcat_safe(outbuf,"<form action=\"cfg_wifi\"><input type=\"submit\" value=\"Configure WiFi\"/></form>",outBufSize);
+		strcat_safe(outbuf,"<form action=\"cfg_mqtt\"><input type=\"submit\" value=\"Configure MQTT\"/></form>",outBufSize);
 		strcat_safe(outbuf,"<form action=\"cmd_single\"><input type=\"submit\" value=\"Execute custom command\"/></form>",outBufSize);
 		strcat_safe(outbuf,"<form action=\"flash_read_tool\"><input type=\"submit\" value=\"Flash Read Tool\"/></form>",outBufSize);
 

@@ -168,6 +168,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\new_cfg.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\new_cfg.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\new_common.c"
 				>
 			</File>

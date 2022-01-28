@@ -60,8 +60,8 @@ typedef struct item_ip_config_st
 typedef struct item_new_wifi_config
 {
 	INFO_ITEM_ST head;
-	char wifi_ssid[32];
-	char wifi_key[64];    
+	char ssid[32];
+	char pass[64];    
 }ITEM_NEW_WIFI_CONFIG,*ITEM_NEW_WIFI_CONFIG_PTR;
 
 // added for OpenBK7231T
