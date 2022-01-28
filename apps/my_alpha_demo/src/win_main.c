@@ -24,6 +24,7 @@
 void strcat_safe_test(){
 	char tmpA[16];
 	char tmpB[16];
+	char buff[128];
 	int res0, res1, res2, res3, res4, res5;
 	tmpA[0] = 0;
 	res0 = strcat_safe(tmpA,"Test1",sizeof(tmpA));
@@ -39,6 +40,9 @@ void strcat_safe_test(){
 	res3 = strcat_safe(tmpB," very long string",sizeof(tmpB));
 	res4 = strcat_safe(tmpB," and it",sizeof(tmpB));
 	res5 = strcat_safe(tmpB," and it",sizeof(tmpB));
+
+	urldecode2_safe(buff,"qqqqqq%40qqqq",sizeof(buff));
+	urldecode2_safe(buff,"qqqqqq%40qqqq",sizeof(buff));
 }
 
 int __cdecl main(void) 

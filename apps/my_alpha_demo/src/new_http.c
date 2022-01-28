@@ -71,11 +71,40 @@ const char *http_checkArg(const char *p, const char *n) {
 	return p;
 }
 void http_copyCarg(const char *at, char *to, int maxSize) {
+	char a, b;
+
 	while(*at != 0 && *at != '&' && *at != ' ' && maxSize > 1) {
+#if 0
 		*to = *at;
 		to++;
 		at++;
 		maxSize--;
+#else
+        if ((*at == '%') &&
+            ((a = at[1]) && (b = at[2])) &&
+            (isxdigit(a) && isxdigit(b))) {
+                if (a >= 'a')
+                        a -= 'a'-'A';
+                if (a >= 'A')
+                        a -= ('A' - 10);
+                else
+                        a -= '0';
+                if (b >= 'a')
+                        b -= 'a'-'A';
+                if (b >= 'A')
+                        b -= ('A' - 10);
+                else
+                        b -= '0';
+                *to++ = 16*a+b;
+                at+=3;
+        } else if (*at == '+') {
+                *to++ = ' ';
+                at++;
+        } else {
+                *to++ = *at++;
+        }
+		maxSize--;
+#endif
 	}
 	*to = 0;
 }
@@ -240,6 +269,8 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 			}
 			strcat_safe(outbuf,"WiFi mode set: connect to WLAN.",outBufSize);
 		}
+		CFG_SaveWiFi();
+
 		strcat_safe(outbuf,"Please wait for module to reset...",outBufSize);
 		
 		strcat_safe(outbuf,"<br>",outBufSize);

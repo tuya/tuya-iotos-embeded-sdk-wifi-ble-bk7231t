@@ -208,7 +208,8 @@ void tcp_server_thread( beken_thread_arg_t arg )
 
 void connect_to_wifi(const char *oob_ssid,const char *connect_key)
 {
-	/*network_InitTypeDef_adv_st	wNetConfigAdv;
+#if 1
+	network_InitTypeDef_adv_st	wNetConfigAdv;
 
 	os_memset( &wNetConfigAdv, 0x0, sizeof(network_InitTypeDef_adv_st) );
 	
@@ -223,7 +224,7 @@ void connect_to_wifi(const char *oob_ssid,const char *connect_key)
 	wNetConfigAdv.wifi_retry_interval = 100;
 
 	bk_wlan_start_sta_adv(&wNetConfigAdv);
-	*/
+#else
     network_InitTypeDef_st network_cfg;
 	
     os_memset(&network_cfg, 0x0, sizeof(network_InitTypeDef_st));
@@ -238,6 +239,7 @@ void connect_to_wifi(const char *oob_ssid,const char *connect_key)
     bk_printf("ssid:%s key:%s\r\n", network_cfg.wifi_ssid, network_cfg.wifi_key);
 			
     bk_wlan_start(&network_cfg);
+#endif
 }
 
 
@@ -271,11 +273,12 @@ beken_timer_t led_timer;
 static ip_addr_t mqtt_ip LWIP_MQTT_EXAMPLE_IPADDR_INIT;
 static mqtt_client_t* mqtt_client;
 
-static const struct mqtt_connect_client_info_t mqtt_client_info =
+static struct mqtt_connect_client_info_t mqtt_client_info =
 {
   "test",
-  DEFAULT_MQTT_USER, /* user */
-  DEFAULT_MQTT_PASS, /* pass */
+  // do not fil those settings, they are overriden when read from memory
+  "user", /* user */
+  "pass", /* pass */
   100,  /* keep alive */
   NULL, /* will_topic */
   NULL, /* will_msg */
@@ -328,10 +331,7 @@ void example_publish(mqtt_client_t *client, int channel, int iVal)
 
        // mqtt_example_init();
 
-  //mqtt_client_connect(mqtt_client,
-    //      &mqtt_ip, MQTT_PORT,
-    //      mqtt_connection_cb, LWIP_CONST_CAST(void*, &mqtt_client_info),
-     //     &mqtt_client_info);
+
 	 }
   }
 }
@@ -426,8 +426,23 @@ static void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection
 void example_do_connect(mqtt_client_t *client)
 {
   err_t err;
+  const char *mqtt_userName, *mqtt_host, *mqtt_pass, *mqtt_clientID;
+  int mqtt_port;
 
-  	ipaddr_aton(DEFAULT_MQTT_IP,&mqtt_ip);
+
+  mqtt_userName = CFG_GetMQTTUserName();
+  mqtt_pass = CFG_GetMQTTPass();
+  mqtt_clientID = CFG_GetMQTTBrokerName();
+  mqtt_host = CFG_GetMQTTHost();
+
+  // set pointer, there are no buffers to strcpy
+  mqtt_client_info.client_id = mqtt_host;
+  mqtt_client_info.client_pass = mqtt_pass;
+  mqtt_client_info.client_user = mqtt_userName;
+
+  // host name/ip
+  	ipaddr_aton(mqtt_host,&mqtt_ip);
+	mqtt_port = CFG_GetMQTTPort();
 
   /* Initiate client and connect to server, if this fails immediately an error code is returned
      otherwise mqtt_connection_cb will be called with connection result after attempting
@@ -435,7 +450,7 @@ void example_do_connect(mqtt_client_t *client)
      For now MQTT version 3.1.1 is always used */
 
   mqtt_client_connect(mqtt_client,
-          &mqtt_ip, MQTT_PORT,
+          &mqtt_ip, mqtt_port,
           mqtt_connection_cb, LWIP_CONST_CAST(void*, &mqtt_client_info),
           &mqtt_client_info);
 
@@ -476,25 +491,6 @@ static void app_led_timer_handler(void *data)
 	cnt ++;
 
     PR_NOTICE("Timer is %i\n",cnt);
-}
-
-void myInit()
-{
-
-    OSStatus err;
-	
-	PIN_Init();
-
-	CHANNEL_SetChangeCallback(app_my_channel_toggle_callback);
-
-    err = rtos_init_timer(&led_timer,
-                          1 * 1000,
-                          app_led_timer_handler,
-                          (void *)0);
-    ASSERT(kNoErr == err);
-
-    err = rtos_start_timer(&led_timer);
-    ASSERT(kNoErr == err);
 }
 
 
@@ -788,9 +784,9 @@ static void setup_deviceNameUnique()
 static int setup_wifi_open_access_point(void)
 {
     //#define APP_DRONE_DEF_SSID          "WIFI_UPV_000000"
-    #define APP_DRONE_DEF_NET_IP        "192.168.4.151"
+    #define APP_DRONE_DEF_NET_IP        "192.168.4.1"
     #define APP_DRONE_DEF_NET_MASK      "255.255.255.0"
-    #define APP_DRONE_DEF_NET_GW        "192.168.4.151"
+    #define APP_DRONE_DEF_NET_GW        "192.168.4.1"
     #define APP_DRONE_DEF_CHANNEL       1    
     
     general_param_t general;
@@ -836,12 +832,16 @@ static int setup_wifi_open_access_point(void)
     wNetConfig.dhcp_mode = DHCP_SERVER;
     wNetConfig.wifi_retry_interval = 100;
     
-    PR_NOTICE("set ip info: %s,%s,%s\r\n",
-            wNetConfig.local_ip_addr,
-            wNetConfig.net_mask,
-            wNetConfig.dns_server_ip_addr);
+	if(0) {
+		PR_NOTICE("set ip info: %s,%s,%s\r\n",
+				wNetConfig.local_ip_addr,
+				wNetConfig.net_mask,
+				wNetConfig.dns_server_ip_addr);
+	}
     
-    PR_NOTICE("ssid:%s  key:%s\r\n", wNetConfig.wifi_ssid, wNetConfig.wifi_key);
+	if(0) {
+	  PR_NOTICE("ssid:%s  key:%s\r\n", wNetConfig.wifi_ssid, wNetConfig.wifi_key);
+	}
 	bk_wlan_start(&wNetConfig);
 
     return 0;    
@@ -862,28 +862,59 @@ static int setup_wifi_open_access_point(void)
 
 OPERATE_RET device_init(VOID)
 {
-    OPERATE_RET op_ret = OPRT_OK;
+    OSStatus err;
+	int bForceOpenAP = 0;
+	const char *wifi_ssid, *wifi_pass;
 
-	myInit();
+    OPERATE_RET op_ret = OPRT_OK;
 
 	setup_deviceNameUnique();
 
-	connect_to_wifi(DEFAULT_WIFI_SSID,DEFAULT_WIFI_PASS);
-	//setup_wifi_open_access_point();
+	CFG_LoadWiFi();
+	CFG_LoadMQTT();
+	PIN_LoadFromFlash();
+
+	wifi_ssid = CFG_GetWiFiSSID();
+	wifi_pass = CFG_GetWiFiPass();
+
+	PR_NOTICE("Using SSID [%s]\r\n",wifi_ssid);
+	PR_NOTICE("Using Pass [%s]\r\n",wifi_pass);
+
+#if 0
+	// you can use this if you bricked your module by setting wrong access point data
+	wifi_ssid = "qqqqqqqqqq";
+	wifi_pass = "Fqqqqqqqqqqqqqqqqqqqqqqqqqqq"
+#endif
+#ifdef SPECIAL_UNBRICK_ALWAYS_OPEN_AP
+	// you can use this if you bricked your module by setting wrong access point data
+	bForceOpenAP = 1;
+#endif
+	if(*wifi_ssid == 0 || *wifi_pass == 0 || bForceOpenAP) {
+		setup_wifi_open_access_point();
+	} else {
+		connect_to_wifi(wifi_ssid,wifi_pass);
+	}
 
 		// NOT WORKING, I done it other way, see ethernetif.c
 	//net_dhcp_hostname_set(g_shortDeviceName);
 
 	//demo_start_upd();
 	demo_start_tcp();
-#if 1
-	PIN_LoadFromFlash();
-#else
-
-
-#endif
 
 	mqtt_example_init();
+	
+	PIN_Init();
+
+	CHANNEL_SetChangeCallback(app_my_channel_toggle_callback);
+
+    err = rtos_init_timer(&led_timer,
+                          1 * 1000,
+                          app_led_timer_handler,
+                          (void *)0);
+    ASSERT(kNoErr == err);
+
+    err = rtos_start_timer(&led_timer);
+    ASSERT(kNoErr == err);
 
     return op_ret;
 }

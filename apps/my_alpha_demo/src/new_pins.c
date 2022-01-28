@@ -83,7 +83,20 @@ unsigned char button_generic_get_gpio_value(void *param)
 	return bk_gpio_input(index);
 #endif
 }
+#define PIN_UART1_RXD 10
+#define PIN_UART1_TXD 11
+#define PIN_UART2_RXD 1
+#define PIN_UART2_TXD 0
+
 void PIN_SetPinRoleForPinIndex(int index, int role) {
+	//if(index == PIN_UART1_RXD)
+	//	return;
+	//if(index == PIN_UART1_TXD)
+	//	return;
+	//if(index == PIN_UART2_RXD)
+	//	return;
+	//if(index == PIN_UART2_TXD)
+	//	return;
 	g_pins.roles[index] = role;
 	switch(role)
 	{
@@ -103,13 +116,18 @@ void PIN_SetPinRoleForPinIndex(int index, int role) {
 		}
 #endif
 		break;
-	default:
+	case IOR_LED:
+	case IOR_LED_n:
+	case IOR_Relay:
+	case IOR_Relay_n:
 #if WINDOWS
 	
 #else
 		bk_gpio_config_output(index);
 		bk_gpio_output(index, 0);
 #endif
+		break;
+	default:
 		break;
 	}
 }
