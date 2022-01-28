@@ -8,9 +8,11 @@ https://www.elektroda.com/rtvforum/topic3850712.html
 To support project, send a donation:
 https://paypal.me/openshwprojects
 
-
 If you have a device and want to get it support, send me message in:
 https://www.elektroda.com/rtvforum/topic3850712.html
+
+## Installation
+Installation instruction is here, in post #10 (2022.01.28): https://www.elektroda.com/rtvforum/viewtopic.php?p=19849072#19849072
 
 ## Supported devices
 [WB2S] NF101A "Intelligent Life" https://www.elektroda.pl/rtvforum/viewtopic.php?p=19743751#19743751
