@@ -107,6 +107,7 @@ static UINT32 info_item_len(NET_INFO_ITEM item)
 	return len;
 }
 
+// returns 0 if failed to find
 UINT32 get_info_item(NET_INFO_ITEM item,UINT8 *ptr0,UINT8 *ptr1, UINT8 *ptr2)
 {
     UINT32 status, addr_start,len;

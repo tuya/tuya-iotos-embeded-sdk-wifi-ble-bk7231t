@@ -71,9 +71,9 @@ typedef struct item_new_mqtt_config
 	char brokerName[64];
 	char userName[64];
 	int port;
-	u8 ipv4[4];
+	char hostName[64];
 	// Home Assistant default password is 64 chars..
-	char mqtt_pass[128];    
+	char pass[128];    
 }ITEM_NEW_MQTT_CONFIG,*ITEM_NEW_MQTT_CONFIG_PTR;
 
 // added for OpenBK7231T
@@ -87,5 +87,6 @@ typedef struct item_new_pins_config
 
 UINT32 test_get_whole_tbl(UINT8 *ptr);
 UINT32 save_info_item(NET_INFO_ITEM item,UINT8 *ptr0,UINT8*ptr1,UINT8 *ptr2);
+// returns 0 if failed to find
 UINT32 get_info_item(NET_INFO_ITEM item,UINT8 *ptr0,UINT8 *ptr1, UINT8 *ptr2);
 #endif

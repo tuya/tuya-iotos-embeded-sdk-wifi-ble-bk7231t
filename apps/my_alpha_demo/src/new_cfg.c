@@ -81,9 +81,10 @@ void CFG_LoadWiFi() {
 
 #else
 	ITEM_NEW_WIFI_CONFIG container;
-	get_info_item(NEW_WIFI_CONFIG,&container, 0, 0);
-	strcpy_safe(g_wifi_ssid,container.ssid,sizeof(g_wifi_ssid));
-	strcpy_safe(g_wifi_pass,container.pass,sizeof(g_wifi_pass));
+	if(get_info_item(NEW_WIFI_CONFIG,&container, 0, 0) != 0) {
+		strcpy_safe(g_wifi_ssid,container.ssid,sizeof(g_wifi_ssid));
+		strcpy_safe(g_wifi_pass,container.pass,sizeof(g_wifi_pass));
+	} 
 #endif
 }
 
@@ -92,9 +93,13 @@ void CFG_SaveMQTT() {
 
 #else
 	ITEM_NEW_MQTT_CONFIG container;
-	strcpy_safe(container.ssid, g_wifi_ssid, sizeof(container.ssid));
-	strcpy_safe(container.pass, g_wifi_pass, sizeof(container.pass));
+	strcpy_safe(container.userName, g_mqtt_userName, sizeof(container.userName));
+	strcpy_safe(container.pass, g_mqtt_pass, sizeof(container.pass));
+	strcpy_safe(container.hostName, g_mqtt_host, sizeof(container.hostName));
+	strcpy_safe(container.brokerName, g_mqtt_brokerName, sizeof(container.brokerName));
+	container.port = g_mqtt_port;
 	save_info_item(NEW_MQTT_CONFIG,&container, 0, 0);
+	
 #endif
 }
 void CFG_LoadMQTT() {
@@ -102,9 +107,13 @@ void CFG_LoadMQTT() {
 
 #else
 	ITEM_NEW_MQTT_CONFIG container;
-	get_info_item(NEW_MQTT_CONFIG,&container, 0, 0);
-	strcpy_safe(g_wifi_ssid,container.ssid,sizeof(g_wifi_ssid));
-	strcpy_safe(g_wifi_pass,container.pass,sizeof(g_wifi_pass));
+	if(get_info_item(NEW_MQTT_CONFIG,&container, 0, 0) != 0) {
+		strcpy_safe(g_mqtt_userName,container.userName,sizeof(g_mqtt_userName));
+		strcpy_safe(g_mqtt_pass,container.pass,sizeof(g_mqtt_pass));
+		strcpy_safe(g_mqtt_host,container.hostName,sizeof(g_mqtt_host));
+		strcpy_safe(g_mqtt_brokerName,container.brokerName,sizeof(g_mqtt_brokerName));
+		g_mqtt_port = container.port;
+	}
 #endif
 }
 
