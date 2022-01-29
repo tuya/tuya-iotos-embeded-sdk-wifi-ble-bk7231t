@@ -117,10 +117,16 @@ void tcp_client_thread( beken_thread_arg_t arg )
       PR_NOTICE( "TCP sending reply len %i\n",len );
             len = send( fd, reply, len, 0 );
 
-            rtos_delay_milliseconds(10);
+          //  rtos_delay_milliseconds(100);
+          rtos_delay_milliseconds(500);
+			// do not wait for another request, just close
+			// TODO: what if a retransmit or smth happens and takes more than 100ms?
+			// let's just assume it will be ok?
+			// Without break, Chrome has X loading ico nforever here
+			break;
         }
     }
-	
+
 exit:
     if ( err != kNoErr ) 
 		tcp_server_log( "TCP client thread exit with err: %d", err );
