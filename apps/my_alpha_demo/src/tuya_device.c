@@ -118,7 +118,9 @@ void tcp_client_thread( beken_thread_arg_t arg )
             len = send( fd, reply, len, 0 );
 
           //  rtos_delay_milliseconds(100);
-          rtos_delay_milliseconds(500);
+			// it gives me problems, ERR_CONNECTION_RESET
+          rtos_delay_milliseconds(5000);
+		  
 			// do not wait for another request, just close
 			// TODO: what if a retransmit or smth happens and takes more than 100ms?
 			// let's just assume it will be ok?
@@ -126,6 +128,7 @@ void tcp_client_thread( beken_thread_arg_t arg )
 			break;
         }
     }
+
 
 exit:
     if ( err != kNoErr ) 

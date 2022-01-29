@@ -65,7 +65,7 @@ void Setup_Device_IntelligentLife_NF101A() {
 	PIN_SaveToFlash();
 }	
 // https://www.elektroda.pl/rtvforum/topic3798114.html
-void Setup_Device_IntelligentLife_NF101A() {
+void Setup_Device_TuyaLEDDimmerSingleChannel() {
 	PIN_ClearPins();
 
 	// pin 8 has PWM 
