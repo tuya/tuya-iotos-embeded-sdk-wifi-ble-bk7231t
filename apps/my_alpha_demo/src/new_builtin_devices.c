@@ -63,4 +63,16 @@ void Setup_Device_IntelligentLife_NF101A() {
 
 
 	PIN_SaveToFlash();
+}	
+// https://www.elektroda.pl/rtvforum/topic3798114.html
+void Setup_Device_IntelligentLife_NF101A() {
+	PIN_ClearPins();
+
+	// pin 8 has PWM 
+	PIN_SetPinRoleForPinIndex(8, IOR_Button);
+	PIN_SetPinChannelForPinIndex(8, 1);
+
+
+	PIN_SaveToFlash();
 }
+
