@@ -154,6 +154,7 @@ const char *htmlPinRoleNames[] = {
 	"Btn_n",
 	"LED",
 	"LED_n",
+	"PWM",
 	"e",
 	"e",
 	"e",

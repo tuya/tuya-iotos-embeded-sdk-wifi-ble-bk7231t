@@ -10,7 +10,38 @@
 
 #else
 #include "../../beken378/func/include/net_param_pub.h"
+#include "../../beken378/func/user_driver/BkDriverPwm.h"
 #endif
+
+/*
+// from BkDriverPwm.h"
+OSStatus bk_pwm_start(bk_pwm_t pwm);
+
+OSStatus bk_pwm_update_param(bk_pwm_t pwm, uint32_t frequency, uint32_t duty_cycle);
+
+OSStatus bk_pwm_stop(bk_pwm_t pwm);
+*/
+//char g_pwmIndexForPinIndexMapping []
+//{
+//	// pin 0
+//
+//
+//};
+int PIN_GetPWMIndexForPinIndex(int pin) {
+	if(pin == 6)
+		return 0;
+	if(pin == 7)
+		return 1;
+	if(pin == 8)
+		return 2;
+	if(pin == 9)
+		return 3;
+	if(pin == 24)
+		return 4;
+	if(pin == 26)
+		return 5;
+	return -1;
+}
 
 int g_channelStates;
 #ifdef WINDOWS

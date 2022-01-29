@@ -14,6 +14,7 @@ enum IORole {
 	IOR_Button_n,
 	IOR_LED,
 	IOR_LED_n,
+	IOR_PWM,
 	IOR_Total_Options,
 };
 
