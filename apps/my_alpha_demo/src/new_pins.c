@@ -27,6 +27,13 @@ OSStatus bk_pwm_stop(bk_pwm_t pwm);
 //
 //
 //};
+
+// pwm mqtt
+// https://community.home-assistant.io/t/shelly-dimmer-with-mqtt/149871
+// https://community.home-assistant.io/t/mqtt-light-problems-with-dimmer-devices/120822
+// https://community.home-assistant.io/t/mqtt-dimming/96447/2
+// https://community.home-assistant.io/t/mqtt-dimmer-switch-doesnt-display-brightness-slider/15471/2
+
 int PIN_GetPWMIndexForPinIndex(int pin) {
 	if(pin == 6)
 		return 0;
@@ -138,7 +145,51 @@ void PIN_SetPinRoleForPinIndex(int index, int role) {
 	//	return;
 	//if(index == PIN_UART2_TXD)
 	//	return;
+	switch(g_pins.roles[index])
+	{
+	case IOR_Button:
+	case IOR_Button_n:
+#if WINDOWS
+	
+#else
+		{
+			BUTTON_S *bt = &g_buttons[index];
+			// TODO: disable button
+		}
+#endif
+		break;
+	case IOR_LED:
+	case IOR_LED_n:
+	case IOR_Relay:
+	case IOR_Relay_n:
+#if WINDOWS
+	
+#else
+		// TODO: disable?
+#endif
+		break;
+		// Disable PWM for previous pin role
+	case IOR_PWM:
+		{
+			int pwmIndex;
+			int channelIndex;
+
+			pwmIndex = PIN_GetPWMIndexForPinIndex(index);
+#if WINDOWS
+	
+#else
+			bk_pwm_stop(pwmIndex);
+
+#endif
+		}
+		break;
+
+	default:
+		break;
+	}
+	// set new role
 	g_pins.roles[index] = role;
+	// init new role
 	switch(role)
 	{
 	case IOR_Button:
@@ -168,6 +219,28 @@ void PIN_SetPinRoleForPinIndex(int index, int role) {
 		bk_gpio_output(index, 0);
 #endif
 		break;
+	case IOR_PWM:
+		{
+			int pwmIndex;
+			int channelIndex;
+			float f;
+
+			pwmIndex = PIN_GetPWMIndexForPinIndex(index);
+			channelIndex = PIN_GetPinChannelForPinIndex(index);
+#if WINDOWS
+	
+#else
+			bk_pwm_start(pwmIndex);
+			// they are using 1kHz PWM
+			// See: https://www.elektroda.pl/rtvforum/topic3798114.html
+		//	bk_pwm_update_param(pwmIndex, 1000, g_channelValues[channelIndex]);
+			f = g_channelValues[channelIndex] * 0.01f;
+			bk_pwm_update_param(pwmIndex, 1000, f * 1000.0f);
+
+#endif
+		}
+		break;
+
 	default:
 		break;
 	}
@@ -203,6 +276,19 @@ void Channel_OnChanged(int ch) {
 			if(g_pins.roles[i] == IOR_Relay_n || g_pins.roles[i] == IOR_LED_n) {
 				RAW_SetPinValue(i,!bOn);
 			}
+			if(g_pins.roles[i] == IOR_PWM) {
+				int pwmIndex = PIN_GetPWMIndexForPinIndex(i);
+
+#if WINDOWS
+	
+#else
+				// they are using 1kHz PWM
+				// See: https://www.elektroda.pl/rtvforum/topic3798114.html
+				bk_pwm_update_param(pwmIndex, 1000, g_channelValues[ch]);
+
+#endif
+			}
+			
 		}
 	}
 

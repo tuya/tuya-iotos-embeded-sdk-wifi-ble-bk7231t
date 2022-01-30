@@ -1,0 +1,1 @@
+./build_app.sh apps/my_alpha_demo my_alpha_demo 1.0.0
