@@ -31,6 +31,7 @@ bool CHANNEL_Check(int ch);
 void CHANNEL_SetChangeCallback(void (*cb)(int idx, int iVal));
 void PIN_SetGenericDoubleClickCallback(void (*cb)(int pinIndex));
 void CHANNEL_Set(int ch, int iVal, int bForce);
+int CHANNEL_Get(int ch);
 void PIN_SaveToFlash();
 void PIN_LoadFromFlash();
 void Setup_Device_Empty();

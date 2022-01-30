@@ -43,7 +43,10 @@ int PIN_GetPWMIndexForPinIndex(int pin) {
 	return -1;
 }
 
-int g_channelStates;
+// it was nice to have it as bits but now that we support PWM...
+//int g_channelStates;
+unsigned char g_channelValues[GPIO_MAX] = { 0 };
+
 #ifdef WINDOWS
 
 #else
@@ -180,13 +183,16 @@ void CHANNEL_SetChangeCallback(void (*cb)(int idx, int iVal)) {
 }
 void Channel_OnChanged(int ch) {
 	int i;
+	int iVal;
 	int bOn;
 
 
-	bOn = BIT_CHECK(g_channelStates,ch);
+	//bOn = BIT_CHECK(g_channelStates,ch);
+	iVal = g_channelValues[ch];
+	bOn = iVal > 0;
 
 	if(g_channelChangeCallback!=0) {
-		g_channelChangeCallback(ch,bOn);
+		g_channelChangeCallback(ch,iVal);
 	}
 
 	for(i = 0; i < GPIO_MAX; i++) {
@@ -201,32 +207,44 @@ void Channel_OnChanged(int ch) {
 	}
 
 }
+int CHANNEL_Get(int ch) {
+	return g_channelValues[ch];
+}
 void CHANNEL_Set(int ch, int iVal, int bForce) {
 	if(bForce == 0) {
 		int prevVal;
 
-		prevVal = BIT_CHECK(g_channelStates, ch);
+		//prevVal = BIT_CHECK(g_channelStates, ch);
+		prevVal = g_channelValues[ch];
 		if(prevVal == iVal) {
 			PR_NOTICE("No change in channel %i - ignoring\n\r",ch);
 			return;
 		}
 	}
 	PR_NOTICE("CHANNEL_Set channel %i has changed to %i\n\r",ch,iVal);
-	if(iVal) {
-		BIT_SET(g_channelStates,ch);
-	} else {
-		BIT_CLEAR(g_channelStates,ch);
-	}
+	//if(iVal) {
+	//	BIT_SET(g_channelStates,ch);
+	//} else {
+	//	BIT_CLEAR(g_channelStates,ch);
+	//}
+	g_channelValues[ch] = iVal;
 
 	Channel_OnChanged(ch);
 }
 void CHANNEL_Toggle(int ch) {
-	BIT_TGL(g_channelStates,ch);
+	//BIT_TGL(g_channelStates,ch);
+	if(g_channelValues[ch] == 0)
+		g_channelValues[ch] = 100;
+	else
+		g_channelValues[ch] = 0;
 
 	Channel_OnChanged(ch);
 }
 bool CHANNEL_Check(int ch) {
-	return BIT_CHECK(g_channelStates,ch);
+	//return BIT_CHECK(g_channelStates,ch);
+	if (g_channelValues[ch] > 0)
+		return 1;
+	return 0;
 }
 
 #if WINDOWS

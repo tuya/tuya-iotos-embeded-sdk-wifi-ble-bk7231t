@@ -607,7 +607,12 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 		strcat(outbuf,htmlReturnToMenu);
 		strcat(outbuf,htmlEnd);
 	} else if(http_checkUrlBase(urlStr,"index")) {
-		int relayFlags = 0;
+		int relayFlags;
+		int pwmFlags;
+
+		relayFlags = 0;
+		pwmFlags = 0;
+
 		http_setup(outbuf, httpMimeTypeHTML);
 		strcat(outbuf,htmlHeader);
 		strcat(outbuf,"<style>.r { background-color: red; } .g { background-color: green; }</style>");
@@ -618,12 +623,35 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 			strcat(outbuf,tmpA);
 			CHANNEL_Toggle(j);
 		}
+		if(http_getArg(urlStr,"on",tmpA,sizeof(tmpA))) {
+			j = atoi(tmpA);
+			sprintf(tmpA,"<h3>Enabled %i!</h3>",j);
+			strcat(outbuf,tmpA);
+			CHANNEL_Set(j,255,1);
+		}
+		if(http_getArg(urlStr,"off",tmpA,sizeof(tmpA))) {
+			j = atoi(tmpA);
+			sprintf(tmpA,"<h3>Disabled %i!</h3>",j);
+			strcat(outbuf,tmpA);
+			CHANNEL_Set(j,0,1);
+		}
+		if(http_getArg(urlStr,"pwm",tmpA,sizeof(tmpA))) {
+			int newPWMValue = atoi(tmpA);
+			http_getArg(urlStr,"pwmIndex",tmpA,sizeof(tmpA));
+			j = atoi(tmpA);
+			sprintf(tmpA,"<h3>Changed pwm %i to %i!</h3>",j,newPWMValue);
+			strcat(outbuf,tmpA);
+			CHANNEL_Set(j,newPWMValue,1);
+		}
 
 		for(i = 0; i < GPIO_MAX; i++) {
 			int role = PIN_GetPinRoleForPinIndex(i);
 			int ch = PIN_GetPinChannelForPinIndex(i);
 			if(role == IOR_Relay || role == IOR_Relay_n || role == IOR_LED || role == IOR_LED_n) {
 				BIT_SET(relayFlags,ch);
+			}
+			if(role == IOR_PWM) {
+				BIT_SET(pwmFlags,ch);
 			}
 		}
 		for(i = 0; i < CHANNEL_MAX; i++) {
@@ -639,6 +667,29 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 				strcat(outbuf,tmpA);
 				sprintf(tmpA,"<input class=\"%s\" type=\"submit\" value=\"Toggle %i\"/></form>",c,i);
 				strcat(outbuf,tmpA);
+			}
+			if(BIT_CHECK(pwmFlags,i)) {
+				int pwmValue;
+
+				pwmValue = CHANNEL_Get(i);
+				sprintf(tmpA,"<form action=\"index\" id=\"form%i\">",i);
+				strcat(outbuf,tmpA);
+				sprintf(tmpA,"<input type=\"range\" min=\"0\" max=\"100\" name=\"pwm\" id=\"slider%i\" value=\"%i\">",i,pwmValue);
+				strcat(outbuf,tmpA);
+				sprintf(tmpA,"<input type=\"hidden\" name=\"pwmIndex\" value=\"%i\">",i);
+				strcat(outbuf,tmpA);
+				sprintf(tmpA,"<input  type=\"submit\" style=\"display:none;\" value=\"Toggle %i\"/></form>",i);
+				strcat(outbuf,tmpA);
+
+
+				strcat(outbuf,"<script>");
+				sprintf(tmpA,"var slider = document.getElementById(\"slider%i\");\n",i);
+				strcat(outbuf,tmpA);
+				strcat(outbuf,"slider.onmouseup = function () {\n");
+				sprintf(tmpA," document.getElementById(\"form%i\").submit();\n",i);
+				strcat(outbuf,tmpA);
+				strcat(outbuf,"}\n");
+				strcat(outbuf,"</script>");
 			}
 		}
 	//	strcat(outbuf,"<button type=\"button\">Click Me!</button>");
