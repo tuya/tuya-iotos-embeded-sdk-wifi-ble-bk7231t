@@ -337,7 +337,7 @@ void *pvPortMalloc( size_t xWantedSize )
 
 /*-----------------------------------------------------------*/
 #if OSMALLOC_STATISTICAL
-void *vPortFree_cm(const char *call_func_name, int line, void *pv )
+void vPortFree_cm(const char *call_func_name, int line, void *pv )
 #else
 void vPortFree( void *pv )
 #endif
