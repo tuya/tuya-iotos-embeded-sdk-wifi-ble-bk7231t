@@ -2,8 +2,8 @@
  * @File: app_dltj.c 
  * @Author: caojq 
  * @Last Modified time: 2020-07-29
- * @Description: 电量统计上层应用。
- * 支持dp查询，支持tuya_common_user编译。
+ * @Description: Power statistics upper-layer application.
+ * Support dp query, support tuya_common_user compilation.
  * 
  */
 #define _APP_DLTJ_GLOBAL
