@@ -2,7 +2,7 @@
  * @File: tuya_device.c 
  * @Author: caojq 
  * @Last Modified time: 2020-07-29 
- * @Description: 电量统计单插demo方案
+ * @Description: Power statistics single plug demo solution
  *
  */
 #define _TUYA_DEVICE_GLOBAL
@@ -38,7 +38,7 @@ STATIC VOID get_free_heap(VOID)
 *   Input:     none
 *   Output:    none
 *   Return:    none
-*   Notice:    gpio测试
+*   Notice:    gpio test
 ***********************************************************/
 BOOL_T gpio_test(IN CONST CHAR_T *in, OUT CHAR_T *out)
 {
@@ -50,7 +50,7 @@ BOOL_T gpio_test(IN CONST CHAR_T *in, OUT CHAR_T *out)
 *   Input:     none
 *   Output:    none
 *   Return:    none
-*   Notice:    产测授权回调函数
+*   Notice:    Production test authorization callback function
 ***********************************************************/
 VOID mf_user_callback(VOID)
 {
@@ -119,7 +119,7 @@ VOID app_init(VOID)
 *   Input:     none
 *   Output:    none
 *   Return:    none
-*   Notice:    打印信息等级和固件基本信息
+*   Notice:    Printing Information Level and Firmware Basic Information
 ***********************************************************/
 VOID pre_device_init(VOID)
 {
@@ -284,7 +284,7 @@ STATIC VOID dev_dp_query_cb(IN CONST TY_DP_QUERY_S *dp_qry)
 *   Input:    GW_WIFI_NW_STAT_E: wifi状态
 *   Output:   none
 *   Return:   none
-*   Notice:   WiFi状态回调函数
+*   Notice:   WiFi status callback function
 ***********************************************************/
 STATIC VOID wf_nw_status_cb(IN CONST GW_WIFI_NW_STAT_E stat)
 {
