@@ -451,6 +451,9 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 
 	} else if(http_checkUrlBase(urlStr,"cfg_ha")) {
 		int relayFlags = 0;
+		int pwmFlags = 0;
+		int relayCount = 0;
+		int pwmCount = 0;
 		const char *baseName;
 
 		baseName = CFG_GetShortDeviceName();
@@ -468,22 +471,52 @@ void HTTP_ProcessPacket(const char *recvbuf, char *outbuf, int outBufSize) {
 			int ch = PIN_GetPinChannelForPinIndex(i);
 			if(role == IOR_Relay || role == IOR_Relay_n || role == IOR_LED || role == IOR_LED_n) {
 				BIT_SET(relayFlags,ch);
+				relayCount++;
+			}
+			if(role == IOR_PWM) {
+				BIT_SET(pwmFlags,ch);
+				pwmCount++;
 			}
 		}
-		strcat_safe(outbuf,"switch:\n",outBufSize);
-		for(i = 0; i < CHANNEL_MAX; i++) {
-			if(BIT_CHECK(relayFlags,i)) {
-				strcat_safe(outbuf,"  - platform: mqtt\n",outBufSize);
-				sprintf(tmpA,"    name: \"%s %i\"\n",baseName,i);
-				strcat_safe(outbuf,tmpA,outBufSize);
-				sprintf(tmpA,"    state_topic: \"%s/%i/get\"\n",baseName,i);
-				strcat_safe(outbuf,tmpA,outBufSize);
-				sprintf(tmpA,"    command_topic: \"%s/%i/set\"\n",baseName,i);
-				strcat_safe(outbuf,tmpA,outBufSize);
-				strcat_safe(outbuf,"    qos: 1\n",outBufSize);
-				strcat_safe(outbuf,"    payload_on: 0\n",outBufSize);
-				strcat_safe(outbuf,"    payload_off: 1\n",outBufSize);
-				strcat_safe(outbuf,"    retain: true\n",outBufSize);
+		if(relayCount > 0) {
+			strcat_safe(outbuf,"switch:\n",outBufSize);
+			for(i = 0; i < CHANNEL_MAX; i++) {
+				if(BIT_CHECK(relayFlags,i)) {
+					strcat_safe(outbuf,"  - platform: mqtt\n",outBufSize);
+					sprintf(tmpA,"    name: \"%s %i\"\n",baseName,i);
+					strcat_safe(outbuf,tmpA,outBufSize);
+					sprintf(tmpA,"    state_topic: \"%s/%i/get\"\n",baseName,i);
+					strcat_safe(outbuf,tmpA,outBufSize);
+					sprintf(tmpA,"    command_topic: \"%s/%i/set\"\n",baseName,i);
+					strcat_safe(outbuf,tmpA,outBufSize);
+					strcat_safe(outbuf,"    qos: 1\n",outBufSize);
+					strcat_safe(outbuf,"    payload_on: 0\n",outBufSize);
+					strcat_safe(outbuf,"    payload_off: 1\n",outBufSize);
+					strcat_safe(outbuf,"    retain: true\n",outBufSize);
+				}
+			}
+		}
+		if(pwmCount > 0) {
+			strcat_safe(outbuf,"light:\n",outBufSize);
+			for(i = 0; i < CHANNEL_MAX; i++) {
+				if(BIT_CHECK(pwmFlags,i)) {
+					strcat_safe(outbuf,"  - platform: mqtt\n",outBufSize);
+					sprintf(tmpA,"    name: \"%s %i\"\n",baseName,i);
+					strcat_safe(outbuf,tmpA,outBufSize);
+					sprintf(tmpA,"    state_topic: \"%s/%i/get\"\n",baseName,i);
+					strcat_safe(outbuf,tmpA,outBufSize);
+					sprintf(tmpA,"    command_topic: \"%s/%i/set\"\n",baseName,i);
+					strcat_safe(outbuf,tmpA,outBufSize);
+					sprintf(tmpA,"    brightness_command_topic: \"%s/%i/set\"\n",baseName,i);
+					strcat_safe(outbuf,tmpA,outBufSize);
+					strcat_safe(outbuf,"    on_command_type: \"brightness\"\n",outBufSize);
+					strcat_safe(outbuf,"    brightness_scale: 99\n",outBufSize);
+					strcat_safe(outbuf,"    qos: 1\n",outBufSize);
+					strcat_safe(outbuf,"    payload_on: 99\n",outBufSize);
+					strcat_safe(outbuf,"    payload_off: 0\n",outBufSize);
+					strcat_safe(outbuf,"    retain: true\n",outBufSize);
+					strcat_safe(outbuf,"    optimistic: true\n",outBufSize);
+				}
 			}
 		}
 
