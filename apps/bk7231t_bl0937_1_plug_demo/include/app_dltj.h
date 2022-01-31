@@ -2,7 +2,7 @@
  * @File: app_dltj.h 
  * @Author: caojq
  * @Last Modified time: 2020-07-29
- * @Description: 电量统计上层应用
+ * @Description: Upper-layer application of electricity statistics
  *.
  */
 
@@ -26,38 +26,38 @@ extern "C" {
 ***********************************************************/
 #define _APP_DLTJ_DEBUG 0
 
-#define DP_ELE 17 //增加电量上报
-#define DP_CURRENT 18 //电流上报
-#define DP_POWER 19 //功率上报
-#define DP_VOLTAGE 20 //电压上报
-//以下可选择上报或不上报
-#define DP_PTRSLT 21 //产测结果，0为失败，1为成功，2为未产测
-#define DP_VREF 22 //电压系数
-#define DP_IREF 23 //电流系数
-#define DP_PREF 24 //功率系数
-#define DP_EREF 25 //电量系数
+#define DP_ELE 17 //Increase power report
+#define DP_CURRENT 18 //Current report
+#define DP_POWER 19 //Power report
+#define DP_VOLTAGE 20 //Voltage report
+//The following can choose to report or not to report
+#define DP_PTRSLT 21 //Production test result, 0 is failure, 1 is success, 2 is no production test
+#define DP_VREF 22 //Voltage coefficient
+#define DP_IREF 23 //current coefficient
+#define DP_PREF 24 //power factor
+#define DP_EREF 25 //Electricity factor
 
 #define DP_FAULT 26 
 
-/* 220V 产测电压、电流、功率 */
+/* 220V Production test voltage, current, power */
 #define V_DEF_220 2200
 #define I_DEF_220 392
 #define P_DEF_220 864
 
-/* 120V 产测电压、电流、功率 */
+/* 120V Production test voltage, current, power */
 #define V_DEF_120 1200
 #define I_DEF_120 833
 #define P_DEF_120 1000
 
-/* hlw8012芯片，电流采样电阻1mR，电压采样电阻1KR/2MR,220V产测环境
-   下的校准系数 */
+/* hlw8012 chip, current sampling resistance 1mR, voltage sampling resistance 1KR/2MR, 220V production test environment 
+    calibration factor under */
 #define V_COE_HLW 1680
 #define I_COE_HLW 34586
 #define P_COE_HLW 98363
 #define E_COE_HLW 212
 
-/* bl0937芯片，电流采样电阻1mR，电压采样电阻1KR/2MR,220V产测环境
-   下的校准系数 */
+/* bl0937 chip, current sampling resistance 1mR, voltage sampling resistance 1KR/2MR, 220V production test environment
+    calibration factor under */
 #define V_COE_BL 586
 #define I_COE_BL 31281
 #define P_COE_BL 16192
@@ -76,7 +76,7 @@ typedef struct{
     UCHAR_T idpid;
     UCHAR_T pdpid;
     UCHAR_T vdpid;
-    UCHAR_T fault_dpid;    //故障告警dpid
+    UCHAR_T fault_dpid;    //fault alarm dpid
 }APP_DLTJ_DPID;
 
 typedef struct{
@@ -91,11 +91,11 @@ typedef struct{
 ***********************************************************/
 /*********************************************************************************
  * FUNCTION:       app_dltj_init
- * DESCRIPTION:    电量统计初始化
- * INPUT:          mode：电量统计设备模式：正常模式和产测模式
+ * DESCRIPTION:    Power statistics initialization
+ * INPUT:          mode: power statistics device mode: normal mode and production test mode
  * OUTPUT:         none
- * RETURN:         OPERATE_RET:初始化状态，返回数值型状态值
- * OTHERS:         bl0937芯片初始化/电量统计参数上报线程
+ * RETURN:         OPERATE_RET: Initialize state, return numeric state value
+ * OTHERS:         bl0937 chip initialization / power statistics parameter reporting thread
  * HISTORY:        2020-03-04
  *******************************************************************************/
 _APP_DLTJ_EXT \
@@ -103,11 +103,11 @@ OPERATE_RET app_dltj_init(IN APP_DLTJ_MODE mode);
 
 /*********************************************************************************
  * FUNCTION:       report_over_curr
- * DESCRIPTION:    上报过流事件
+ * DESCRIPTION:    Report overcurrent events
  * INPUT:          none
  * OUTPUT:         none
  * RETURN:         none
- * OTHERS:         过流数据上报
+ * OTHERS:         Overcurrent data reporting
  * HISTORY:        2020-03-04
  *******************************************************************************/
 _APP_DLTJ_EXT \
