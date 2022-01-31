@@ -2,7 +2,7 @@
  * @File: bl0937.h 
  * @Author: caojq 
  * @Last Modified time: 2020-07-20 
- * @Description: bl0937电量统计芯片驱动
+ * @Description: bl0937 power statistics chip driver
  */
 #ifndef __BL0937_H__
 #define __BL0937_H__
@@ -21,23 +21,23 @@
 #endif
 //--------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------
-#define D_ERR_MODE                  0x00        //错误提示模式
-#define D_NORMAL_MODE               0x10        //正常工作模式
-#define D_CAL_START_MODE            0x21        //校正模式，启动
-#define D_CAL_END_MODE              0x23        //校正模式，完成
+#define D_ERR_MODE                  0x00        //Error prompt mode
+#define D_NORMAL_MODE               0x10        //normal working mode
+#define D_CAL_START_MODE            0x21        //calibration mode, start
+#define D_CAL_END_MODE              0x23        //Calibration mode, complete
 //--------------------------------------------------------------------------------------------
 
 #ifndef __IO_TYPE_CONFIG__
 #define __IO_TYPE_CONFIG__
 typedef enum {
-    IO_DRIVE_LEVEL_HIGH,        // 高电平有效
-    IO_DRIVE_LEVEL_LOW,         // 低电平有效
-    IO_DRIVE_LEVEL_NOT_EXIST    // 该IO不存在
+    IO_DRIVE_LEVEL_HIGH,        // Active high
+    IO_DRIVE_LEVEL_LOW,         // Active low
+    IO_DRIVE_LEVEL_NOT_EXIST    // The IO does not exist
 }IO_DRIVE_TYPE;
 
 typedef struct{
-    IO_DRIVE_TYPE type;         // 有效电平类型
-    UCHAR_T pin;                // 引脚号
+    IO_DRIVE_TYPE type;         // Active level type
+    UCHAR_T pin;                // pin number
 }IO_CONFIG;
 #endif
 
@@ -65,11 +65,11 @@ typedef struct{
 
 /*********************************************************************************
  * FUNCTION:       bl0937_init
- * DESCRIPTION:    bl0937芯片引脚配置和参数设置
- * INPUT:          dltj：电量统计相关参数结构体
+ * DESCRIPTION:    bl0937 chip pin configuration and parameter settings
+ * INPUT:          dltj: Structure of parameters related to electricity statistics
  * OUTPUT:         none
  * RETURN:         none
- * OTHERS:         bl0937芯片引脚配置和参数设置
+ * OTHERS:         bl0937 chip pin configuration and parameter settings
  * HISTORY:        2020-03-04
  *******************************************************************************/
 _BL0937_EXT \
@@ -77,11 +77,11 @@ VOID bl0937_init(DLTJ_CONFIG *dltj);
 
 /*********************************************************************************
  * FUNCTION:       ele_cnt_init
- * DESCRIPTION:    电量脉冲计数初始化
- * INPUT:          mode：计量芯片的模式(计量模式)
+ * DESCRIPTION:    Initialization of battery pulse count
+ * INPUT:          mode: the mode of the metering chip (metering mode)
  * OUTPUT:         none
  * RETURN:         none
- * OTHERS:         计量芯片初始化/硬件定时器初始化/中断初始化/脉冲计数初始化
+ * OTHERS:         Metering chip initialization/hardware timer initialization/interrupt initialization/pulse count initialization
  * HISTORY:        2020-03-04
  *******************************************************************************/
 _BL0937_EXT \
@@ -89,11 +89,11 @@ OPERATE_RET ele_cnt_init(INT_T mode);
 
  /*********************************************************************************
   * FUNCTION:       report_coe_data
-  * DESCRIPTION:    上报电量统计校准参数及产测结果位
+  * DESCRIPTION:    Report power statistics calibration parameters and production test result bits
   * INPUT:          none
   * OUTPUT:         none
   * RETURN:         none
-  * OTHERS:         电量统计校准参数和产测结果
+  * OTHERS:         Gas statistics calibration parameters and production test results
   * HISTORY:        2020-03-04
   *******************************************************************************/
 _BL0937_EXT \
@@ -101,11 +101,11 @@ OPERATE_RET report_coe_data(VOID);
 
 /*********************************************************************************
  * FUNCTION:       get_ele_par
- * DESCRIPTION:    获取电量实时参数
- * INPUT:          p/v/i:功率/电压/电流
+ * DESCRIPTION:    Get real-time power parameters
+ * INPUT:          p/v/i: power/voltage/current
  * OUTPUT:         none
  * RETURN:         none
- * OTHERS:         获取电量芯片实时参数
+ * OTHERS:         Get real-time parameters of power chip
  * HISTORY:        2020-03-04
  *******************************************************************************/
 _BL0937_EXT \
@@ -113,11 +113,11 @@ VOID get_ele_par(OUT UINT_T *P,OUT UINT_T *V,OUT UINT_T *I);
 
 /*********************************************************************************
  * FUNCTION:       get_ele
- * DESCRIPTION:    获取增加电量参数
- * INPUT:          E:增加电量值
+ * DESCRIPTION:    Get the increase power parameter
+ * INPUT:          E: increase the power value
  * OUTPUT:         none
  * RETURN:         none
- * OTHERS:         获取电量芯片增加电量参数
+ * OTHERS:         Get the power chip increase power parameters
  * HISTORY:        2020-03-04
  *******************************************************************************/
 _BL0937_EXT \
