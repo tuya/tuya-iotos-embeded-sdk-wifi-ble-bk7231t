@@ -173,7 +173,7 @@ void *pvPortCalloc( size_t nmemb, size_t size ) PRIVILEGED_FUNCTION;
 void *pvPortRealloc( void *pv, size_t size ) PRIVILEGED_FUNCTION;
 #if OSMALLOC_STATISTICAL
 void *pvPortMalloc_cm(const char *call_func_name, int line, size_t xWantedSize, int need_zero) PRIVILEGED_FUNCTION;
-void *vPortFree_cm(const char *call_func_name, int line, void *pv ) PRIVILEGED_FUNCTION;
+void vPortFree_cm(const char *call_func_name, int line, void *pv ) PRIVILEGED_FUNCTION;
 #define pvPortMalloc(size)    pvPortMalloc_cm((const char*)__FUNCTION__,__LINE__,size, 0)
 #define vPortFree(p)       vPortFree_cm((const char*)__FUNCTION__,__LINE__,p)
 #else

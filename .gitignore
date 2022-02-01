@@ -13,3 +13,6 @@ platforms/bk7231t/bk7231t_os/tools/generate/*.bin
 !platforms/bk7231t/bk7231t_os/tools/generate/bootloader.bin
 !platforms/bk7231t/bk7231t_os/tools/generate/bootloader_enc.bin
 !platforms/bk7231t/bk7231t_os/tools/generate/package.bin
+apps/*
+!apps/bk*
+!apps/template*

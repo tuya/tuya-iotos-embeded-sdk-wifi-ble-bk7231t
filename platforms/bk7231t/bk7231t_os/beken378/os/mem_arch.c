@@ -53,19 +53,33 @@ int os_memcmp_const(const void *a, const void *b, size_t len)
     return memcmp(a, b, len);
 }
 
-#if !OSMALLOC_STATISTICAL
+// becuse libraries contain os_malloc, we must provide them...
+#if OSMALLOC_STATISTICAL
+#undef os_malloc
+#undef os_free
+#undef os_zalloc
+#endif
+
+
+
 void *os_malloc(size_t size)
 {
     if(platform_is_in_interrupt_context())
     {
         os_printf("malloc_risk\r\n");
     }
-    
+#if OSMALLOC_STATISTICAL
+    return (void *)pvPortMalloc_cm(__FILE__, __LINE__, size, 0);
+#else
     return (void *)pvPortMalloc(size);
+#endif
 }
 
 void * os_zalloc(size_t size)
 {
+#if OSMALLOC_STATISTICAL
+    return (void *)pvPortMalloc_cm(__FILE__, __LINE__, size, 1);
+#else
 	void *n = (void *)pvPortMalloc(size);
     
     if(platform_is_in_interrupt_context())
@@ -76,6 +90,7 @@ void * os_zalloc(size_t size)
 	if (n)
 		os_memset(n, 0, size);
 	return n;
+#endif
 }
 
 void os_free(void *ptr)
@@ -87,7 +102,11 @@ void os_free(void *ptr)
     
     if(ptr)
     {        
+#if OSMALLOC_STATISTICAL
+        vPortFree_cm(__FILE__, __LINE__, ptr);
+#else
         vPortFree(ptr);
+#endif
     }
 }
 
@@ -108,5 +127,5 @@ void __wrap_free(void *ptr)
 	os_printf("__wrap_free\r\n");
 	os_free(ptr);
 }
-#endif
+
 // EOF
