@@ -1,1 +1,1 @@
-./build_app.sh apps/my_alpha_demo my_alpha_demo 1.0.0
+./build_app.sh apps/OpenBK7231T_App OpenBK7231T_App 1.0.0
