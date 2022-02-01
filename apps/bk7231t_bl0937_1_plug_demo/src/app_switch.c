@@ -2,7 +2,7 @@
  * @File: app_switch.c
  * @Author: caojq
  * @Last Modified time: 2020-07-29
- * @Description: 电量统计开关操作
+ * @Description: Power Statistics Switch Operation
  */
 #include "app_switch.h"
 #include "tuya_device.h"
@@ -22,14 +22,14 @@
 #define COUNTDOWN_REPT_TIME 30
 #define POWER_STAT_KEY "relay_stat_key"
 #define PT_END_KEY "pt_end_key"
-#define KEY_TIMER_MS 20                         //按键轮询时间
-#define PRESS_LONG_TIME 3000                    //按键长按时间
+#define KEY_TIMER_MS 20                         //key polling time
+#define PRESS_LONG_TIME 3000                    //Button long press time
 
 /***********************************************************
 *************************variable define********************
 ************************************************************/
-STATIC BOOL_T wf_dir_rl_en = FALSE;     //允许wifi灯指示继电器
-STATIC BOOL_T pt_key_en = TRUE;      //允许产测按键使用
+STATIC BOOL_T wf_dir_rl_en = FALSE;     //Allow wifi lights to indicate relays
+STATIC BOOL_T pt_key_en = TRUE;      //Allow production test buttons to be used
 STATIC UCHAR_T pt_curr_ch = 0;
 STATIC CTRL_SW pt_ch_deal = CTRL_SW_OPEN;
 
@@ -59,7 +59,7 @@ HW_TABLE g_hw_table = {
     .wf_led = {
         .wfl_io = { .type = IO_DRIVE_LEVEL_LOW, .pin = TY_GPIOA_6 },
         .press_time = DEFAULT_KEY_RST_TIME_S,
-        .wfl_cs = WFL_DIR_RL, /* wifi灯连接时指示状态 */
+        .wfl_cs = WFL_DIR_RL, /* wifi light indicates status when connected */
         .wfl_ucs = WFL_DIR_RL,
         .wcm_mode = GWCM_LOW_POWER,
     },
@@ -78,14 +78,14 @@ STATIC VOID save_stat_timer_cb(UINT_T timerID,PVOID_T pTimerArg);
 STATIC VOID end_pt_timer_cb(UINT_T timerID,PVOID_T pTimerArg);
 STATIC VOID enter_pt_timer_cb(UINT_T timerID,PVOID_T pTimerArg);
 STATIC OPERATE_RET read_saved_stat(VOID);
-STATIC OPERATE_RET upload_all_switch_state(VOID);//放到上电同步函数之中
+STATIC OPERATE_RET upload_all_switch_state(VOID);//into the power-on synchronization function
 STATIC VOID set_hw_total_led(IN BOOL_T state);
 STATIC VOID wfl_direct_relay(VOID);
 STATIC OPERATE_RET upload_switch_countdown(IN UCHAR_T channel_num);
 STATIC OPERATE_RET upload_switch_state(IN UCHAR_T channel_num);
 STATIC VOID channel_event_deal(IN UCHAR_T channel_num,IN CHAN_EVENT_TYPE event_type);
-STATIC VOID app_send_countdown_deal(IN UINT_T cd_dp_id,IN INT_T cd_secs);//放到app下发倒计时dp点处理语句之中
-STATIC VOID app_send_press_deal(IN UINT_T ch_dp_id,IN BOOL_T ch_state);//放到app下发开关状态dp点处理语句之中
+STATIC VOID app_send_countdown_deal(IN UINT_T cd_dp_id,IN INT_T cd_secs);//Put it in the countdown dp point processing statement issued by the app
+STATIC VOID app_send_press_deal(IN UINT_T ch_dp_id,IN BOOL_T ch_state);//Put it in the processing statement of the dp point of the switch state of the app
 STATIC VOID total_channel_event_deal(IN BOOL_T on_or_off);
 
 VOID deal_dp_proc(IN CONST TY_OBJ_DP_S *root)
@@ -117,7 +117,7 @@ VOID deal_dp_proc(IN CONST TY_OBJ_DP_S *root)
 
 }
 
-//判断有任何开关处于开启/关闭状态，如果是返回true。
+//Check if any switch is on/off, and return true if it is.
 BOOL_T judge_any_sw(IN BOOL_T on_or_off)
 {
     BOOL_T ch_state;
@@ -137,15 +137,15 @@ BOOL_T judge_any_sw(IN BOOL_T on_or_off)
     }
 }
 
-//按键短按处理，三种按键事件（优先全开，优先全关，单通道取反）
+//Button short press processing, three button events (prioritized fully open, prioritized fully closed, single channel inversion)
 STATIC VOID key_short_press_deal(IN INT_T key_num,IN KEY_TYPE key_type)
 {
     UCHAR_T i;
     if(key_type == KEY_ALL_PRIOR_OPEN){
-        BOOL_T ch_state = judge_any_sw(FALSE);//若有一个通道关闭，则全开
+        BOOL_T ch_state = judge_any_sw(FALSE);//If one channel is closed, it is fully open
         total_channel_event_deal(ch_state);
     }else if(key_type == KEY_ALL_PRIOR_CLOSE){
-        BOOL_T ch_state = judge_any_sw(TRUE);//若有一个通道开通，则全关
+        BOOL_T ch_state = judge_any_sw(TRUE);//If there is one channel open, it is all closed
         total_channel_event_deal(!ch_state);
     }else{
         for(i = 0;i < g_hw_table.channel_num; i++){
@@ -158,7 +158,7 @@ STATIC VOID key_short_press_deal(IN INT_T key_num,IN KEY_TYPE key_type)
     return;
 }
 
-//app短按开关处理
+//App short press the switch
 VOID app_send_press_deal(IN         UINT_T ch_dp_id,IN BOOL_T ch_state)
 {
     UCHAR_T i;
@@ -176,14 +176,14 @@ VOID app_send_press_deal(IN         UINT_T ch_dp_id,IN BOOL_T ch_state)
     return;
 }
 
-//app倒计时下发处理
+//App countdown delivery processing
 VOID app_send_countdown_deal(IN UINT_T cd_dp_id,IN INT_T cd_secs)
 {
     UCHAR_T i;
     for(i = 0; i<g_hw_table.channel_num; i++){
         if(cd_dp_id == g_hw_table.channels[i].cd_dpid){
             g_hw_table.channels[i].cd_sec = cd_secs;
-            upload_switch_countdown(i);//如果不上传倒计时时间APP是否会开始计数？
+            upload_switch_countdown(i);//If I don't upload the countdown time app, will it start counting?
             sys_start_timer(countdown_timer, 1000, TIMER_CYCLE);
             return;
         }
@@ -191,7 +191,7 @@ VOID app_send_countdown_deal(IN UINT_T cd_dp_id,IN INT_T cd_secs)
     return;
 }
 
-//对通道继电器的纯硬件操作
+//Pure hardware operation of channel relays
 STATIC VOID set_hw_relay(IN UCHAR_T channel_num,IN BOOL_T state)
 {
     if(g_hw_table.channels[channel_num].relay.type == IO_DRIVE_LEVEL_HIGH){
@@ -199,14 +199,14 @@ STATIC VOID set_hw_relay(IN UCHAR_T channel_num,IN BOOL_T state)
     }else if(g_hw_table.channels[channel_num].relay.type == IO_DRIVE_LEVEL_LOW){
         tuya_gpio_write(g_hw_table.channels[channel_num].relay.pin,(state ? OL_LOW :OL_HIGH));
     }else if(g_hw_table.channels[channel_num].relay.type == IO_DRIVE_LEVEL_NOT_EXIST){
-        //若通道继电器不由模块GPIO控制，在此处控制
+        //If the channel relay is not controlled by the module GPIO, control it here
     }
     wfl_direct_relay();
     BOOL_T if_on = judge_any_sw(TRUE);
     set_hw_total_led(if_on);
 }
 
-//对通道指示灯的纯硬件操作
+//Pure hardware manipulation of channel indicators
 STATIC VOID set_hw_led(IN UCHAR_T channel_num,IN BOOL_T state)
 {
     if(g_hw_table.channels[channel_num].led.type == IO_DRIVE_LEVEL_HIGH){
@@ -216,11 +216,11 @@ STATIC VOID set_hw_led(IN UCHAR_T channel_num,IN BOOL_T state)
         tuya_set_led_light_type(g_hw_table.channels[channel_num].led_handle,\
             (state ? OL_LOW :OL_HIGH), 0,0);
     }else if(g_hw_table.channels[channel_num].led.type == IO_DRIVE_LEVEL_NOT_EXIST){
-        //若通道LED不由模块GPIO控制，在此处控制
+        //If the channel LED is not controlled by the module GPIO, control it here
     }
 }
 
-//对wifi灯的纯硬件操作
+//Pure hardware operation of wifi lights
 STATIC VOID set_hw_wifi_led(IN BOOL state)
 {
     if(g_hw_table.wf_led.wfl_io.type == IO_DRIVE_LEVEL_HIGH){
@@ -230,11 +230,11 @@ STATIC VOID set_hw_wifi_led(IN BOOL state)
         tuya_set_led_light_type(g_hw_table.wf_led.wfl_handle,\
             (state ? OL_LOW :OL_HIGH), 0,0);
     }else if(g_hw_table.wf_led.wfl_io.type == IO_DRIVE_LEVEL_NOT_EXIST){
-        //若wifiLED不由模块GPIO控制，在此处控制
+        //If wifiLED is not controlled by module GPIO, control it here
     }
 }
 
-//对总led灯的纯硬件操作
+//Pure hardware operation of total led lights
 STATIC VOID set_hw_total_led(IN BOOL_T state)
 {
     if(g_hw_table.tch.tled.type == IO_DRIVE_LEVEL_HIGH){
@@ -244,11 +244,11 @@ STATIC VOID set_hw_total_led(IN BOOL_T state)
         tuya_set_led_light_type(g_hw_table.tch.tled_handle,\
             (state ? OL_LOW :OL_HIGH), 0,0);
     }else if(g_hw_table.tch.tled.type == IO_DRIVE_LEVEL_NOT_EXIST){
-        //若总LED不由模块GPIO控制，在此处控制
+        //If the total LED is not controlled by the module GPIO, control it here
     }
 }
 
-//控制某一个通道的 （状态+继电器+指示灯），三者绑定。
+//To control a certain channel (status + relay + indicator light), the three are bound.
 VOID ctrl_switch_state(IN UCHAR_T channel_num,IN CTRL_SW ctrl_sw)
 {
     if(channel_num < 0 || channel_num >= g_hw_table.channel_num){
@@ -274,14 +274,14 @@ VOID ctrl_switch_state(IN UCHAR_T channel_num,IN CTRL_SW ctrl_sw)
     set_hw_led(channel_num,g_hw_table.channels[channel_num].stat);
 }
 
-//倒计时定时器回调，在有任何一个通道需要倒计时时开启，都结束后关闭定时器
+//Countdown timer callback, open when any channel needs to count down, close the timer after all
 STATIC VOID countdown_timer_cb(UINT_T timerID,PVOID_T pTimerArg)
 {
     UCHAR_T i;
     BOOL_T countdown_state = FALSE;
     //PR_DEBUG("countdown -1s... ");
     for(i = 0; i < g_hw_table.channel_num; i++){
-        if(g_hw_table.channels[i].cd_dpid > 0){//若存在倒计时
+        if(g_hw_table.channels[i].cd_dpid > 0){ //If there is a countdown
             if(g_hw_table.channels[i].cd_sec > 0){
                 g_hw_table.channels[i].cd_sec--;
                 if(g_hw_table.channels[i].cd_sec == 0){
@@ -304,7 +304,7 @@ STATIC VOID countdown_timer_cb(UINT_T timerID,PVOID_T pTimerArg)
     }
 }
 
-//单通道事件,在正常工作时调用，会触发上报及断电记忆储存
+//Single-channel event, called during normal operation, will trigger reporting and power-off memory storage
 STATIC VOID channel_event_deal(IN UCHAR_T channel_num,IN CHAN_EVENT_TYPE event_type)
 {
     if(channel_num < 0 || channel_num >= g_hw_table.channel_num){
@@ -331,7 +331,7 @@ STATIC VOID channel_event_deal(IN UCHAR_T channel_num,IN CHAN_EVENT_TYPE event_t
     }
 }
 
-//全通道事件，在正常工作时调用，会触发上报及断电记忆储存
+//All channel events, called during normal work, will trigger reporting and power-off memory storage
 STATIC VOID total_channel_event_deal(IN BOOL_T on_or_off)
 {
     UCHAR_T i;
@@ -369,7 +369,7 @@ STATIC VOID init_switch_state(VOID)
             break;
         }
     }
-    if(exist_pwr_mem){//若存在需要断电记忆的通道
+    if(exist_pwr_mem){ //If there is a channel that requires power-off memory
         read_saved_stat();
     }
 }
@@ -378,7 +378,7 @@ STATIC VOID init_switch_state(VOID)
 *   Function: hw_button_init
 *   Input:    VOID
 *   Output:   VOID
-*   Return:   OPERATE_RET:返回值结果
+*   Return:   OPERATE_RET:return value result
 *   Notice:   hardware button init 
 ***********************************************************/
 STATIC OPERATE_RET hw_button_init(KEY_USER_DEF_S *key_info,KEY_CALLBACK key_process)
@@ -424,7 +424,7 @@ STATIC OPERATE_RET hw_switch_init(IN APP_SW_MODE mode)
         return OPRT_INVALID_PARM;
     }
 
-    // 初始化wifi状态指示灯
+    // Initialize the wifi status indicator
     if(g_hw_table.wf_led.wfl_io.type != IO_DRIVE_LEVEL_NOT_EXIST){
         op_ret = tuya_create_led_handle_select(g_hw_table.wf_led.wfl_io.pin ,\
         (g_hw_table.wf_led.wfl_io.type ==IO_DRIVE_LEVEL_HIGH ? FALSE : TRUE),&g_hw_table.wf_led.wfl_handle);
@@ -438,15 +438,15 @@ STATIC OPERATE_RET hw_switch_init(IN APP_SW_MODE mode)
         }
     }
     UCHAR_T i = 0;
-    // 初始化控制通道
+    // Initialize the control channel
     for(i = 0; i < g_hw_table.channel_num; i++){
-        g_hw_table.channels[i].stat = FALSE; // 初始状态
+        g_hw_table.channels[i].stat = FALSE; // initial state
         g_hw_table.channels[i].cd_sec = 0;
         if(g_hw_table.channels[i].relay.type != IO_DRIVE_LEVEL_NOT_EXIST){
             op_ret = tuya_gpio_inout_set_select(g_hw_table.channels[i].relay.pin,FALSE,\
                 (g_hw_table.channels[i].relay.type ==IO_DRIVE_LEVEL_HIGH ? TRUE :FALSE));
         }else {
-            //如继电器非由模块GPIO直接控制，在此处初始化
+            //If the relay is not directly controlled by the module GPIO, initialize it here
         }
         if(0 == i) {
 //            hw_button_init(&g_hw_table.channels[0].button,(mode == APP_SW_MODE_NORMAL ? hw_key_process : pt_hw_key_process));
@@ -456,7 +456,7 @@ STATIC OPERATE_RET hw_switch_init(IN APP_SW_MODE mode)
             op_ret = tuya_create_led_handle_select(g_hw_table.channels[i].led.pin ,\
             (g_hw_table.channels[i].led.type == IO_DRIVE_LEVEL_HIGH ? FALSE : TRUE),&g_hw_table.channels[i].led_handle);
         }else {
-            //如通道LED非由模块GPIO直接控制，在此处初始化
+            //If the channel LED is not directly controlled by the module GPIO, initialize it here
         }
     }
 
@@ -474,7 +474,7 @@ STATIC OPERATE_RET hw_switch_init(IN APP_SW_MODE mode)
         PR_DEBUG("There exist totol relay led:%d.",g_hw_table.tch.tled.pin);
     }else{
         PR_DEBUG("There not exist totol relay led.");
-        //如总继电器led非由模块GPIO直接控制，在此处初始化
+        //If the main relay led is not directly controlled by the module GPIO, initialize it here
     }
     return op_ret;
 }
@@ -505,7 +505,7 @@ OPERATE_RET app_switch_init(IN APP_SW_MODE mode)
     return op_ret;
 }
 
-//正常工作模式下按键回调
+//Button callback in normal working mode
 STATIC VOID hw_key_process(TY_GPIO_PORT_E gpio_no,PUSH_KEY_TYPE_E type,INT_T cnt)
 {
     PR_DEBUG("gpio_no: %d, type: %d, cnt: %d",gpio_no,type,cnt);
@@ -519,7 +519,7 @@ STATIC VOID hw_key_process(TY_GPIO_PORT_E gpio_no,PUSH_KEY_TYPE_E type,INT_T cnt
         }
     }
 }
-//产测按键回调函数
+//Production test button callback function
 STATIC VOID pt_hw_key_process(TY_GPIO_PORT_E gpio_no,PUSH_KEY_TYPE_E type,INT_T cnt)
 {
     UCHAR_T i;
@@ -533,7 +533,7 @@ STATIC VOID pt_hw_key_process(TY_GPIO_PORT_E gpio_no,PUSH_KEY_TYPE_E type,INT_T 
     if(pt_key_en && (NORMAL_KEY == type)) {
         if(gpio_no == g_hw_table.tch.tbt.port){
             if(!IsThisSysTimerRun(pt_total_bt_timer)){
-                if(judge_any_sw(TRUE) && judge_any_sw(FALSE)){//如果存在半开半关，先全关
+                if(judge_any_sw(TRUE) && judge_any_sw(FALSE)){//If there is half-open and half-closed, first fully close
                     for(i = 0; i<g_hw_table.channel_num; i++){
                         ctrl_switch_state(i, CTRL_SW_CLOSE);
                     }
@@ -552,7 +552,7 @@ STATIC VOID pt_hw_key_process(TY_GPIO_PORT_E gpio_no,PUSH_KEY_TYPE_E type,INT_T 
             }
         }
     }else if(pt_key_en && LONG_KEY == type){
-        return;//先按老版本出
+        return;//Press the old version first
         OPERATE_RET op_ret = save_pt_end_flag(1);
         if(OPRT_OK == op_ret){
             PR_DEBUG("save pt end key success!!!");
@@ -613,7 +613,7 @@ STATIC VOID save_stat_timer_cb(UINT_T timerID,PVOID_T pTimerArg)
 STATIC OPERATE_RET read_saved_stat(VOID)
 {
     uFILE * fp = ufopen(POWER_STAT_KEY,"r");
-    if(NULL == fp) {     /* 如果无法打开 */
+    if(NULL == fp) {     /* If it cannot be opened */
         PR_ERR("cannot open file");
         return OPRT_COM_ERROR;
     }
@@ -679,7 +679,7 @@ STATIC OPERATE_RET upload_switch_countdown(IN UCHAR_T channel_num)
 
     OPERATE_RET op_ret = OPRT_OK;
 
-    INT_T dp_cnt = 1;//通道dp+电量dp(不包含电量值)
+    INT_T dp_cnt = 1; //Channel dp + power dp (does not include power value)
 
     TY_OBJ_DP_S *dp_arr = (TY_OBJ_DP_S *)Malloc(dp_cnt*SIZEOF(TY_OBJ_DP_S));
     if(NULL == dp_arr) {
@@ -710,14 +710,14 @@ STATIC OPERATE_RET upload_switch_countdown(IN UCHAR_T channel_num)
  * 
  * @param channel_num 
  * @return OPERATE_RET 
- * @TODO 拆开倒计时清除逻辑和上报逻辑
+ * @TODO Disassemble the countdown clearing logic and reporting logic
  */
 STATIC OPERATE_RET upload_switch_state(IN UCHAR_T channel_num)
 {
     OPERATE_RET op_ret = OPRT_OK;
 
     INT_T dp_cnt = 0;
-    dp_cnt = 2;//通道dp+电量dp(不包含电量值)
+    dp_cnt = 2; //Channel dp + power dp (does not include power value)
 
     TY_OBJ_DP_S *dp_arr = (TY_OBJ_DP_S *)Malloc(dp_cnt*SIZEOF(TY_OBJ_DP_S));
     if(NULL == dp_arr) {
@@ -751,13 +751,13 @@ STATIC OPERATE_RET upload_switch_state(IN UCHAR_T channel_num)
     return OPRT_OK;
 }
 
-//调用此函数会清零所有倒计时，并上报所有开关状态+倒计时。
+//Calling this function will clear all countdowns and report all switch states + countdowns.
 STATIC OPERATE_RET upload_all_switch_state(VOID)
 {
     OPERATE_RET op_ret = OPRT_OK;
 
     INT_T dp_cnt = 0,i = 0,j = 0;
-    dp_cnt = g_hw_table.channel_num*2;//通道dp+电量dp(不包含电量值)
+    dp_cnt = g_hw_table.channel_num*2;//Channel dp + power dp (does not include power value)
 
     TY_OBJ_DP_S *dp_arr = (TY_OBJ_DP_S *)Malloc(dp_cnt*SIZEOF(TY_OBJ_DP_S));
     if(NULL == dp_arr) {
@@ -793,7 +793,7 @@ STATIC OPERATE_RET upload_all_switch_state(VOID)
     return OPRT_OK;
 }
 
-//进入产测指示灯定时器
+//Enter the production test indicator light timer
 STATIC VOID enter_pt_timer_cb(UINT_T timerID,PVOID_T pTimerArg)
 {
     STATIC BOOL chg_flag = FALSE;
@@ -805,7 +805,7 @@ STATIC VOID enter_pt_timer_cb(UINT_T timerID,PVOID_T pTimerArg)
     }
     chg_flag = !chg_flag;
 }
-//结束产测指示灯定时器
+//End production test indicator light timer
 STATIC VOID end_pt_timer_cb(UINT_T timerID,PVOID_T pTimerArg)
 {
     set_wfl_state(WFL_OFF);
@@ -819,7 +819,7 @@ STATIC VOID pt_total_bt_timer_cb(UINT_T timerID,PVOID_T pTimerArg)
         sys_stop_timer(pt_total_bt_timer);
     }
 }
-//wifi灯直接指示继电器
+//The wifi light directly indicates the relay
 STATIC VOID wfl_direct_relay(VOID)
 {
     if(wf_dir_rl_en){
@@ -827,7 +827,7 @@ STATIC VOID wfl_direct_relay(VOID)
         set_hw_wifi_led(if_on);
     }
 }
-//设定WIFI灯状态
+//Set WIFI light status
 VOID set_wfl_state(IN WFL_STAT wfl_stat)
 {
     if(g_hw_table.wf_led.wfl_io.type == \
@@ -879,7 +879,7 @@ VOID set_wfl_state(IN WFL_STAT wfl_stat)
         break;
     }
 }
-//过流保护事件
+//Overcurrent Protection Event
 VOID over_protect(VOID)
 {
     PR_DEBUG("over protect!!!");
@@ -896,7 +896,7 @@ VOID set_pt_key_en(IN BOOL_T if_en)
     pt_key_en = if_en;
 }
 
-//保存产测结束标志位
+//Save the production test end flag
 OPERATE_RET save_pt_end_flag(IN INT_T state)
 {
     cJSON *root = NULL;
@@ -937,11 +937,11 @@ OPERATE_RET save_pt_end_flag(IN INT_T state)
 
     return OPRT_OK;
 }
-//获取产测结束标志位
+//Get the production test end flag
 OPERATE_RET get_pt_end_flag(OUT INT_T *state)
 {
     uFILE * fp = ufopen(PT_END_KEY,"r");
-    if(NULL == fp) {     /* 如果无法打开 */
+    if(NULL == fp) {     /* If it cannot be opened */
         PR_ERR("cannot open file");
         return OPRT_COM_ERROR;
     }

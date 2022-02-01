@@ -2,7 +2,7 @@
  * @File: app_switch.h
  * @Author: caojq
  * @Last Modified time: 2019-10-31
- * @Description: 电量统计平台免开发方案优化代码
+ * @Description: Development-free solution optimization code for electricity statistics platform
  */
 
 #ifndef  __APP_SWITCH_H__
@@ -23,19 +23,19 @@
 
 #define DPID_NOT_EXIST (-1)
 
-//IO配置定义
+//IO configuration definition
 #ifndef __IO_TYPE_CONFIG__
 #define __IO_TYPE_CONFIG__
 typedef enum 
 {
-    IO_DRIVE_LEVEL_HIGH,        // 高电平有效
-    IO_DRIVE_LEVEL_LOW,         // 低电平有效
-    IO_DRIVE_LEVEL_NOT_EXIST    // 该IO不存在
+    IO_DRIVE_LEVEL_HIGH,        // Active high
+    IO_DRIVE_LEVEL_LOW,         // Active low
+    IO_DRIVE_LEVEL_NOT_EXIST    // The IO does not exist
 }IO_DRIVE_TYPE;
 typedef struct
 {
-    IO_DRIVE_TYPE type; // 有效电平类型
-    UCHAR_T pin;  // 引脚号
+    IO_DRIVE_TYPE type; // Active level type
+    UCHAR_T pin;  // pin number
 }IO_CONFIG;
 #endif
 
@@ -43,28 +43,28 @@ typedef struct
 *************************variable define********************
 ************************************************************/
 typedef enum{
-    INIT_CH_OPEN,  //上电默认通电
-    INIT_CH_CLOSE, //上电默认断电
-    INIT_CH_MEM    //上电后断电记忆
+    INIT_CH_OPEN,  //Power on by default
+    INIT_CH_CLOSE, //Power-on default power-off
+    INIT_CH_MEM    //Power-off memory after power-on
 }INIT_CH_STAT;
 
 typedef struct
 {
-    IO_CONFIG       relay;          // 继电器
-    KEY_USER_DEF_S       button;         // 控制按键
-    IO_CONFIG       led;            // 状态指示灯
-    LED_HANDLE      led_handle;     // 状态指示灯句柄
-    UINT_T             dpid;           // 该通道绑定的dpid
-    UINT_T            cd_dpid;        // 该通道绑定的倒计时dpid 小于0表示不存在
-    INT_T             cd_sec;         // 通道倒计时 -1 停止
-    BOOL_T            stat;           // 通道状态 TRUE - 有效; FALSE - 无效
+    IO_CONFIG       relay;          // relay
+    KEY_USER_DEF_S       button;         // control buttons
+    IO_CONFIG       led;            // Status Indicator
+    LED_HANDLE      led_handle;     // Status light handle
+    UINT_T             dpid;           // the dpid that the channel is bound to
+    UINT_T            cd_dpid;        // The countdown dpid of the channel binding is less than 0, indicating that it does not exist
+    INT_T             cd_sec;         // Channel countdown -1 stop
+    BOOL_T            stat;           // Channel status TRUE - valid; FALSE - invalid
     INIT_CH_STAT    init_ch_stat;
 }CTRL_CHANNEL_CONFIG;
 
 typedef enum{
-    WFL_OFF,    //wifi灯常灭
-    WFL_ON,     //wifi灯常开
-    WFL_DIR_RL,  //wifi灯指示继电器
+    WFL_OFF,    //wifi light is always off
+    WFL_ON,     //WiFi light is always on
+    WFL_DIR_RL,  //wifi light indicating relay
     WFL_FLASH_VERY_FAST,
     WFL_FLASH_FAST,
     WFL_FLASH_SLOW,
@@ -74,111 +74,111 @@ typedef enum{
 
 typedef struct
 {
-    IO_CONFIG               wfl_io;     //wifi灯GPIO口
-    LED_HANDLE	            wfl_handle; //wifi灯句柄
-    WFL_STAT                wfl_cs;     //wifi灯连接时指示状态
-    WFL_STAT                wfl_ucs;    //wifi灯长时间未连接时指示状态
-    UCHAR_T           press_time;     //长按触发重置时间
+    IO_CONFIG               wfl_io;     //wifi light GPIO port
+    LED_HANDLE	            wfl_handle; //wifi light handle
+    WFL_STAT                wfl_cs;     //wifi light indicates status when connected
+    WFL_STAT                wfl_ucs;    //The wifi light indicates the status when not connected for a long time
+    UCHAR_T           press_time;     //Long press to trigger reset time
     UCHAR_T           wcm_mode;
 }WIFI_LED;
 
 typedef struct{
-    IO_CONFIG               tled;   //总继电器指示灯
-    KEY_USER_DEF_S               tbt;    //总按键
+    IO_CONFIG               tled;   //Main relay indicator
+    KEY_USER_DEF_S               tbt;    //total key
     LED_HANDLE              tled_handle;
 }TOTAL_CH;
-// HW_TABLE结构体类型
-// 抽象描述硬件配置
+// HW_TABLE structure type
+// Abstract description of hardware configuration
 typedef struct
 {
     UCHAR_T                   channel_num;
-    TOTAL_CH                tch;            //总控通道
-    WIFI_LED                wf_led;         //wifi指示灯
-    CTRL_CHANNEL_CONFIG     *channels;			// 通道列表 *!* 不要重新指向其他位置
+    TOTAL_CH                tch;            //Master control channel
+    WIFI_LED                wf_led;         //wifi indicator
+    CTRL_CHANNEL_CONFIG     *channels;			// channel list *!* do not repoint elsewhere
 }HW_TABLE;
 
 //事件类型定义
 typedef enum{
-    CHAN_EVENT_CLOSE= 0,   //通道关闭+上报+记忆
-    CHAN_EVENT_OPEN,    //通道打开+上报+记忆
-    CHAN_EVENT_TOGGLE   //通道取反+上报+记忆
+    CHAN_EVENT_CLOSE= 0,   //Channel close + report + memory
+    CHAN_EVENT_OPEN,    //Channel open + report + memory
+    CHAN_EVENT_TOGGLE   //Channel inversion + report + memory
 }CHAN_EVENT_TYPE;
 
 typedef enum{
-    KEY_ALL_PRIOR_CLOSE = 0,//优先全关
-    KEY_ALL_PRIOR_OPEN,//优先全开
-    KEY_SINGLE_TOGGLE//控制单个取反
+    KEY_ALL_PRIOR_CLOSE = 0,//Priority all close
+    KEY_ALL_PRIOR_OPEN,//Full open priority
+    KEY_SINGLE_TOGGLE//Control a single negation
 }KEY_TYPE;
 
 typedef enum{
-    CTRL_SW_CLOSE = 0,      //通道关闭
-    CTRL_SW_OPEN,    //通道打开
-    CTRL_SW_TOGGLE,     //通道取反
-    CTRL_SW_STAT    //根据通道之前状态控制通道
+    CTRL_SW_CLOSE = 0,      //channel closed
+    CTRL_SW_OPEN,    //channel open
+    CTRL_SW_TOGGLE,     //Channel negation
+    CTRL_SW_STAT    //Control the channel based on the previous state of the channel
 }CTRL_SW;
 
 
 typedef enum{
-    APP_SW_MODE_NORMAL,     //开关正常工作模式
-    APP_SW_MODE_PRODTEST    //开关产测模式
+    APP_SW_MODE_NORMAL,     //Switch normal working mode
+    APP_SW_MODE_PRODTEST    //Switch production test mode
 }APP_SW_MODE;
 
 /***********************************************************
 *   Function: deal_dp_proc
-*   Input:    root:app下发数据结构体
+*   Input:    root: app delivers data structure
 *   Output:   VOID
 *   Return:   VOID
-*   Notice:   处理app下发数据
+*   Notice:   Process the data sent by the app
 ***********************************************************/
 __APP_SWITCH_EXT \
 VOID deal_dp_proc(IN CONST TY_OBJ_DP_S *root);
 
 /***********************************************************
 *   Function: judge_any_sw
-*   Input:    on_or_off：按键总状态
+*   Input:    on_or_off：Overall button status
 *   Output:   VOID
 *   Return:   VOID
-*   Notice:   判断总开关状态
+*   Notice:   Judging the status of the main switch
 ***********************************************************/
 __APP_SWITCH_EXT \
 BOOL_T judge_any_sw(IN BOOL_T on_or_off);
 
 /***********************************************************
 *   Function: set_pt_key_en
-*   Input:    if_en:按键使能
+*   Input:    if_en:key enable
 *   Output:   VOID
 *   Return:   VOID
-*   Notice:   设置按键使能
+*   Notice:   Set key enable
 ***********************************************************/
 __APP_SWITCH_EXT \
-VOID set_pt_key_en(IN BOOL_T if_en);          //允许产测时使用按键
+VOID set_pt_key_en(IN BOOL_T if_en);          //Allow the use of buttons during production testing
 
 /***********************************************************
 *   Function: app_switch_init
-*   Input:    mode:开关模式
+*   Input:    mode:switch mode
 *   Output:   VOID
 *   Return:   VOID
-*   Notice:   按键初始化
+*   Notice:   button initialization
 ***********************************************************/
 __APP_SWITCH_EXT \
-OPERATE_RET app_switch_init(IN APP_SW_MODE mode);//放到flash初始化之后
+OPERATE_RET app_switch_init(IN APP_SW_MODE mode);//After flash initialization
 
 /***********************************************************
 *   Function: set_wfl_state
 *   Input:    VOID
-*   Output:   wfl_stat：wifi指示灯状态
+*   Output:   wfl_stat：wifi indicator status
 *   Return:   VOID
-*   Notice:   设置产测标识
+*   Notice:   Set production test logo
 ***********************************************************/
 __APP_SWITCH_EXT \
-VOID set_wfl_state(IN WFL_STAT wfl_stat);//设定WIFI灯状态
+VOID set_wfl_state(IN WFL_STAT wfl_stat);//Set WIFI light status
 
 /***********************************************************
 *   Function: save_pt_end_flag
 *   Input:    VOID
-*   Output:   state：产测标识
+*   Output:   state：Production test identification
 *   Return:   OPERATE_RET
-*   Notice:   设置产测标识
+*   Notice:   Set production test logo
 ***********************************************************/
 __APP_SWITCH_EXT \
 OPERATE_RET save_pt_end_flag(IN INT_T state);
@@ -186,9 +186,9 @@ OPERATE_RET save_pt_end_flag(IN INT_T state);
 /***********************************************************
 *   Function: get_pt_end_flag
 *   Input:    VOID
-*   Output:   state：产测标识
+*   Output:   state：Production test identification
 *   Return:   OPERATE_RET
-*   Notice:   获取产测标识
+*   Notice:   Get the production test logo
 ***********************************************************/
 __APP_SWITCH_EXT \
 OPERATE_RET get_pt_end_flag(OUT INT_T *state);
@@ -198,7 +198,7 @@ OPERATE_RET get_pt_end_flag(OUT INT_T *state);
 *   Input:    VOID
 *   Output:   VOID
 *   Return:   VOID
-*   Notice:   清空继电器存储状态
+*   Notice:   Clear relay memory state
 ***********************************************************/
 __APP_SWITCH_EXT \
 VOID reset_power_stat(VOID);
@@ -207,28 +207,28 @@ VOID reset_power_stat(VOID);
 *   Function: hw_get_wifi_mode
 *   Input:    VOID
 *   Output:   VOID
-*   Return:   GW_WF_CFG_MTHD_SEL:wifi模式
-*   Notice:   获取wifi模式
+*   Return:   GW_WF_CFG_MTHD_SEL: wifi mode
+*   Notice:   get wifi mode
 ***********************************************************/
 __APP_SWITCH_EXT \
 GW_WF_CFG_MTHD_SEL hw_get_wifi_mode(VOID);
 
 /***********************************************************
 *   Function: hw_wifi_led_status
-*   Input:    wifi_stat:wifi状态
+*   Input:    wifi_stat:wifi status
 *   Output:   VOID
 *   Return:   VOID
-*   Notice:   指示灯状态显示
+*   Notice:   Indicator status display
 ***********************************************************/
 __APP_SWITCH_EXT \
 VOID hw_wifi_led_status(GW_WIFI_NW_STAT_E wifi_stat);
 
 /***********************************************************
 *   Function: ctrl_switch_state
-*   Input:    channel_num：通道，CTRL_SW：
+*   Input:    channel_num: channel, CTRL_SW:
 *   Output:   VOID
 *   Return:   VOID
-*   Notice:   按键通道控制
+*   Notice:   Key Channel Control
 ***********************************************************/
 __APP_SWITCH_EXT \
 VOID ctrl_switch_state(IN UCHAR_T channel_num,IN CTRL_SW ctrl_sw);

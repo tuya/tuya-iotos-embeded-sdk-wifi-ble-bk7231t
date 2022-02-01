@@ -1,9 +1,9 @@
 /**
  * @file bl0937.c
- * @brief bl0937电量统计芯片驱动
+ * @brief bl0937 power statistics chip driver
  * @date 2020-03-04
  * 
- * @copyright Copyright (c) {2018-2020} 涂鸦科技 www.tuya.com
+ * @copyright Copyright (c) {2018-2020} Graffiti Technology www.tuya.com
  * 
  */
  #define _BL0937_GLOBAL
@@ -28,7 +28,7 @@
 #define ELE_HW_TIME 1
 
 //--------------------------------------------------------------------------------------------
-//Time1定时器定时,时间基数 = 1ms
+//Time1 timer, time base = 1ms
 #define D_TIME1_20MS				20 		
 #define D_TIME1_100MS				100 
 #define D_TIME1_150MS				150 	
@@ -36,7 +36,7 @@
 #define D_TIME1_300MS				300 	
 #define D_TIME1_400MS				400 	
 #define D_TIME1_500MS				500 	
-#define D_TIME1_1S				1000		//Time1定时器定时1S时间常数
+#define D_TIME1_1S				1000		//Time1 Timer timing 1S time constant
 #define D_TIME1_2S				2000 	
 #define D_TIME1_3S				3000 	
 #define D_TIME1_4S				4000 	
@@ -48,17 +48,17 @@
 #define D_TIME1_11S				11000 
 #define D_TIME1_20S				20000 
 
-#define I_CAL_TIME                  10000      //电流检测时间，SEL拉低的时间
-#define V_CAL_TIME                  1000       //电压检测时间，SEL拉高的时间
-#define D_TIME1_V_OVERFLOW          500        //Time1定时器,电压溢出常数设定为500mS,溢出说明脉宽周期大于500mS
-#define D_TIME1_I_OVERFLOW          5000       //Time1定时器,电流溢出常数设定为5S,溢出说明脉宽周期大于5S
-#define D_TIME1_P_OVERFLOW          5000       //Time1定时器,功率溢出常数设定为5S,溢出说明脉宽周期大于5S
-//校正时间，记录在此时间内的脉冲数
+#define I_CAL_TIME                  10000      //Current detection time, SEL low time
+#define V_CAL_TIME                  1000       //Voltage detection time, SEL high time
+#define D_TIME1_V_OVERFLOW          500        //Time1 timer, the voltage overflow constant is set to 500mS, the overflow indicates that the pulse width period is greater than 500mS
+#define D_TIME1_I_OVERFLOW          5000       //Time1 timer, the current overflow constant is set to 5S, the overflow indicates that the pulse width period is greater than 5S
+#define D_TIME1_P_OVERFLOW          5000       //Time1 timer, the power overflow constant is set to 5S, the overflow indicates that the pulse width period is greater than 5S
+//Correction time, record the number of pulses during this time
 #define D_TIME1_CAL_TIME        (18000000/E_001E_GAIN/driver_dltj.p_def)
 
-#define Get_ELE_PORT            driver_dltj.epin                //电量统计口
-#define Get_CUR_VOL             driver_dltj.ivpin               //电流电压统计口
-#define CUR_VOL_SWITCH          driver_dltj.ivcpin.pin          //电流电压切换口   
+#define Get_ELE_PORT            driver_dltj.epin                //Power statistics port
+#define Get_CUR_VOL             driver_dltj.ivpin               //Current and voltage statistics port
+#define CUR_VOL_SWITCH          driver_dltj.ivcpin.pin          //Current and voltage switch port   
 #define ENTER_V_MODE            tuya_gpio_write(CUR_VOL_SWITCH, (driver_dltj.ivcpin.type == IO_DRIVE_LEVEL_LOW ? DRV_GPIO_LOW : DRV_GPIO_HIGH))
 #define ENTER_I_MODE            tuya_gpio_write(CUR_VOL_SWITCH, (driver_dltj.ivcpin.type == IO_DRIVE_LEVEL_LOW ? DRV_GPIO_HIGH : DRV_GPIO_LOW))
 //#define GPIO16_ENTER_V          gpio16_output_set(driver_dltj.ivcpin.type == IO_DRIVE_LEVEL_LOW ? 0 : 1)
@@ -95,27 +95,27 @@ u32 E_VAL;
 ELE_CAL_DATA ele_cal_data;
 
 //--------------------------------------------------------------------------------------------
-u16	U16_P_TotalTimes;			//当前脉冲 功率测量总时间
-u16	U16_V_TotalTimes;			//当前脉冲 电压测量总时间
-u16	U16_I_TotalTimes;			//当前脉冲 电流测量总时间
+u16	U16_P_TotalTimes;			//Current pulse Power measurement total time
+u16	U16_V_TotalTimes;			//Current pulse Voltage measurement total time
+u16	U16_I_TotalTimes;			//Current pulse Current measurement total time
 
-u16	U16_P_OneCycleTime;			//功率测量时间参数
-u16	U16_V_OneCycleTime;			//电压测量时间参数
-u16	U16_I_OneCycleTime;			//电流测量时间参数
+u16	U16_P_OneCycleTime;			//Power Measurement Time Parameters
+u16	U16_V_OneCycleTime;			//Voltage measurement time parameter
+u16	U16_I_OneCycleTime;			//Current measurement time parameter
 
-u16	U16_P_Last_OneCycleTime;		//功率测量时间参数，上一次数量值
-u16	U16_V_Last_OneCycleTime;		//电压测量时间参数，上一次数量值
-u16	U16_I_Last_OneCycleTime;		//电流测量时间参数，上一次数量值
+u16	U16_P_Last_OneCycleTime;		//Power measurement time parameter, last quantity value
+u16	U16_V_Last_OneCycleTime;		//Voltage measurement time parameter, last quantity value
+u16	U16_I_Last_OneCycleTime;		//Current measurement time parameter, last quantity value
 
-u16	U16_P_CNT;				//功率测量脉冲数量
-u16	U16_V_CNT;				//电压测量脉冲数量
-u16	U16_I_CNT;				//电流测量脉冲数量
+u16	U16_P_CNT;				//Number of power measurement pulses
+u16	U16_V_CNT;				//Number of voltage measurement pulses
+u16	U16_I_CNT;				//Number of current measurement pulses
 
-u16	U16_P_Last_CNT;				//功率测量脉冲数量，上一次数量值
-u16	U16_V_Last_CNT;				//电压测量脉冲数量，上一次数量值
-u16	U16_I_Last_CNT;				//电流测量脉冲数量，上一次数量值
+u16	U16_P_Last_CNT;				//Power measurement pulse number, last number value
+u16	U16_V_Last_CNT;				//Voltage measurement pulse number, last number value
+u16	U16_I_Last_CNT;				//Current measurement pulse number, last number value
 
-BOOL	B_P_TestOneCycle_Mode;			//功率测量模式 1:单周期测量，0:1S定时测量
+BOOL	B_P_TestOneCycle_Mode;			//Power measurement mode 1: single cycle measurement, 0:1S timing measurement
 BOOL	B_V_TestOneCycle_Mode;
 BOOL	B_I_TestOneCycle_Mode;
 
@@ -123,53 +123,53 @@ BOOL	B_P_Last_TestOneCycle_Mode;
 BOOL	B_V_Last_TestOneCycle_Mode;
 BOOL	B_I_Last_TestOneCycle_Mode;
     		
-BOOL  	B_P_OVERFLOW;       			// 功率脉冲周期 溢出标志位 
-BOOL  	B_V_OVERFLOW;       			// 电压脉冲周期 溢出标志位
-BOOL  	B_I_OVERFLOW;       			// 电流脉冲周期 溢出标志位
+BOOL  	B_P_OVERFLOW;       			// Power Pulse Period Overflow Flag 
+BOOL  	B_V_OVERFLOW;       			// Voltage pulse period Overflow flag bit
+BOOL  	B_I_OVERFLOW;       			// Current pulse period Overflow flag bit
 
-BOOL	B_P_Last_OVERFLOW;       		// 功率脉冲周期 溢出标志位 
-BOOL  	B_V_Last_OVERFLOW;       		// 电压脉冲周期 溢出标志位
-BOOL  	B_I_Last_OVERFLOW;       		// 电流脉冲周期 溢出标志位
+BOOL	B_P_Last_OVERFLOW;       		// Power Pulse Period Overflow Flag
+BOOL  	B_V_Last_OVERFLOW;       		// Voltage pulse period Overflow flag bit
+BOOL  	B_I_Last_OVERFLOW;       		// Current pulse period Overflow flag bit
 
-BOOL    B_VI_Test_Mode;				//1:电压测量模式;0:电流测量模式
+BOOL    B_VI_Test_Mode;				// 1: Voltage measurement mode; 0: Current measurement mode
 u16   	U16_VI_Test_Times;				
 u16   	U16_Cal_Times;	
 
-u16   	U16_AC_P;				//功率值 1000.0W
-u16   	U16_AC_V;				//电压值 220.0V
-u16   	U16_AC_I;				//电流值 4.545A
-u32   	U32_AC_E;				//用电量   0.01度
+u16   	U16_AC_P;				//Power value 1000.0W
+u16   	U16_AC_V;				//Voltage value 220.0V
+u16   	U16_AC_I;				//Current value 4.545A
+u32   	U32_AC_E;				//energy used   0.01 degrees
 
-u32  	U16_REF_001_E_Pluse_CNT;        	//0.1度电脉冲总数参考值
-u32   	U16_E_Pluse_CNT;          	 	//脉冲个数寄存器
+u32  	U16_REF_001_E_Pluse_CNT;        	//0.1 degree reference value of the total number of electrical pulses
+u32   	U16_E_Pluse_CNT;          	 	//Pulse number register
 
-u32   	U32_Cal_Times;                 		//校正时间
+u32   	U32_Cal_Times;                 		//Correction time
 
-u32   	U32_P_REF_PLUSEWIDTH_TIME;      	//参考功率 脉冲周期
-u32   	U32_V_REF_PLUSEWIDTH_TIME;      	//参考电压 脉冲周期
-u32   	U32_I_REF_PLUSEWIDTH_TIME;      	//参考电流 脉冲周期
+u32   	U32_P_REF_PLUSEWIDTH_TIME;      	//Reference power Pulse period
+u32   	U32_V_REF_PLUSEWIDTH_TIME;      	//Reference voltage Pulse period
+u32   	U32_I_REF_PLUSEWIDTH_TIME;      	//Reference current Pulse period
 
-u32   	U32_P_CURRENT_PLUSEWIDTH_TIME;      	//当前功率 脉冲周期
-u32   	U32_V_CURRENT_PLUSEWIDTH_TIME;      	//当前电压 脉冲周期
-u32   	U32_I_CURRENT_PLUSEWIDTH_TIME;      	//当前电流 脉冲周期
+u32   	U32_P_CURRENT_PLUSEWIDTH_TIME;      	//Reference current Pulse period Current power Pulse period
+u32   	U32_V_CURRENT_PLUSEWIDTH_TIME;      	//Current voltage Pulse period
+u32   	U32_I_CURRENT_PLUSEWIDTH_TIME;      	//Current current Pulse period
 
-u16   	U16_P_REF_Data;				//参考功率值,如以1000W校正。1000.0W
-u16   	U16_V_REF_Data;				//参考电压  220.0V
-u16   	U16_I_REF_Data;				//参考电流  1000W,220V条件下是4.545A
+u16   	U16_P_REF_Data;				//Reference power value, such as 1000W correction. 1000.0W
+u16   	U16_V_REF_Data;				//Reference voltage 220.0V
+u16   	U16_I_REF_Data;				//Reference current 1000W, 4.545A at 220V
 
 u8    	U8_CURR_WorkMode;
 //--------------------------------------------------------------------------------------------
 
-/*-------------------------------------------- 功率、电压、电流计算 -------------------------------------------*/
+/*-------------------------------------------- Power, voltage, current calculation -------------------------------------------*/
 STATIC OPERATE_RET get_ele_coe_flash(VOID);
 
 /*********************************************************************************
  * FUNCTION:       dltj_copy
- * DESCRIPTION:    全局变量赋值
- * INPUT:          src：电量统计相关参数结构体
- * OUTPUT:         des：电量统计相关参数结构体
+ * DESCRIPTION:    global variable assignment
+ * INPUT:          src：Structure of parameters related to electricity statistics
+ * OUTPUT:         des：Structure of parameters related to power statistics 
  * RETURN:         none
- * OTHERS:         bl0937芯片引脚配置和参数赋值
+ * OTHERS:         bl0937 chip pin configuration and parameter assignment
  * HISTORY:        2020-07-29
  *******************************************************************************/
 VOID dltj_copy(DLTJ_CONFIG *des, DLTJ_CONFIG *src)
@@ -194,11 +194,11 @@ VOID dltj_copy(DLTJ_CONFIG *des, DLTJ_CONFIG *src)
 
 /*********************************************************************************
  * FUNCTION:       bl0937_init
- * DESCRIPTION:    bl0937芯片引脚配置和参数设置
- * INPUT:          dltj：电量统计相关参数结构体
+ * DESCRIPTION:    bl0937 chip pin configuration and parameter settings
+ * INPUT:          dltj: Structure of parameters related to electricity statistics
  * OUTPUT:         none
  * RETURN:         none
- * OTHERS:         bl0937芯片引脚配置和参数设置
+ * OTHERS:         bl0937 chip pin configuration and parameter settings
  * HISTORY:        2020-07-29
  *******************************************************************************/
 VOID bl0937_init(DLTJ_CONFIG *dltj)
@@ -228,7 +228,7 @@ STATIC VOID HLW8012_Measure_P(VOID)
     }
 
     if (U8_CURR_WorkMode == D_CAL_START_MODE) {
-        U32_P_REF_PLUSEWIDTH_TIME = U32_P_CURRENT_PLUSEWIDTH_TIME;	   // 校正时取U32_P_CURRENT_PLUSEWIDTH_TIME参数作为参考值	 
+        U32_P_REF_PLUSEWIDTH_TIME = U32_P_CURRENT_PLUSEWIDTH_TIME;	   // Take the U32_P_CURRENT_PLUSEWIDTH_TIME parameter as the reference value during calibration 
         return;
     }
     if(U32_P_CURRENT_PLUSEWIDTH_TIME == 0){
@@ -237,7 +237,7 @@ STATIC VOID HLW8012_Measure_P(VOID)
         U16_AC_P = U16_P_REF_Data * U32_P_REF_PLUSEWIDTH_TIME/U32_P_CURRENT_PLUSEWIDTH_TIME;
     }
     
-    if (U16_AC_P == 0xffff)     //开机时U32_P_CURRENT_PLUSEWIDTH_TIME = 0，计算溢出
+    if (U16_AC_P == 0xffff)     //U32_P_CURRENT_PLUSEWIDTH_TIME = 0 at boot time, calculation overflow
     {
         U16_AC_P = 0; 
     }
@@ -267,7 +267,7 @@ VOID HLW8012_Measure_V(VOID)
 //        PR_NOTICE("[caojq]aver_preoid v_last_time:%d,v_last_count:%d,v_plusewidth_time:%d",U16_V_Last_OneCycleTime,U16_V_Last_CNT,U32_V_CURRENT_PLUSEWIDTH_TIME);
     }
     if (U8_CURR_WorkMode == D_CAL_START_MODE) {
-        U32_V_REF_PLUSEWIDTH_TIME = U32_V_CURRENT_PLUSEWIDTH_TIME;	   // 校正时取u32_V_Period参数作为参考值	 
+        U32_V_REF_PLUSEWIDTH_TIME = U32_V_CURRENT_PLUSEWIDTH_TIME;	   // Take the u32_V_Period parameter as the reference value during calibration
         return;
     }
     if(U32_V_CURRENT_PLUSEWIDTH_TIME == 0){
@@ -276,7 +276,7 @@ VOID HLW8012_Measure_V(VOID)
         U16_AC_V = U16_V_REF_Data * U32_V_REF_PLUSEWIDTH_TIME/U32_V_CURRENT_PLUSEWIDTH_TIME;
     }
 
-    if (U16_AC_V == 0xffff)     //开机时U32_V_CURRENT_PLUSEWIDTH_TIME = 0，计算溢出
+    if (U16_AC_V == 0xffff)     //U32_V_CURRENT_PLUSEWIDTH_TIME = 0 at boot time, calculation overflow
     {
         U16_AC_V = 0; 
     }
@@ -308,7 +308,7 @@ VOID HLW8012_Measure_I(VOID)
 //       PR_NOTICE("[caojq]aver_preoid I_last_time:%d,I_last_count:%d,I_plusewidth_time:%d",U16_I_Last_OneCycleTime,U16_I_Last_CNT,U32_I_CURRENT_PLUSEWIDTH_TIME);
     }
     if (U8_CURR_WorkMode == D_CAL_START_MODE) {
-        U32_I_REF_PLUSEWIDTH_TIME = U32_I_CURRENT_PLUSEWIDTH_TIME;	   // 校正时取U32_V_CURRENT_PLUSEWIDTH_TIME参数作为参考值	 
+        U32_I_REF_PLUSEWIDTH_TIME = U32_I_CURRENT_PLUSEWIDTH_TIME;	   // Take the U32_V_CURRENT_PLUSEWIDTH_TIME parameter as the reference value during calibration	 
         return;
     }
     if(U32_I_CURRENT_PLUSEWIDTH_TIME == 0){
@@ -321,7 +321,7 @@ VOID HLW8012_Measure_I(VOID)
         U16_AC_I = 0;
     }
   
-    if (U16_AC_I == 0xffff)     //开机时U32_I_CURRENT_PLUSEWIDTH_TIME = 0，计算溢出
+    if (U16_AC_I == 0xffff)     //U32_I_CURRENT_PLUSEWIDTH_TIME = 0 at boot, calculation overflow
     {
         U16_AC_I = 0; 
     }
@@ -335,16 +335,16 @@ VOID HLW8012_Measure_I(VOID)
 VOID gpio_interrupt(UCHAR_T en_pin)
 {
     if(en_pin == Get_ELE_PORT){
-		U16_P_TotalTimes = 0;		//完成一次有效的测量，溢出寄存器清零	
+		U16_P_TotalTimes = 0;		//Complete a valid measurement, the overflow register is cleared
 		U16_P_CNT++;
 		if (B_P_OVERFLOW == TRUE)
 		{  
 			//从溢出模式转入,开始测量	  
-			B_P_TestOneCycle_Mode = 0;	//初始化为计数脉冲测量模式
-			U16_P_TotalTimes = 0;		//清溢出寄存器清零
-			U16_P_OneCycleTime = 0; 	//清测量寄存器
+			B_P_TestOneCycle_Mode = 0;	//Initialize to count pulse measurement mode
+			U16_P_TotalTimes = 0;		//clear overflow register
+			U16_P_OneCycleTime = 0; 	//clear measurement register
 			U16_P_CNT = 1;				
-			B_P_OVERFLOW = FALSE;		//清溢出标志位
+			B_P_OVERFLOW = FALSE;		//clear overflow flag
 		}
 		else
 		{
@@ -352,15 +352,15 @@ VOID gpio_interrupt(UCHAR_T en_pin)
 			{
 				if (U16_P_OneCycleTime >= D_TIME1_100MS)
 				{
-					//单周期测量模式 
+					//Single cycle measurement mode 
 					U16_P_Last_OneCycleTime = U16_P_OneCycleTime;
 					B_P_Last_TestOneCycle_Mode = B_P_TestOneCycle_Mode;
-					B_P_OVERFLOW = FALSE;		//溢出标志位清零
+					B_P_OVERFLOW = FALSE;		//The overflow flag is cleared
 					B_P_Last_OVERFLOW = B_P_OVERFLOW;
-					 //清状态参数,重新开始测试
-					B_P_TestOneCycle_Mode = 0;	//初始化为计数脉冲测量模式
-					U16_P_TotalTimes = 0;		//完成一次有效的测量，溢出寄存器清零
-					U16_P_OneCycleTime = 0; 	//清测量寄存器
+					 //Clear the status parameters and restart the test
+					B_P_TestOneCycle_Mode = 0;	//Initialize to count pulse measurement mode
+					U16_P_TotalTimes = 0;		//Complete a valid measurement, the overflow register is cleared
+					U16_P_OneCycleTime = 0; 	//clear measurement register
 					U16_P_CNT = 1;
 				}
 			}
@@ -371,24 +371,24 @@ VOID gpio_interrupt(UCHAR_T en_pin)
 					U16_P_Last_OneCycleTime = U16_P_OneCycleTime;
 					U16_P_Last_CNT = U16_P_CNT;
 					B_P_Last_TestOneCycle_Mode = B_P_TestOneCycle_Mode;
-					B_P_OVERFLOW = FALSE;		//溢出标志位清零
+					B_P_OVERFLOW = FALSE;		//The overflow flag is cleared
 					B_P_Last_OVERFLOW = B_P_OVERFLOW;
-					//清状态参数,重新开始测试
-					B_P_TestOneCycle_Mode = 0;	//初始化为计数脉冲测量模式
-					U16_P_TotalTimes = 0;		//完成一次有效的测量，溢出寄存器清零
-					U16_P_OneCycleTime = 0; 	//清测量寄存器
+					//Clear the status parameters and restart the test
+					B_P_TestOneCycle_Mode = 0;	//Initialize to count pulse measurement mode
+					U16_P_TotalTimes = 0;		//Complete a valid measurement, the overflow register is cleared
+					U16_P_OneCycleTime = 0; 	//clear measurement register
 					U16_P_CNT = 1;
 				}
 			}
 		}
-		//校正模式
+		//Correction mode
 		if (U8_CURR_WorkMode == D_CAL_START_MODE)
 		{
-			//记录单位时间内的用电量
+			//Record the electricity consumption per unit time
 			U16_E_Pluse_CNT++;
 		}
 		
-	//用电量计量，每0.1度电，用电量寄存器增加0.1度
+	//Electricity consumption metering, every 0.1 kWh, the electricity consumption register increases by 0.1 kWh
 		if (U8_CURR_WorkMode == D_NORMAL_MODE)
 		{
 			U16_E_Pluse_CNT++;
@@ -400,19 +400,19 @@ VOID gpio_interrupt(UCHAR_T en_pin)
 		}
 	}
 	if(en_pin == Get_CUR_VOL){
-		//电压测试模式
+		//Voltage test mode
 		if (B_VI_Test_Mode == 1)
 		{
 			U16_V_TotalTimes = 0; 
 			U16_V_CNT++;
 			if (B_V_OVERFLOW == TRUE)
 			{				   
-				//从溢出模式转入,开始测量	  
-				B_V_TestOneCycle_Mode = 0;	//初始化为计数脉冲测量模式
-				U16_V_TotalTimes = 0;		//清溢出寄存器清零
-				U16_V_OneCycleTime = 0; 	//清测量寄存器
+				//Transfer from overflow mode to start measurement
+				B_V_TestOneCycle_Mode = 0;	//Initialize to count pulse measurement mode
+				U16_V_TotalTimes = 0;		//clear overflow register
+				U16_V_OneCycleTime = 0; 	//clear measurement register
 				U16_V_CNT = 1;				
-				B_V_OVERFLOW = FALSE;		//清溢出标志位
+				B_V_OVERFLOW = FALSE;		//clear overflow flag
 			}
 			else
 			{
@@ -420,15 +420,15 @@ VOID gpio_interrupt(UCHAR_T en_pin)
 				{
 					if (U16_V_OneCycleTime >= D_TIME1_100MS)
 					{
-						//单周期测量模式 
+						//Single cycle measurement mode 
 						U16_V_Last_OneCycleTime = U16_V_OneCycleTime;
 						B_V_Last_TestOneCycle_Mode = B_V_TestOneCycle_Mode;
-						B_V_OVERFLOW = FALSE;		//溢出标志位清零
+						B_V_OVERFLOW = FALSE;		//The overflow flag is cleared
 						B_V_Last_OVERFLOW = B_V_OVERFLOW;
-						 //清状态参数,重新开始测试
-						B_V_TestOneCycle_Mode = 0;	//初始化为计数脉冲测量模式
-						U16_V_TotalTimes = 0;		//完成一次有效的测量，溢出寄存器清零
-						U16_V_OneCycleTime = 0; 	//清测量寄存器
+						 //Clear the status parameters and restart the test
+						B_V_TestOneCycle_Mode = 0;	//Initialize to count pulse measurement mode
+						U16_V_TotalTimes = 0;		//Complete a valid measurement, the overflow register is cleared
+						U16_V_OneCycleTime = 0; 	//clear measurement register
 						U16_V_CNT = 1;
 					}
 				}
@@ -439,32 +439,32 @@ VOID gpio_interrupt(UCHAR_T en_pin)
 						U16_V_Last_OneCycleTime = U16_V_OneCycleTime;
 						U16_V_Last_CNT = U16_V_CNT;
 						B_V_Last_TestOneCycle_Mode = B_V_TestOneCycle_Mode; 
-						B_V_OVERFLOW = FALSE;		//溢出标志位清零
+						B_V_OVERFLOW = FALSE;		//The overflow flag is cleared
 						B_V_Last_OVERFLOW = B_V_OVERFLOW;
-						//清状态参数,重新开始测试
-						B_V_TestOneCycle_Mode = 0;	//初始化为计数脉冲测量模式
-						U16_V_TotalTimes = 0;		//完成一次有效的测量，溢出寄存器清零
-						U16_V_OneCycleTime = 0; 	//清测量寄存器
+						//Clear the status parameters and restart the test
+						B_V_TestOneCycle_Mode = 0;	//Initialize to count pulse measurement mode
+						U16_V_TotalTimes = 0;		//Complete a valid measurement, the overflow register is cleared
+						U16_V_OneCycleTime = 0; 	//clear measurement register
 						U16_V_CNT = 1;
-						B_V_OVERFLOW = FALSE;		//溢出标志位清零
+						B_V_OVERFLOW = FALSE;		//The overflow flag is cleared
 					}
 				}
 			}
 		 }
 
-	//电流测试模式
+	//Current test mode
 		if (B_VI_Test_Mode == 0)
 		{
 			U16_I_TotalTimes = 0; 
 			U16_I_CNT++;
 			if (B_I_OVERFLOW == TRUE)
 			{
-				//从溢出模式转入,开始测量	  
-				B_I_TestOneCycle_Mode = 0;	//初始化为计数脉冲测量模式
-				U16_I_TotalTimes = 0;		//清溢出寄存器清零
-				U16_I_OneCycleTime = 0; 	//清测量寄存器
+				//Transfer from overflow mode to start measurement	  
+				B_I_TestOneCycle_Mode = 0;	//Initialize to count pulse measurement mode
+				U16_I_TotalTimes = 0;		//clear overflow register
+				U16_I_OneCycleTime = 0; 	//clear measurement register
 				U16_I_CNT = 1;				
-				B_I_OVERFLOW = FALSE;		//清溢出标志位
+				B_I_OVERFLOW = FALSE;		//clear overflow flag
 			}
 			else
 			{
@@ -472,15 +472,15 @@ VOID gpio_interrupt(UCHAR_T en_pin)
 				{
 					if (U16_I_OneCycleTime >= D_TIME1_100MS)
 					{
-						//单周期测量模式 
+						//Single cycle measurement mode 
 						U16_I_Last_OneCycleTime = U16_I_OneCycleTime;
 						B_I_Last_TestOneCycle_Mode = B_I_TestOneCycle_Mode;
-						B_I_OVERFLOW = FALSE;		//溢出标志位清零
+						B_I_OVERFLOW = FALSE;		//The overflow flag is cleared
 						B_I_Last_OVERFLOW = B_I_OVERFLOW;
-						 //清状态参数,重新开始测试
-						B_I_TestOneCycle_Mode = 0;	//初始化为计数脉冲测量模式
-						U16_I_TotalTimes = 0;		//完成一次有效的测量，溢出寄存器清零
-						U16_I_OneCycleTime = 0; 	//清测量寄存器
+						 //Clear the status parameters and restart the test
+						B_I_TestOneCycle_Mode = 0;	//Initialize to count pulse measurement mode
+						U16_I_TotalTimes = 0;		//Complete a valid measurement, the overflow register is cleared
+						U16_I_OneCycleTime = 0; 	//clear measurement register
 						U16_I_CNT = 1;
 					}
 				}
@@ -491,12 +491,12 @@ VOID gpio_interrupt(UCHAR_T en_pin)
 						U16_I_Last_OneCycleTime = U16_I_OneCycleTime;
 						U16_I_Last_CNT = U16_I_CNT;
 						B_I_Last_TestOneCycle_Mode = B_I_TestOneCycle_Mode;  
-						B_I_OVERFLOW = FALSE;		//溢出标志位清零
+						B_I_OVERFLOW = FALSE;		//The overflow flag is cleared
 						B_I_Last_OVERFLOW = B_I_OVERFLOW;
-						//清状态参数,重新开始测试
-						B_I_TestOneCycle_Mode = 0;	//初始化为计数脉冲测量模式
-						U16_I_TotalTimes = 0;		//完成一次有效的测量，溢出寄存器清零
-						U16_I_OneCycleTime = 0; 	//清测量寄存器
+						//Clear the status parameters and restart the test
+						B_I_TestOneCycle_Mode = 0;	//Initialize to count pulse measurement mode
+						U16_I_TotalTimes = 0;		//Complete a valid measurement, the overflow register is cleared
+						U16_I_OneCycleTime = 0; 	//clear measurement register
 						U16_I_CNT = 1;
 					}
 				}
@@ -511,12 +511,12 @@ STATIC VOID hw_test_timer_cb(void)
         U32_Cal_Times++;
         if (U32_Cal_Times == D_TIME1_CAL_TIME)
         {
-            U16_REF_001_E_Pluse_CNT = E_001E_GAIN * U16_E_Pluse_CNT;		//记录校正时间内的脉冲数，此脉冲数表示0.0005度用电量
+            U16_REF_001_E_Pluse_CNT = E_001E_GAIN * U16_E_Pluse_CNT;		//Record the number of pulses in the calibration time, the number of pulses represents 0.0005 kWh of electricity
             tuya_hal_semaphore_post(ele_cal_busy);
         }
     }
     
-//功率测量
+//Power measurement
     if (U16_P_CNT != 0)
     {
         U16_P_OneCycleTime++;
@@ -525,32 +525,32 @@ STATIC VOID hw_test_timer_cb(void)
 
     if (U16_P_TotalTimes >= D_TIME1_P_OVERFLOW)
     {
-        B_P_OVERFLOW = TRUE; 		//溢出，
+        B_P_OVERFLOW = TRUE; 		//overflow，
         B_P_Last_OVERFLOW = B_P_OVERFLOW;
-        //清状态参数,重新开始测试
-        U16_P_TotalTimes = 0;       //清溢出寄存器
+        //Clear the status parameters and restart the test
+        U16_P_TotalTimes = 0;       //clear overflow register
         U16_P_OneCycleTime = 0;
-        U16_P_CNT = 0;              //等待下一次中断开始计数
-        B_P_TestOneCycle_Mode = 0;   //初始化为计数脉冲测量模式      
+        U16_P_CNT = 0;              //Wait for the next interrupt to start counting
+        B_P_TestOneCycle_Mode = 0;   //Initialize to count pulse measurement mode   
     }
     else if (U16_P_OneCycleTime == D_TIME1_100MS)
     {
 		if (U16_P_CNT < 2)
 		{
-			// 100ms内只有一次中断，说明周期>100ms,采用单周期测量模式 
+			// There is only one interrupt within 100ms, indicating that the cycle is > 100ms, and the single-cycle measurement mode is used
 			B_P_TestOneCycle_Mode = 1;
 		}
 		else
 		{
-			 // 100ms内有2次或以上数量脉冲，说明周期<100ms，采用计数脉冲测量模式
+			 // There are 2 or more pulses within 100ms, indicating that the period is less than 100ms, and the counting pulse measurement mode is used.
 			 B_P_TestOneCycle_Mode = 0;   
 		}
     }
     
-//电压、电流测量
+//Voltage and current measurement
     if (B_VI_Test_Mode == 1)
     {
-        //电压测量 
+        //Voltage measurement 
         if (U16_V_CNT != 0)
     	{
 	        U16_V_OneCycleTime++;
@@ -561,29 +561,29 @@ STATIC VOID hw_test_timer_cb(void)
         {
             B_V_OVERFLOW = TRUE; 
             B_V_Last_OVERFLOW = B_V_OVERFLOW;
-            //清状态参数,重新开始测试
-            U16_V_TotalTimes = 0;       //清溢出寄存器
+            //Clear the status parameters and restart the test
+            U16_V_TotalTimes = 0;       //clear overflow register
             U16_V_OneCycleTime = 0;
             U16_V_CNT = 0;              
-            B_V_TestOneCycle_Mode = 0;   //初始化为计数脉冲测量模式  
+            B_V_TestOneCycle_Mode = 0;   //Initialize to count pulse measurement mode  
         }
         else if (U16_V_OneCycleTime == D_TIME1_100MS)
         {
 			if (U16_V_CNT < 2)
 			{
-				// 100ms内只有一次中断，说明周期>100ms,采用单周期测量模式 
+				// There is only one interrupt within 100ms, indicating that the cycle is > 100ms, and the single-cycle measurement mode is used
 				B_V_TestOneCycle_Mode = 1;
 			}
 			else
 			{
-				// 100ms内有2次或以上数量脉冲，说明周期<100ms，采用计数脉冲测量模式
+				// There are 2 or more pulses within 100ms, indicating that the period is less than 100ms, and the counting pulse measurement mode is used.
 				B_V_TestOneCycle_Mode = 0;   
 			}
         }
     }
     else
     {
-        //电流测量   
+        //Current measurement   
         if (U16_I_CNT != 0)
     	{
 			U16_I_OneCycleTime++;
@@ -594,36 +594,36 @@ STATIC VOID hw_test_timer_cb(void)
         {
             B_I_OVERFLOW = TRUE; 
             B_I_Last_OVERFLOW = B_I_OVERFLOW;
-            //清状态参数,重新开始测试
-            U16_I_TotalTimes = 0;       //清溢出寄存器
+            //Clear the status parameters and restart the test
+            U16_I_TotalTimes = 0;       //clear overflow register
             U16_I_OneCycleTime = 0;
             U16_I_CNT = 0;
-            B_I_TestOneCycle_Mode = 0;   //初始化为计数脉冲测量模式      
+            B_I_TestOneCycle_Mode = 0;   //Initialize to count pulse measurement mode      
         }
         else if (U16_I_OneCycleTime == D_TIME1_100MS)
         {
 			if (U16_I_CNT < 2)
 			{
-			// 100ms内只有一次中断，说明周期>100ms,采用单周期测量模式 
+			// There is only one interrupt within 100ms, indicating that the cycle is > 100ms, and the single-cycle measurement mode is used
 			B_I_TestOneCycle_Mode = 1;
 			}
 			else
 			{
-			 // 100ms内有2次或以上数量脉冲，说明周期<100ms，采用计数脉冲测量模式
+			 // There are 2 or more pulses within 100ms, indicating that the period is less than 100ms, and the counting pulse measurement mode is used.
 			 B_I_TestOneCycle_Mode = 0;   
 			}
         }
     }
       
 
-//电压、电流测量模式切换  B_VI_Test_Mode:(1:电压测量模式) (0:电流测试模式) 
+//Voltage and current measurement mode switching B_VI_Test_Mode: (1: voltage measurement mode) (0: current test mode)
     U16_VI_Test_Times--;
 	if(B_VI_Test_Mode == 1){
-		if(U16_VI_Test_Times == V_CAL_TIME ){//此条件不会触发,电流电压功率数据同时更新
+		if(U16_VI_Test_Times == V_CAL_TIME ){//This condition will not be triggered, the current, voltage and power data will be updated at the same time
 			ele_cal_flag = TRUE;
 		}
 	}else{
-		if(U16_VI_Test_Times == 7500) { /* 8S接近临界值，可能会出现误测，后改为7.5S */
+		if(U16_VI_Test_Times == 7500) { /* 8S is close to the critical value, false detection may occur, and later changed to 7.5S */
 			ele_cal_flag = TRUE;
 		}
 	} 
@@ -633,7 +633,7 @@ STATIC VOID hw_test_timer_cb(void)
     	ele_cal_flag = FALSE;
         if (B_VI_Test_Mode == 1)
         {
-            //转为电流测量模式
+            //Switch to current measurement mode
             B_VI_Test_Mode = 0;
             ENTER_I_MODE;
             #if 0
@@ -644,7 +644,7 @@ STATIC VOID hw_test_timer_cb(void)
             }
             #endif
             U16_VI_Test_Times = I_CAL_TIME;
-            //清状态参数
+            //Clear state parameters
             U16_I_TotalTimes = 0;
             U16_I_OneCycleTime = 0;
             U16_I_CNT = 0;
@@ -652,7 +652,7 @@ STATIC VOID hw_test_timer_cb(void)
         }
         else
         {
-            //转为电压测量模式
+            //Switch to voltage measurement mode
             B_VI_Test_Mode = 1;
             ENTER_V_MODE;
             #if 0
@@ -663,7 +663,7 @@ STATIC VOID hw_test_timer_cb(void)
             }
             #endif
             U16_VI_Test_Times = V_CAL_TIME;
-            //清状态参数
+            //Clear state parameters
             U16_V_TotalTimes = 0;
             U16_V_OneCycleTime = 0;
             U16_V_CNT = 0;
@@ -674,11 +674,11 @@ STATIC VOID hw_test_timer_cb(void)
 
 /*********************************************************************************
  * FUNCTION:       save_prod_test_data
- * DESCRIPTION:    产测参数保存
- * INPUT:          state：产测结果
+ * DESCRIPTION:    Production test parameter storage
+ * INPUT:          state：Production test results
  * OUTPUT:         none
- * RETURN:         OPERATE_RET：返回结果
- * OTHERS:         产测结果保存在flash中
+ * RETURN:         OPERATE_RET：return result
+ * OTHERS:         Production test results are saved in flash
  * HISTORY:        2020-03-04
  *******************************************************************************/
 STATIC VOID Parameter_Init(void)
@@ -709,7 +709,7 @@ STATIC VOID Parameter_Init(void)
     U16_V_Last_CNT = 0;
     U16_I_Last_CNT = 0;
 
-    //初始化单周期测量模式
+    //Initialize single-cycle measurement mode
     B_P_TestOneCycle_Mode = 1;
     B_V_TestOneCycle_Mode = 1;
     B_I_TestOneCycle_Mode = 1;
@@ -717,7 +717,7 @@ STATIC VOID Parameter_Init(void)
     B_V_Last_TestOneCycle_Mode = 1;
     B_I_Last_TestOneCycle_Mode = 1;
 
-    //开始测量，置溢出标志位为1  
+    //Start the measurement and set the overflow flag to 1
     B_P_OVERFLOW = 1;
     B_V_OVERFLOW = 1;
     B_I_OVERFLOW = 1;
@@ -726,7 +726,7 @@ STATIC VOID Parameter_Init(void)
     B_V_Last_OVERFLOW = 1;
     B_I_Last_OVERFLOW = 1;
 
-    //上电初始化为电压测试模式 
+    //Power-on initialization to voltage test mode
     B_VI_Test_Mode = 1;
     ENTER_V_MODE;
     U16_VI_Test_Times = V_CAL_TIME;
@@ -735,7 +735,7 @@ STATIC VOID Parameter_Init(void)
     E_VAL = 0;
     U16_E_Pluse_CNT = 0;
 
-    //设置默认值
+    //set default value
     U16_P_REF_Data = DEF_P;     // 857 =  85.7W
     U16_V_REF_Data = DEF_V;     // 2202 = 220.2V
     U16_I_REF_Data = DEF_I;     // 386 =  386mA
@@ -745,11 +745,11 @@ STATIC VOID Parameter_Init(void)
 
 /*********************************************************************************
  * FUNCTION:       save_prod_test_data
- * DESCRIPTION:    产测参数保存
- * INPUT:          state：产测结果
+ * DESCRIPTION:    Production test parameter storage
+ * INPUT:          state：Production test results
  * OUTPUT:         none
- * RETURN:         OPERATE_RET：返回结果
- * OTHERS:         产测结果保存在flash中
+ * RETURN:         OPERATE_RET：return result
+ * OTHERS:         Production test results are saved in flash
  * HISTORY:        2020-03-04
  *******************************************************************************/
 OPERATE_RET save_prod_test_data(INT_T state)
@@ -796,11 +796,11 @@ OPERATE_RET save_prod_test_data(INT_T state)
 
 /*********************************************************************************
 * FUNCTION:       get_prod_test_data
-* DESCRIPTION:    获取产测结
-* INPUT:          state：产测结果
+* DESCRIPTION:    Get production test results
+* INPUT:          state：Production test results
 * OUTPUT:         none
-* RETURN:         OPERATE_RET：返回结果
-* OTHERS:         获取flash中产测结果
+* RETURN:         OPERATE_RET：return result
+* OTHERS:         Get flash mid-production test results
 * HISTORY:        2020-03-04
 *******************************************************************************/
 OPERATE_RET get_prod_test_data(INT_T *state)
@@ -811,7 +811,7 @@ OPERATE_RET get_prod_test_data(INT_T *state)
     }
 
     uFILE * fp = ufopen(PROD_RSLT_KEY,"r");
-    if(NULL == fp) {     /* 如果无法打开 */
+    if(NULL == fp) {     /* If it cannot be opened */
         PR_ERR("cannot open file");
         *state = 0;
         return OPRT_COM_ERROR;
@@ -861,11 +861,11 @@ JSON_PARSE_ERR:
 
 /*********************************************************************************
 * FUNCTION:       set_coefficient
-* DESCRIPTION:    设置产测校准参数
+* DESCRIPTION:    Set production test calibration parameters
 * INPUT:          none
 * OUTPUT:         none
-* RETURN:         OPERATE_RET：返回结果
-* OTHERS:         存储校准参数到flash
+* RETURN:         OPERATE_RET：return result
+* OTHERS:         Store calibration parameters to flash
 * HISTORY:        2020-07-29
 *******************************************************************************/
 STATIC OPERATE_RET set_coefficient(VOID)
@@ -917,11 +917,11 @@ STATIC OPERATE_RET set_coefficient(VOID)
 
 /*********************************************************************************
 * FUNCTION:       get_coefficient
-* DESCRIPTION:    获取产测校准参数
-* INPUT:          d：校准参数
+* DESCRIPTION:    Get production test calibration parameters
+* INPUT:          d：Calibration parameters
 * OUTPUT:         none
-* RETURN:         OPERATE_RET：返回结果
-* OTHERS:         获取flash中校准参数
+* RETURN:         OPERATE_RET：return result
+* OTHERS:         Get calibration parameters in flash
 * HISTORY:        2020-07-29
 *******************************************************************************/
 STATIC OPERATE_RET get_coefficient(OUT ELE_CAL_DATA *d)
@@ -933,7 +933,7 @@ STATIC OPERATE_RET get_coefficient(OUT ELE_CAL_DATA *d)
     }
 
     uFILE * fp = ufopen(COE_SAVE_KEY,"r");
-    if(NULL == fp) {     /* 如果无法打开 */
+    if(NULL == fp) {     /* If it cannot be opened */
         PR_ERR("cannot open file");
         return OPRT_COM_ERROR;
     }
@@ -985,13 +985,13 @@ STATIC OPERATE_RET get_coefficient(OUT ELE_CAL_DATA *d)
     }else{
         d->e = json->valueint;
     }
-    //读不到产测结果，说明未进行产测，prod_rslt = 2
+    // The production test result cannot be read, indicating that the production test has not been carried out, prod_rslt = 2
     op_ret = get_prod_test_data(&d->prod_rslt);
     if(OPRT_OK != op_ret) {
         PR_NOTICE("not get product test data:%d",op_ret);
         d->prod_rslt = 2;
     }
-    // 如果读不到产测结果，又有电压校准值，说明是最早的一批固件升级上来的。最早的一批固件不存储prod_rslt，只存v,i,p,e
+    // If you can't read the production test results, and there are voltage calibration values, it means that the first batch of firmware was upgraded. The earliest batch of firmware does not store prod_rslt, only v,i,p,e
     if ((2 == d->prod_rslt) && (d->v)) {
         d->prod_rslt = 1;
     }
@@ -1091,11 +1091,11 @@ VOID dis_hw_intr_time(VOID)
 
 /*********************************************************************************
  * FUNCTION:       ele_cnt_init
- * DESCRIPTION:    电量脉冲计数初始化
- * INPUT:          mode：计量芯片的模式(计量模式)
+ * DESCRIPTION:    Initialization of battery pulse count
+ * INPUT:          mode：Mode of metering chip (metering mode)
  * OUTPUT:         none
  * RETURN:         none
- * OTHERS:         计量芯片初始化/硬件定时器初始化/中断初始化/脉冲计数初始化
+ * OTHERS:         Metering chip initialization/hardware timer initialization/interrupt initialization/pulse count initialization
  * HISTORY:        2020-03-04
  *******************************************************************************/
 OPERATE_RET ele_cnt_init(INT_T mode)
@@ -1116,7 +1116,7 @@ OPERATE_RET ele_cnt_init(INT_T mode)
     timer_init();
     gpio_intr_init();
 
-//    vSemaphoreCreateBinary(get_ele_busy); //创造信号量
+//    vSemaphoreCreateBinary(get_ele_busy); //create semaphore
     op_ret = sys_add_timer(get_ele_timer_cb, NULL, &get_ele_timer);
     if(OPRT_OK != op_ret) {
 //        hw_timer_disable();
@@ -1156,10 +1156,10 @@ OPERATE_RET ele_cnt_init(INT_T mode)
         tuya_hal_semaphore_release(ele_cal_busy); 
         PR_DEBUG("prod test has last for %d mS",D_TIME1_CAL_TIME);
         if(FALSE == cal_data_judge()){
-            INT_T pt_result = 0; // 如果之前产测成功过，这次失败不会保存数据，防止生产时将正确数据覆盖
+            INT_T pt_result = 0; // If the previous production test has been successful, the data will not be saved this time, preventing the correct data from being overwritten during production
             if( OPRT_OK == get_prod_test_data(&pt_result) && (1 == pt_result)){
                 return OPRT_COM_ERROR;
-            }else{ // 如果之前未产测成功，失败会保存数据，主要用于调试。
+            }else{ // If the production test has not been successful before, the data will be saved if it fails, which is mainly used for debugging.
                 op_ret = set_coefficient();
                 if(OPRT_OK != op_ret){
                     return op_ret;
@@ -1188,11 +1188,11 @@ OPERATE_RET ele_cnt_init(INT_T mode)
 
 /*********************************************************************************
  * FUNCTION:       get_ele_par
- * DESCRIPTION:    获取电量实时参数
- * INPUT:          p/v/i:功率/电压/电流
+ * DESCRIPTION:    Get real-time power parameters
+ * INPUT:          p/v/i: power/voltage/current
  * OUTPUT:         none
  * RETURN:         none
- * OTHERS:         获取电量芯片实时参数
+ * OTHERS:         Get real-time parameters of power chip
  * HISTORY:        2020-03-04
  *******************************************************************************/
 VOID get_ele_par(OUT u32 *P,OUT u32 *V,OUT u32 *I)
@@ -1206,11 +1206,11 @@ VOID get_ele_par(OUT u32 *P,OUT u32 *V,OUT u32 *I)
 
 /*********************************************************************************
  * FUNCTION:       get_ele
- * DESCRIPTION:    获取增加电量参数
- * INPUT:          E:增加电量值
+ * DESCRIPTION:    Get the increase power parameter
+ * INPUT:          E:Increase battery value
  * OUTPUT:         none
  * RETURN:         none
- * OTHERS:         获取电量芯片增加电量参数
+ * OTHERS:         Get the power chip increase power parameters
  * HISTORY:        2020-03-04
  *******************************************************************************/
 VOID get_ele(OUT UINT_T *E)
@@ -1223,11 +1223,11 @@ VOID get_ele(OUT UINT_T *E)
 
  /*********************************************************************************
   * FUNCTION:       report_coe_data
-  * DESCRIPTION:    上报电量统计校准参数及产测结果位
+  * DESCRIPTION:    Report power statistics calibration parameters and production test result bits
   * INPUT:          none
   * OUTPUT:         none
   * RETURN:         none
-  * OTHERS:         电量统计校准参数和产测结果
+  * OTHERS:         Gas statistics calibration parameters and production test results
   * HISTORY:        2020-03-04
   *******************************************************************************/
 OPERATE_RET report_coe_data(VOID)

@@ -2,8 +2,8 @@
  * @File: app_dltj.c 
  * @Author: caojq 
  * @Last Modified time: 2020-07-29
- * @Description: 电量统计上层应用。
- * 支持dp查询，支持tuya_common_user编译。
+ * @Description: Power statistics upper-layer application.
+ * Support dp query, support tuya_common_user compilation.
  * 
  */
 #define _APP_DLTJ_GLOBAL
@@ -34,25 +34,25 @@
 
 #define TIME_POSIX_2016 1451577600
 
-#define ADD_ELE_THRE 100//临时电量累加处理阈值
-#define ADD_TIME_MIN_THRE 60//电量处理最小时间间隔
-#define ADD_TIME_MAX_THRE 1800//电量处理最大时间间隔，单位S
-#define PVI_REPORT_BIG_THRE  30 //电流电压功率数据上报大间隔
-#define PVI_REPORT_SMALL_THRE 5 //电流电压功率数据上报小间隔
-#define PVI_REPORT_MAX_THRE 3600 //电流电压功率数据上报最长间隔
-#define PVI_REPORT_BIG_THRE_DP_QUERY  1800 //存在dp查询时的电流电压功率数据上报大间隔
-#define PVI_REPORT_SMALL_THRE_DP_QUERY 600 //存在dp查询时的电流电压功率数据上报小间隔
+#define ADD_ELE_THRE 100 //Temporary power accumulation processing threshold
+#define ADD_TIME_MIN_THRE 60 //Minimum time interval for power processing
+#define ADD_TIME_MAX_THRE 1800 //Maximum time interval for power processing, unit S
+#define PVI_REPORT_BIG_THRE  30 //Large interval for reporting current, voltage and power data
+#define PVI_REPORT_SMALL_THRE 5 //Small interval for reporting current, voltage and power data
+#define PVI_REPORT_MAX_THRE 3600 //The longest interval of current, voltage and power data reporting
+#define PVI_REPORT_BIG_THRE_DP_QUERY  1800 //Large interval for reporting current, voltage and power data when there is dp query
+#define PVI_REPORT_SMALL_THRE_DP_QUERY 600 //Small interval of current, voltage and power data reporting when dp query exists
 
-#define REPT_THRE_VOL 2//电压上报变化阈值，单位%
-#define REPT_THRE_PWR 30//功率上报变化阈值，单位%
-#define ELE_SLEEP_TIME 1//电量线程休眠间隔
+#define REPT_THRE_VOL 2 //Voltage reporting change threshold, unit %
+#define REPT_THRE_PWR 30 //Power reporting change threshold, unit %
+#define ELE_SLEEP_TIME 1 //Power thread sleep interval
 
-#define _IS_OVER_PROTECT 1//是否存在过流保护功能
-#define LIMIT_CURRENT 17000//过流保护限值，单位1mA
-#define _IF_REPT_COE   TRUE     //是否上报电量校准系数
-#define _DLTJ_REPT_TEST 0      //电量统计数据上报调试用，打开后自动上报数据
-#define SMALLEST_POWER 30   //功率小于此值时，屏蔽电流和功率,单位0.1W
-#define CPREEPING_POWER_THRE 1 /* 潜动电量阈值，有些电量芯片如bl0937可能存在空载30分钟测到0.001度电的情况，此时将这部分电量舍弃 */
+#define _IS_OVER_PROTECT 1 //Whether there is an overcurrent protection function
+#define LIMIT_CURRENT 17000 //Overcurrent protection limit, unit 1mA
+#define _IF_REPT_COE   TRUE     //whether to report power calibration coefficient
+#define _DLTJ_REPT_TEST 0      //Report power statistics for debugging, and automatically report data after opening
+#define SMALLEST_POWER 30   //When the power is less than this value, the shielding current and power, the unit is 0.1W
+#define CPREEPING_POWER_THRE 1 /* Creeping power threshold, some power chips such as bl0937 may measure 0.001 kWh of power without load for 30 minutes, and this part of power will be discarded at this time */
 #define MAX_POWER_ABS 50
 /***********************************************************
 *************************variable define********************
@@ -65,26 +65,26 @@ typedef struct
 
 typedef struct 
 {
-    UINT_T add_ele;//下层电量统计驱动中累加的电量
-    UINT_T cur_posix;//当前时间戳
-    UINT_T loc_data_cnt;//本地电量数据组的元素个数
+    UINT_T add_ele; //The accumulated power in the lower power 
+    UINT_T cur_posix; //Current timestamp
+    UINT_T loc_data_cnt; //The number of elements of the local power data group
     UINT_T cur_current;
     UINT_T cur_vol;
     UINT_T cur_power;
     UINT_T last_current;
     UINT_T last_vol;
     UINT_T last_power;
-    INT_T tem_ele_val;//存放已经累加的但还未上报或存储到local_data中的电量
+    INT_T tem_ele_val; //Store the electricity that has been accumulated but has not been reported or stored in local_data
     THRD_HANDLE report_thread;
-    LOC_DATA ele_sav_data[10];//本地电量数据组
+    LOC_DATA ele_sav_data[10]; //Local power data group
 }POWER_CNT;
  STATIC POWER_CNT power_cnt;
 
 typedef enum{
-    ELE_NOT_ACTIVE,//上电后未配网激活
-    ELE_NORMAL,//已配网成功且当前mqtt连接成功
-    ELE_UNCONNECT,//已配网成功当当前mqtt连接失败
-//    ELE_SYS_OTA//系统正在进行在线升级
+    ELE_NOT_ACTIVE, //The network is not activated after power on
+    ELE_NORMAL, //The network has been successfully configured and the current mqtt connection is successful
+    ELE_UNCONNECT, //The network has been successfully configured when the current mqtt connection fails
+//    ELE_SYS_OTA //The system is being upgraded online
 }ELE_THREAD_STATE;
 
 typedef struct{
@@ -110,9 +110,9 @@ STATIC handle_time_t handle_time = {
 extern HW_TABLE g_hw_table;
 
 STATIC ELE_THREAD_STATE ele_state = ELE_NOT_ACTIVE;
-STATIC UINT_T ele_handle_time = 0;//距离上一次电量上报之后的时间，单位比1S略大一些
+STATIC UINT_T ele_handle_time = 0; //The time since the last power
 STATIC UINT_T pvi_handle_time = 0;
-STATIC UINT_T pvi_report_min_time = PVI_REPORT_BIG_THRE;//当前上报间隔，可调
+STATIC UINT_T pvi_report_min_time = PVI_REPORT_BIG_THRE; //Current reporting interval, adjustable
 #if 0
 #define DLTJ_INIT_CONFIG_DEFAULT()              \
     {                                           \
@@ -189,11 +189,11 @@ STATIC BOOL_T if_pvi_need_report(VOID);
 VOID over_protect(VOID);
 /*********************************************************************************
  * FUNCTION:       get_time_posix
- * DESCRIPTION:    获取当前时间戳
+ * DESCRIPTION:    Get the current timestamp
  * INPUT:          none
- * OUTPUT:         curPosix:当前时间戳
- * RETURN:         OPERATE_RET:初始化状态，返回数值型状态值
- * OTHERS:         单位是毫秒
+ * OUTPUT:         curPosix:current timestamp
+ * RETURN:         OPERATE_RET:Initialization state, return numeric state value
+ * OTHERS:         The unit is milliseconds
  * HISTORY:        2020-03-04
  *******************************************************************************/
 STATIC OPERATE_RET get_time_posix(OUT UINT_T *curPosix)
@@ -210,18 +210,18 @@ STATIC OPERATE_RET get_time_posix(OUT UINT_T *curPosix)
 
 /*********************************************************************************
  * FUNCTION:       get_tem_ele_val
- * DESCRIPTION:    获取falsh中的临时电量值
+ * DESCRIPTION:    Get the temporary battery value in flash
  * INPUT:          none
- * OUTPUT:         val:临时电量值
- * RETURN:         OPERATE_RET:初始化状态，返回数值型状态值
- * OTHERS:         flash中未配网电量存储的格式:
+ * OUTPUT:         val:temporary battery value
+ * RETURN:         OPERATE_RET:Initialization state, return numeric state value
+ * OTHERS:         Format of unconfigured grid power storage in flash
      {“dps”:{“dp_ele”:ele_vlaue},”dpsTime”:{“dp_ele”:s_timer_posix},”ts”:ms_time_posix}
  * HISTORY:        2020-03-04
  *******************************************************************************/
 STATIC OPERATE_RET get_tem_ele_val(OUT INT_T *val)
 {
     uFILE * fp = ufopen(TEM_ELE_SAVE_KEY,"r");
-    if(NULL == fp) {     /* 如果无法打开 */
+    if(NULL == fp) {     /* If it cannot be opened  */
         PR_ERR("cannot open file");
         *val = 0;
         return OPRT_COM_ERROR;
@@ -272,11 +272,11 @@ JSON_PARSE_ERR:
 
 /*********************************************************************************
  * FUNCTION:       set_tem_ele_val
- * DESCRIPTION:    在falsh中存储临时电量值
+ * DESCRIPTION:    Store temporary battery value in flash
  * INPUT:          none
- * OUTPUT:         val:临时电量值
- * RETURN:         OPERATE_RET:初始化状态，返回数值型状态值
- * OTHERS:         flash中未配网电量存储的格式:
+ * OUTPUT:         val:temporary battery value
+ * RETURN:         OPERATE_RET:Initialization state, return numeric state value
+ * OTHERS:         Format of unconfigured grid power storage in flash:
      {“dps”:{“dp_ele”:ele_vlaue},”dpsTime”:{“dp_ele”:s_timer_posix},”ts”:ms_time_posix}
  * HISTORY:        2020-03-04
  *******************************************************************************/
@@ -326,18 +326,18 @@ STATIC OPERATE_RET set_tem_ele_val(IN INT_T val)
 
 /*********************************************************************************
  * FUNCTION:       get_ele_data
- * DESCRIPTION:    获取falsh中的断网电量值
+ * DESCRIPTION:    Get the disconnected power value in flash
  * INPUT:          none
  * OUTPUT:         none
- * RETURN:         OPERATE_RET:初始化状态，返回数值型状态值
- * OTHERS:         flash中电量存储的格式:
+ * RETURN:         OPERATE_RET:Initialization state, return numeric state value
+ * OTHERS:         The format of power storage in flash:
      {“ele_save_key”:[{time:time_posix1,ele:ele_value1},{time:time_posix2,ele:ele_value2}...{time:time_posix10,ele:ele_value10}]}
  * HISTORY:        2020-03-04
  *******************************************************************************/
 STATIC OPERATE_RET get_ele_data(VOID)
 {
     uFILE * fp = ufopen(ELE_SAVE_KEY,"r");
-    if(NULL == fp) {     /* 如果无法打开 */
+    if(NULL == fp) {     /* If it cannot be opened  */
         PR_ERR("cannot open file");
         power_cnt.loc_data_cnt = 0;
         return OPRT_COM_ERROR;
@@ -399,11 +399,11 @@ STATIC OPERATE_RET get_ele_data(VOID)
 
 /*********************************************************************************
  * FUNCTION:       set_ele_data
- * DESCRIPTION:    在falsh中存储的断网电量值
+ * DESCRIPTION:    The disconnected power value stored in flash
  * INPUT:          none
  * OUTPUT:         none
- * RETURN:         OPERATE_RET:初始化状态，返回数值型状态值
- * OTHERS:         flash中电量存储的格式:
+ * RETURN:         OPERATE_RET:Initialization state, return numeric state value
+ * OTHERS:         The format of power storage in flash: 
      {“ele_save_key”:[{time:time_posix1,ele:ele_value1},{time:time_posix2,ele:ele_value2}...{time:time_posix10,ele:ele_value10}]}
  * HISTORY:        2020-03-04
  *******************************************************************************/
@@ -462,11 +462,11 @@ STATIC OPERATE_RET set_ele_data(VOID)
 
 /*********************************************************************************
  * FUNCTION:       dltj_driver_init
- * DESCRIPTION:    bl0937芯片硬件模式引脚初始化/电量脉冲计数初始化和硬件采样配置
- * INPUT:          mode芯片计数模式：正常模式和产测模式
+ * DESCRIPTION:    bl0937 chip hardware mode pin initialization / power pulse count initialization and hardware sampling configuration
+ * INPUT:          mode chip count mode: normal mode and production test mode
  * OUTPUT:         none
- * RETURN:         OPERATE_RET:初始化状态，返回数值型状态值
- * OTHERS:         bl0937计量芯片配置
+ * RETURN:         OPERATE_RET:Initialization state, return numeric state value
+ * OTHERS:         bl0937 metering chip configuration
  * HISTORY:        2020-03-04
  *******************************************************************************/
 STATIC OPERATE_RET dltj_driver_init(IN APP_DLTJ_MODE mode)
@@ -483,11 +483,11 @@ STATIC OPERATE_RET dltj_driver_init(IN APP_DLTJ_MODE mode)
 
 /*********************************************************************************
  * FUNCTION:       ele_par_filter
- * DESCRIPTION:    过滤电流和功率事件
+ * DESCRIPTION:    Filter current and power events
  * INPUT:          none
  * OUTPUT:         none
  * RETURN:         none
- * OTHERS:         当前功率小于一定值，或者所有通道关闭时过滤清零电流功率
+ * OTHERS:         The current power is less than a certain value, or the current power is filtered and cleared when all channels are closed
  * HISTORY:        2020-03-04
  *******************************************************************************/
 STATIC VOID ele_par_filter(VOID)
@@ -500,11 +500,11 @@ STATIC VOID ele_par_filter(VOID)
 
 /*********************************************************************************
  * FUNCTION:       pvi_data_handle
- * DESCRIPTION:    电量参数事件
+ * DESCRIPTION:    Battery parameter events 
  * INPUT:          none
  * OUTPUT:         none
  * RETURN:         none
- * OTHERS:         获取电量实时参数和对应过载事件;
+ * OTHERS:         Obtain real-time power parameters and corresponding overload events;
  * HISTORY:        2020-03-04
  *******************************************************************************/
 STATIC VOID pvi_data_handle(VOID)
@@ -530,18 +530,18 @@ STATIC VOID pvi_data_handle(VOID)
     power_cnt.cur_power,power_cnt.cur_vol);
     if(g_dltj.over_curr){
         if(power_cnt.cur_current >= g_dltj.over_curr){
-            over_protect(); //过流事件
+            over_protect(); //overcurrent event 
         }
     }
 }
 
 /*********************************************************************************
 * FUNCTION:       update_ele_data
-* DESCRIPTION:    上报增加电量值
-* INPUT:          time：时间戳；ele_value：增加电量值
+* DESCRIPTION:    Report the increased battery value
+* INPUT:          time: timestamp; ele_value: increase power value
 * OUTPUT:         none
-* RETURN:         OPERATE_RET:初始化状态，返回数值型状态值
-* OTHERS:         电量上报接口函数
+* RETURN:         OPERATE_RET:Initialization state, return numeric state value
+* OTHERS:         Power reporting interface function
 * HISTORY:        2020-03-04
 *******************************************************************************/
 STATIC OPERATE_RET update_ele_data(IN UINT_T time,IN UINT_T ele_value)
@@ -576,11 +576,11 @@ STATIC OPERATE_RET update_ele_data(IN UINT_T time,IN UINT_T ele_value)
 
 /*********************************************************************************
 * FUNCTION:       report_local_data
-* DESCRIPTION:    上报本地存储电量值
+* DESCRIPTION:    Report local storage power value
 * INPUT:          none
 * OUTPUT:         none
 * RETURN:         none
-* OTHERS:         上报电量值和对应时间戳
+* OTHERS:         Report power value and corresponding timestamp
 * HISTORY:        2020-03-04
 *******************************************************************************/
 STATIC VOID report_local_data(VOID)
@@ -613,11 +613,11 @@ STATIC VOID report_local_data(VOID)
 
 /*********************************************************************************
 * FUNCTION:       same_day_judge
-* DESCRIPTION:    时间戳判断
-* INPUT:          u_time1：时间戳1；u_time2：时间戳2
+* DESCRIPTION:    Timestamp judgment
+* INPUT:          u_time1: timestamp 1; u_time2: timestamp 2
 * OUTPUT:         none
-* RETURN:         BOOL：FLASE不是同一天，TRUE同一天
-* OTHERS:         判断两个时间戳是否为同一天
+* RETURN:         BOOL: FLASE is not the same day, TRUE is the same day
+* OTHERS:         Determine if two timestamps are the same day
 * HISTORY:        2020-03-04
 *******************************************************************************/
 STATIC BOOL_T same_day_judge(UINT_T u_time1, UINT_T u_time2)
@@ -627,11 +627,11 @@ STATIC BOOL_T same_day_judge(UINT_T u_time1, UINT_T u_time2)
 
 /*********************************************************************************
 * FUNCTION:       addto_local_data
-* DESCRIPTION:    本地电量处理
-* INPUT:          time：时间戳，ele:电量值
+* DESCRIPTION:    Local power handling
+* INPUT:          time: timestamp, ele: battery value
 * OUTPUT:         none
 * RETURN:         none
-* OTHERS:         最多存储10天的电量值，存储格式为：{"ele_time":time,"ele_value":xxx}
+* OTHERS:         It can store up to 10 days of electricity value, the storage format is: {"ele_time":time,"ele_value":xxx}
 * HISTORY:        2020-03-04
 *******************************************************************************/
 STATIC VOID addto_local_data(UINT_T time, UINT_T ele)
@@ -643,7 +643,7 @@ STATIC VOID addto_local_data(UINT_T time, UINT_T ele)
             power_cnt.ele_sav_data[power_cnt.loc_data_cnt-1].ele_energy += ele;
             return;
         }
-        //电量按天存在flash中
+        //The power is stored in the flash by the day
         if(same_day_judge(power_cnt.ele_sav_data[power_cnt.loc_data_cnt-1].unix_time,time)){
             power_cnt.ele_sav_data[power_cnt.loc_data_cnt-1].unix_time = time;
             power_cnt.ele_sav_data[power_cnt.loc_data_cnt-1].ele_energy += ele;
@@ -655,7 +655,7 @@ STATIC VOID addto_local_data(UINT_T time, UINT_T ele)
                 //	power_cnt.ele_sav_data[i].ele_energy = power_cnt.ele_sav_data[i+1].ele_energy;
                 //}
                 //power_cnt.ele_sav_data[power_cnt.loc_data_cnt-1].unix_time = time;
-                power_cnt.ele_sav_data[power_cnt.loc_data_cnt-1].ele_energy += ele;//达到最大存储数目之后，将后续电量存在最后一天
+                power_cnt.ele_sav_data[power_cnt.loc_data_cnt-1].ele_energy += ele; //After the maximum storage number is reached, the subsequent power will be stored for the last day
             }else{
                 power_cnt.ele_sav_data[power_cnt.loc_data_cnt].unix_time = time;
                 power_cnt.ele_sav_data[power_cnt.loc_data_cnt].ele_energy = ele;
@@ -674,16 +674,16 @@ STATIC VOID addto_local_data(UINT_T time, UINT_T ele)
     }
 }
 
-/*联网激活前，所有新增加的电量存储在power_cnt.tem_ele_val中，并存储在TEM_ELE_SAVE_KEY区，
- 激活之后，将power_cnt.tem_ele_val上报并清空TEM_ELE_SAVE_KEY，此后对于新增加的电量，先尝试
- 上报，上报失败则存在ele_sav_data数组中，联网状态下电量线程每次循环会尝试上报ele_sav_data数组*/
+/*Before network activation, all newly added power is stored in power_cnt.tem_ele_val and stored in TEM_ELE_SAVE_KEY area,
+  After activation, report power_cnt.tem_ele_val and clear the TEM_ELE_SAVE_KEY. After that, try the newly added power first.
+  Report, if the report fails, it will be stored in the ele_sav_data array. In the networked state, the power thread will try to report the ele_sav_data array every cycle.*/
  /*********************************************************************************
  * FUNCTION:       add_ele_handle
- * DESCRIPTION:    增加电量值参数事件
+ * DESCRIPTION:    Increment battery value parameter event
  * INPUT:          none
  * OUTPUT:         none
  * RETURN:         none
- * OTHERS:         增量电量值事件处理;
+ * OTHERS:         Incremental battery value event processing;
  * HISTORY:        2020-03-04
  *******************************************************************************/
 STATIC VOID add_ele_handle(VOID)
@@ -696,7 +696,7 @@ STATIC VOID add_ele_handle(VOID)
     power_cnt.tem_ele_val += power_cnt.add_ele;
     APP_DLTJ_DEBUG("add_ele = %d,tem_ele_val = %d",power_cnt.add_ele,power_cnt.tem_ele_val);
     power_cnt.add_ele = 0;
-    //电量处理事件触发
+    //Power handling event trigger
     if((power_cnt.tem_ele_val >= ADD_ELE_THRE && ele_handle_time >= ADD_TIME_MIN_THRE )\
     || ele_handle_time >= ADD_TIME_MAX_THRE){
         ele_handle_time = 0;
@@ -721,11 +721,11 @@ STATIC VOID add_ele_handle(VOID)
 
 /*********************************************************************************
  * FUNCTION:       small_power_report
- * DESCRIPTION:    小功率上报
+ * DESCRIPTION:    low power report
  * INPUT:          none
  * OUTPUT:         none
- * RETURN:         BOOL:FALSE(不上报)，TRUE(上报)
- * OTHERS:         小功率是否上报；
+ * RETURN:         BOOL: FALSE (do not report), TRUE (report)
+ * OTHERS:         Whether the low power is reported;
  * HISTORY:        2020-03-04
  *******************************************************************************/
 STATIC BOOL_T small_power_report(VOID)
@@ -738,15 +738,15 @@ STATIC BOOL_T small_power_report(VOID)
 
 /*********************************************************************************
  * FUNCTION:       value_range_judge
- * DESCRIPTION:    变化率判断函数
- * INPUT:          JudgedValue：判断值；TargetValue：标准值；range：变化率
+ * DESCRIPTION:    Rate of change judgment function
+ * INPUT:          JudgedValue: judgment value; TargetValue: standard value; range: rate of change
  * OUTPUT:         none
- * RETURN:         BOOL:FALSE(不上报)，TRUE(上报)
- * OTHERS:         小功率是否上报；
+ * RETURN:         BOOL: FALSE (do not report), TRUE (report)
+ * OTHERS:         Whether to report low power；
  * HISTORY:        2020-03-04
  *******************************************************************************/
-//判断JudgedValue是否在TargetValue的正负range%范围之内，如果是返回1，如果否返回0
-//JudgedValue为被判定的值，TargetValue为被判定值的目标值，range为浮动范围0-100(%).
+//Determine if JudgedValue is within the range% of TargetValue's positive and negative range, if so, return 1, if not, return 0
+//JudgedValue is the judged value, TargetValue is the target value of the judged value, and range is the floating range of 0-100(%).
 STATIC BOOL_T value_range_judge(IN UINT_T JudgedValue,IN UINT_T TargetValue,IN UINT_T range)
 {
     if((JudgedValue * 100 >= TargetValue * (100 - range)) && \
@@ -759,11 +759,11 @@ STATIC BOOL_T value_range_judge(IN UINT_T JudgedValue,IN UINT_T TargetValue,IN U
 
 /*********************************************************************************
  * FUNCTION:       if_pvi_need_report
- * DESCRIPTION:    电量实时数据是否需要上报
+ * DESCRIPTION:    Whether real-time power data needs to be reported
  * INPUT:          none
  * OUTPUT:         none
- * RETURN:         BOOL:FALSE(不需要上报)，TRUE(需要上报)
- * OTHERS:         功率/电压变化率判断是否上报实时电量数据
+ * RETURN:         BOOL: FALSE (no need to report), TRUE (requires report)
+ * OTHERS:         Power/voltage rate of change to determine whether to report real-time power data
  * HISTORY:        2020-03-04
  *******************************************************************************/
 STATIC BOOL_T if_pvi_need_report(VOID)
@@ -779,18 +779,18 @@ STATIC BOOL_T if_pvi_need_report(VOID)
 }
 /*********************************************************************************
  * FUNCTION:       report_pvi_data
- * DESCRIPTION:    上报电量实时数据
+ * DESCRIPTION:    Report real-time power data
  * INPUT:          none
  * OUTPUT:         none
- * RETURN:         OPERATE_RET：返回值结果
- * OTHERS:         电流/电压功率当前值
+ * RETURN:         OPERATE_RET: return value result
+ * OTHERS:         Current/voltage power current value
  * HISTORY:        2020-03-04
  *******************************************************************************/
 STATIC OPERATE_RET report_pvi_data(VOID)
 {
     OPERATE_RET op_ret = OPRT_OK;
 
-    INT_T dp_cnt = 3;//通道dp+电量dp(不包含电量值)
+    INT_T dp_cnt = 3;//Channel dp + power dp (does not include power value)
 
     TY_OBJ_DP_S *dp_arr = (TY_OBJ_DP_S *)Malloc(dp_cnt*SIZEOF(TY_OBJ_DP_S));
     if(NULL == dp_arr) {
@@ -826,11 +826,11 @@ STATIC OPERATE_RET report_pvi_data(VOID)
 }
 /*********************************************************************************
  * FUNCTION:       save_reported_pvi_data
- * DESCRIPTION:    更新电流实时参数
+ * DESCRIPTION:    Update current real-time parameters
  * INPUT:          none
  * OUTPUT:         none
  * RETURN:         none
- * OTHERS:         电量统计参数全局变量更新；
+ * OTHERS:         The global variables of power statistics parameters are updated;
  * HISTORY:        2020-03-04
  *******************************************************************************/
 STATIC VOID save_reported_pvi_data(VOID)
@@ -852,11 +852,11 @@ BOOL_T hw_wifi_net_cloud(VOID)
 }
 /*********************************************************************************
  * FUNCTION:       app_dltj_proc
- * DESCRIPTION:    电量统计数据上报线程
+ * DESCRIPTION:    Power statistics reporting thread
  * INPUT:          pArg：线程参数
  * OUTPUT:         none
  * RETURN:         none
- * OTHERS:         处理电量参数：电实时参数上报(电流电压功率)及增加电量值存储和上报；
+ * OTHERS:         Processing power parameters: real-time electrical parameter reporting (current, voltage and power) and increase the storage and reporting of power values;
  * HISTORY:        2020-03-04
  *******************************************************************************/
  #if 0
@@ -868,7 +868,7 @@ STATIC VOID app_dltj_timer_cb(UINT_T timerID,PVOID_T pTimerArg)
     switch(ele_state){
     case ELE_NOT_ACTIVE:
         if(hw_wifi_net_cloud()) {
-            ele_state = ELE_NORMAL;//首次联网激活，将临时电量上报并清零临时电量内存
+            ele_state = ELE_NORMAL;//The first time the network is activated, the temporary power will be reported and the temporary power memory will be cleared.
             pvi_handle_time = pvi_report_min_time;
             ele_handle_time = ADD_TIME_MAX_THRE;
             set_tem_ele_val(0);
@@ -911,11 +911,11 @@ STATIC VOID app_dltj_timer_cb(UINT_T timerID,PVOID_T pTimerArg)
 
 /*********************************************************************************
  * FUNCTION:       clear_ele_data
- * DESCRIPTION:    清空flash中的增加电量值
+ * DESCRIPTION:    Clear the increased power value in the flash
  * INPUT:          none
  * OUTPUT:         none
  * RETURN:         none
- * OTHERS:         清除断网电量值和未配网电量值
+ * OTHERS:         Clear off-grid power value and undistributed grid power value
  * HISTORY:        2020-03-04
  *******************************************************************************/
 STATIC VOID clear_ele_data(VOID)
@@ -982,11 +982,11 @@ OPERATE_RET app_dltj_init(IN APP_DLTJ_MODE mode)
 
 /*********************************************************************************
  * FUNCTION:       report_fault_warn
- * DESCRIPTION:    故障事件上报
- * INPUT:          dpid_fault：故障dp;fault_word:故障值
+ * DESCRIPTION:    Fault event reporting
+ * INPUT:          dpid_fault: fault dp; fault_word: fault value
  * OUTPUT:         none
- * RETURN:         OPERATE_RET:初始化状态，返回数值型状态值
- * OTHERS:         故障事件上报
+ * RETURN:         OPERATE_RET: Initialize state, return numeric state value
+ * OTHERS:         Fault event reporting
  * HISTORY:        2020-03-04
  *******************************************************************************/
 STATIC OPERATE_RET report_fault_warn(IN UCHAR_T dpid_fault,IN INT_T fault_word)
@@ -1022,11 +1022,11 @@ STATIC OPERATE_RET report_fault_warn(IN UCHAR_T dpid_fault,IN INT_T fault_word)
 
 /*********************************************************************************
  * FUNCTION:       report_over_curr
- * DESCRIPTION:    上报过流事件
+ * DESCRIPTION:    Report overcurrent events
  * INPUT:          none
  * OUTPUT:         none
  * RETURN:         none
- * OTHERS:         过流数据上报
+ * OTHERS:         Overcurrent data reporting
  * HISTORY:        2020-03-04
  *******************************************************************************/
 VOID report_over_curr(VOID)
@@ -1076,14 +1076,14 @@ VOID switch_ele_dp_query(VOID)
 *   Input:     none
 *   Output:    none
 *   Return:    none
-*   Notice:    上报所有dp数据
+*   Notice:    Report all dp data
 ***********************************************************/
 VOID hw_report_all_dp_status(VOID)
 {
     OPERATE_RET op_ret = OPRT_OK;
 
     INT_T dp_cnt = 0;
-    dp_cnt = g_hw_table.channel_num*2+3;//通道dp+电量dp(不包含电量值)
+    dp_cnt = g_hw_table.channel_num*2+3; //Channel dp + power dp (does not include power value)
 
     TY_OBJ_DP_S *dp_arr = (TY_OBJ_DP_S *)Malloc(dp_cnt*SIZEOF(TY_OBJ_DP_S));
     if(NULL == dp_arr) {
