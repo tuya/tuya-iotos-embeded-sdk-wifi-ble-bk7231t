@@ -36,17 +36,29 @@ APP_PATH=../../../apps
 
 for i in `find ${APP_PATH}/$APP_BIN_NAME/src -type d`
 do
+	# build our stuff all the time - there is not much and reminds us about all the warnings
     rm -rf $i/*.o
+	for j in `find $i/*.c`
+	do
+		FILE=${j##*/}
+		FILE=${FILE%.*}
+    	rm -rf ./Debug/obj/${FILE}.d
+    	rm -rf ./Debug/obj/${FILE}.o
+		echo removing ./Debug/obj/${FILE}.d
+		echo removing ./Debug/obj/${FILE}.o
+	done
 done
 
 for i in `find ../tuya_common/src -type d`
 do
-    rm -rf $i/*.o
+	# don't build tuya every time
+    echo not rm -rf $i/*.o
 done
 
 for i in `find ../../../components -type d`
 do
-    rm -rf $i/*.o
+	# don't build components every time
+    echo not rm -rf $i/*.o
 done
 
 if [ -z $CI_PACKAGE_PATH ]; then
