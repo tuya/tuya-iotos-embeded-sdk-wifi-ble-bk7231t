@@ -16,3 +16,5 @@ platforms/bk7231t/bk7231t_os/tools/generate/*.bin
 apps/*
 !apps/bk*
 !apps/template*
+!apps/openBK7231T_app_location.txt
+
