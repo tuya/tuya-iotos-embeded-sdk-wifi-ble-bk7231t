@@ -34,18 +34,21 @@ fi
 
 APP_PATH=../../../apps
 
+echo removing .o files from our folders, and OUR .o and .d files from Debug
+
 for i in `find ${APP_PATH}/$APP_BIN_NAME/src -type d`
 do
 	# build our stuff all the time - there is not much and reminds us about all the warnings
     rm -rf $i/*.o
+
 	for j in `find $i/*.c`
 	do
 		FILE=${j##*/}
 		FILE=${FILE%.*}
     	rm -rf ./Debug/obj/${FILE}.d
     	rm -rf ./Debug/obj/${FILE}.o
-		echo removing ./Debug/obj/${FILE}.d
-		echo removing ./Debug/obj/${FILE}.o
+		# echo removing ./Debug/obj/${FILE}.d
+		# echo removing ./Debug/obj/${FILE}.o
 	done
 done
 
