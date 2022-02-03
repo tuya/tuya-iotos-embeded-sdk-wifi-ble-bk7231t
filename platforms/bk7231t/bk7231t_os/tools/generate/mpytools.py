@@ -20,7 +20,7 @@ out_json = {
             "version": "1.00",
             "partition": "app",
             "start_addr": "0x00011000",
-            "size": "1150832"
+            "size": "978944"
         }
     ]
 }
