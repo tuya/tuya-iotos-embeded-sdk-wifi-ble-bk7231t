@@ -14,6 +14,7 @@ platforms/bk7231t/bk7231t_os/tools/generate/*.bin
 !platforms/bk7231t/bk7231t_os/tools/generate/bootloader_enc.bin
 !platforms/bk7231t/bk7231t_os/tools/generate/package.bin
 apps/*
+!apps/obk*
 !apps/bk*
 !apps/template*
 !apps/openBK7231T_app_location.txt
