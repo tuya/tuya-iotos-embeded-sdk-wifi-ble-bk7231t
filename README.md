@@ -65,11 +65,11 @@ Supports compilating in Cygwin, MinGW, WSL2 and more environments
 ### Get SDK
 Make sure to get SDK through git recursion:
 ``` bash
-$ git clone --recursive https://github.com/tuya/tuya-iotos-embeded-sdk-wifi-ble-bk7231t.git
+$ git clone --recursive https://github.com/openshwprojects/OpenBK7231T
 ```
 or
 ``` bash
-$ git clone https://github.com/tuya/tuya-iotos-embeded-sdk-wifi-ble-bk7231t.git
+$ git clone https://github.com/openshwprojects/OpenBK7231T
 $ git submodule update --init
 ```
 
