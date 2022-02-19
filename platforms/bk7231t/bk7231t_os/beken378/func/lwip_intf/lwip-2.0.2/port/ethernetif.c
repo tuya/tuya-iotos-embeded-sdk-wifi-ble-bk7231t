@@ -125,7 +125,7 @@ static void low_level_init(struct netif *netif)
     
 #if LWIP_NETIF_HOSTNAME
 #if MY_OPENBK7231T_USE_MAC_AS_WLAN_NAME
-	sprintf(g_customWlanName,"OpenBK7231_%02X%02X%02X%02X",macptr[0],macptr[1],macptr[2],macptr[3]);
+	sprintf(g_customWlanName,"OpenBK7231T_%02X%02X%02X%02X",macptr[0],macptr[1],macptr[2],macptr[3]);
     netif->hostname = g_customWlanName;
 #else
     /* Initialize interface hostname */
