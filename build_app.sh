@@ -8,6 +8,11 @@ USER_CMD=$4
 [ "$APP_VERSION" = "git" ] && APP_VERSION="`(cd apps/OpenBK* && git describe --abbrev=8 --always)`"
 [ -z "$APP_VERSION" ] && [ -z $USER_CMD ] && APP_VERSION="`(cd apps/OpenBK* && git describe --abbrev=8 --always)`"
 
+if [ -z "${APP_VERSION}" ]; then 
+	echo "App version not specified (or git command failed on Cygwin), using 1.0.0"
+    APP_VERSION='1.0.0'
+fi
+
 echo APP_PATH=$APP_PATH
 echo APP_NAME=$APP_NAME
 echo APP_VERSION=$APP_VERSION
