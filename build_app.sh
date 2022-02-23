@@ -1,12 +1,24 @@
 #!/bin/sh
+fatal() {
+    echo "\033[0;31merror: $1\033[0m"
+    echo
+    echo "Usage: $0 app_path app_name [app_version [user_cmd]]"
+    echo "see https://github.com/openshwprojects/OpenBK7231T_App/ for full info"
+    exit 1
+}
+
+
 
 APP_PATH=$1
 APP_NAME=$2
 APP_VERSION=$3
 USER_CMD=$4
 
-[ "$APP_VERSION" = "git" ] && APP_VERSION="`(cd apps/OpenBK* && git describe --abbrev=8 --always)`"
-[ -z "$APP_VERSION" ] && [ -z $USER_CMD ] && APP_VERSION="`(cd apps/OpenBK* && git describe --abbrev=8 --always)`"
+[ -z $APP_PATH ] && fatal "no app path!"
+[ -z $APP_NAME ] && fatal "no app name!"
+
+[ "$APP_VERSION" = "git" ] && APP_VERSION="`(head -c8 $APP_PATH/.git/refs/heads/main)`"
+[ -z "$APP_VERSION" ] && [ -z $USER_CMD ] && APP_VERSION="`(head -c8 $APP_PATH/.git/refs/heads/main)`"
 
 if [ -z "${APP_VERSION}" ]; then 
 	echo "App version not specified (or git command failed on Cygwin), using 1.0.0"
@@ -19,14 +31,6 @@ echo APP_VERSION=$APP_VERSION
 echo USER_CMD=$USER_CMD
 
 
-fatal() {
-    echo -e "\033[0;31merror: $1\033[0m"
-    exit 1
-}
-
-
-[ -z $APP_PATH ] && fatal "no app path!"
-[ -z $APP_NAME ] && fatal "no app name!"
 [ -z $APP_VERSION ] && fatal "no version!"
 
 
