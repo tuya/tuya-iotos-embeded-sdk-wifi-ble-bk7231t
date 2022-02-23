@@ -1,6 +1,9 @@
 #!/bin/sh
 fatal() {
-    echo -e "\033[0;31merror: $1\033[0m"
+    echo "\033[0;31merror: $1\033[0m"
+    echo
+    echo "Usage: $0 app_path app_name [app_version [user_cmd]]"
+    echo "see https://github.com/openshwprojects/OpenBK7231T_App/ for full info"
     exit 1
 }
 
