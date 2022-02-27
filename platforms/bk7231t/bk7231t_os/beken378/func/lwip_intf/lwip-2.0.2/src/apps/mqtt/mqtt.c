@@ -1349,7 +1349,7 @@ tcp_fail:
  * @param client MQTT client
  */
 void
-mqtt_disconnect_my2(mqtt_client_t *client)
+mqtt_disconnect(mqtt_client_t *client)
 {
   LWIP_ASSERT("mqtt_disconnect: client != NULL", client);
   /* If connection in not already closed */
