@@ -3,15 +3,16 @@
 
 #include "tuya_cloud_types.h"
 #include "tuya_cloud_com_defs.h"
-#include "lan_protocol.h"
 #include "netcfg_module.h"
+#include "lan_protocol.h"
 
 #ifdef __cplusplus
 	extern "C" {
 #endif 
 
-VOID set_ap_nw_need_mac(bool set);
-bool get_ap_nw_need_mac(VOID);
+/*启动配网时，切换到ap模式，并开启热点*/
+int wifi_netcfg_start_ap_mode();
+
 
 /*
 	配网完成之后的回调，在gw_intf.c中实现，用于保存配网信息到gw,同时触发绑定流程
@@ -48,7 +49,9 @@ void lan_ap_nw_cfg_error_report(IN CONST char *p_desc,IN CONST AP_CFG_ERR_CODE e
 /*
 	ap netcfg init :注册netcfg 到 netcfg module
 */
-int ap_netcfg_init();
+int ap_netcfg_init(int netcfg_policy, ApSsidPasswd_t ApInfo);
+
+
 
 #ifdef __cplusplus
 		}

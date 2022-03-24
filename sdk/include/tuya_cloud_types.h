@@ -15,6 +15,7 @@ Copyright(C),2018-2020, 涂鸦科技 www.tuya.comm
 
 #include <stddef.h>
 #include "tuya_cloud_error_code.h"
+#include "tuya_error_code.h"
 
 #ifdef __cplusplus
 extern "C" {

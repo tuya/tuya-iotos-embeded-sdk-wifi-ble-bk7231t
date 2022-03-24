@@ -31,7 +31,7 @@
 /*
 	smart cfg配网初始化接口
 */
-int smart_netcfg_init();
+int smart_netcfg_init(int netcfg_policy);
 
 
 #ifdef __cplusplus

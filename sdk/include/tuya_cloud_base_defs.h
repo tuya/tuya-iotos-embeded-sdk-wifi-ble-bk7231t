@@ -1,20 +1,26 @@
-/*
-tuya_cloud_base_defs.h
-Copyright(C),2018-2020, 涂鸦科技 www.tuya.comm
+/**
+* @file tuya_cloud_wifi_defs.h
+* @brief Basic definitions of TUYA cloud
+* @version 0.1
+* @date 2016-04-25
+*
+* @copyright Copyright 2016-2021 Tuya Inc. All Rights Reserved.
 */
 
 #ifndef TUYA_CLOUD_BASE_DEFS_H
 #define TUYA_CLOUD_BASE_DEFS_H
 
+#include "tuya_iot_config.h"
+
+
+#if (defined(WIFI_GW) && (WIFI_GW==0)) || (defined(GW_SUPPORT_WIRED_WIFI) && (GW_SUPPORT_WIRED_WIFI==1))
 #include "tuya_hal_wired.h"
+#endif
 #include "tuya_cloud_types.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/* tuya sdk definition of wired-net status */
-typedef uint8_t GW_BASE_NW_STAT_T;
 
 /* offline in LAN.  user wired callback <tuya_hal_wired_station_conn> return <false> */
 #define GB_STAT_LAN_UNCONN 0
@@ -41,19 +47,22 @@ typedef uint8_t GW_BASE_NW_STAT_T;
 /* GPRS: got ip address. */
 #define GB_STAT_GPRS_GOT_IP 6
 
-
-/* tuya-sdk product info (wired version) */
+/**
+ * @brief Definition of product info(wired)
+ */
 typedef struct {
     CHAR_T *uuid;        // strlen(uuid) <= 16,must not be null
     CHAR_T *auth_key;    // strlen(auth_key) <= 32,must not be null
 }GW_PROD_INFO_S;
 
-/***********************************************************
-*  callback function: GET_NW_STAT_CB
-*  Desc:    tuya-sdk network check callback (wired version)
-*  Input:   stat: curr network status
-***********************************************************/
+#if (defined(WIFI_GW) && (WIFI_GW==0)) || (defined(GW_SUPPORT_WIRED_WIFI) && (GW_SUPPORT_WIRED_WIFI==1))
+/**
+ * @brief Handler when network state error happens(wired)
+ *
+ * @param[in] stat State code, see GW_BASE_NW_STAT_T
+ */
 typedef VOID (*GET_NW_STAT_CB)(IN CONST GW_BASE_NW_STAT_T stat);
+#endif
 
 #ifdef __cplusplus
 }

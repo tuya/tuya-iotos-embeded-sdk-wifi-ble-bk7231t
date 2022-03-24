@@ -31,7 +31,7 @@
 
 
 #define TUYA_TLS_DYNAMIC_MEMORY_ALLOCATION 	1	//开启TLS动态内存
-#define TLS_SESSION 				0			//开启TLS_SESSION
+//#define TLS_SESSION 				1			//开启TLS_SESSION
 #define TLS_MEM_DEBUG 				0			//开启TLS内存调试
 #define TUYA_TLS_DEBUG_THRDSHOLD    5			//TLS 调试等级
 //#define TUYA_PSK_STRONG 1						//PSK升级版本
@@ -728,7 +728,7 @@
  */
 //#define MBEDTLS_ECP_DP_SECP192R1_ENABLED
 //#define MBEDTLS_ECP_DP_SECP224R1_ENABLED
-//#define MBEDTLS_ECP_DP_SECP256R1_ENABLED
+#define MBEDTLS_ECP_DP_SECP256R1_ENABLED
 //#define MBEDTLS_ECP_DP_SECP384R1_ENABLED
 //#define MBEDTLS_ECP_DP_SECP521R1_ENABLED
 //#define MBEDTLS_ECP_DP_SECP192K1_ENABLED
@@ -749,7 +749,7 @@
  *
  * Comment this macro to disable NIST curves optimisation.
  */
-//#define MBEDTLS_ECP_NIST_OPTIM
+#define MBEDTLS_ECP_NIST_OPTIM
 
 /**
  * \def MBEDTLS_ECP_RESTARTABLE
@@ -1934,7 +1934,7 @@
  *
  * This module is required for RSA, DHM and ECC (ECDH, ECDSA) support.
  */
-//#define MBEDTLS_BIGNUM_C
+#define MBEDTLS_BIGNUM_C
 
 /**
  * \def MBEDTLS_BLOWFISH_C
@@ -2064,7 +2064,7 @@
  * This module enables the AES-CCM ciphersuites, if other requisites are
  * enabled as well.
  */
-//#define MBEDTLS_CCM_C
+#define MBEDTLS_CCM_C
 
 /**
  * \def MBEDTLS_CERTS_C
@@ -2202,7 +2202,10 @@
  *             See dhm.h for more details.
  *
  */
-//#define MBEDTLS_DHM_C
+
+#if defined(TUYA_OPERATOR_TYPE) && (TUYA_OPERATOR_TYPE & TUYA_OPERATOR_CTCC)
+#define MBEDTLS_DHM_C
+#endif
 
 /**
  * \def MBEDTLS_ECDH_C
@@ -2218,8 +2221,9 @@
  *
  * Requires: MBEDTLS_ECP_C
  */
-//#define MBEDTLS_ECDH_C
-
+#if defined(ENABLE_WIFI_PROTECT) && (ENABLE_WIFI_PROTECT == 1)
+#define MBEDTLS_ECDH_C
+#endif
 /**
  * \def MBEDTLS_ECDSA_C
  *
@@ -2266,7 +2270,7 @@
  *
  * Requires: MBEDTLS_BIGNUM_C and at least one MBEDTLS_ECP_DP_XXX_ENABLED
  */
-//#define MBEDTLS_ECP_C
+#define MBEDTLS_ECP_C
 
 /**
  * \def MBEDTLS_ENTROPY_C
@@ -2305,7 +2309,7 @@
  * This module enables the AES-GCM and CAMELLIA-GCM ciphersuites, if other
  * requisites are enabled as well.
  */
-//#define MBEDTLS_GCM_C
+#define MBEDTLS_GCM_C
 
 /**
  * \def MBEDTLS_HAVEGE_C
@@ -2343,7 +2347,7 @@
  * This module adds support for the Hashed Message Authentication Code
  * (HMAC)-based key derivation function (HKDF).
  */
-//#define MBEDTLS_HKDF_C
+#define MBEDTLS_HKDF_C
 
 /**
  * \def MBEDTLS_HMAC_DRBG_C

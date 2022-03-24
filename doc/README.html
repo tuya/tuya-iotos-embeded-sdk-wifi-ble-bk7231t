@@ -1,0 +1,4986 @@
+<h2>版本记录</h2>
+
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>编写/修订说明</th>
+<th>修订日期</th>
+<th>备注</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>1.0.0</td>
+<td>创建文档</td>
+<td>20210219</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h2>概述</h2>
+
+<p>涂鸦 IoTOS 是涂鸦智能自主开发的，全球唯一的覆盖物联网感知、中断、网络、平台、应用各个层次的物联网操作系统。受益于涂鸦智能在物联网行业的积累，涂鸦IoTOS提供了全品类的从产品设计、研发、接入到后期运营解决方案。</p>
+
+<p>涂鸦IoTOS IoT SDK是涂鸦 IoTOS 的重要组成部分，通过良好的设计，为客户提供了统一的开发接口，丰富的开发套件以及自助化定制功能，屏蔽了物联网行业的碎片化特征，可以应用于工业物联网、车联网、安防监控、户外出行、智能家居等行业的物联网应用开发。</p>
+
+<p>涂鸦IoTOS IoT SDK具有以下特点：</p>
+
+<ul>
+<li>弹性裁剪：提供了丰富的开发套件，涵盖了物联网操作系统内核、通用物联网功能、不同领域的物联网技术栈，开发者可以根据自己的产品的需求进行选择对应的解决方案，有能力的开发者，可以在线按需进行深度的定制。</li>
+<li>跨平台：设计层面支持了跨硬件平台、操作系统的特性，可以在任意的硬件芯片和系统上进行移植，极大的提高了开发者的开发效率。</li>
+<li>安全隐私：提供了安全数据存储、安全网络通信、安全启动、安全升级等特性，并严格遵守全球各地的安全、隐私政策，有效的保障产品的安全、隐私特性。</li>
+<li>丰富生态：涂鸦智能和各大芯片原厂进行了密切的合作，导入了100+款供开发者选择，同时所有使用涂鸦IoTOS 开发的产品都能够进行互联互通，场景联动，Powered by Tuya已经形成了完整的物联网产业生态。</li>
+</ul>
+
+<h2>名词解释</h2>
+
+<p>详细的名词解释请参照<a href="https://developer.tuya.com/cn/docs/iot/introduction-of-tuya/terms?id=K914joq6tegj4">涂鸦智能开发者名词解释</a>。</p>
+
+<h2>目录结构</h2>
+
+<pre><code>IoTOS2.3.0_ty_iot_sdk_2.3.0_rtl8720bn_1.1.0 开发包介绍
++-- software
+¦   +-- IoTOS2.3.0_ty_iot_sdk_2.3.0_rtl8720bn_1.1.0    # 涂鸦IoTOS IoT SDK包
+¦   ¦   +-- apps					# 示例程序，每个示例程序都包含了代码和对应的文档
+¦   ¦   +-- sdk 					# 头文件和库文件	
+¦   ¦   +-- platforms				# 原厂库和工具
+¦   ¦   +-- CHANGELOG.md 			# 版本修改记录
+¦   ¦   +-- README.md 				# 使用介绍
+¦   ¦   +-- build_app.sh 			# 编译脚本
+¦   +-- Tuya IoTOS IoT SDK x.x.x版本说明.pdf 		# 涂鸦IoTOS IoT SDK介绍文档
++-- pc
+¦   +-- tools 									# 开发使用到的工具
++-- hardware
+¦   +-- board 									# 模组、开源硬件资料
+¦   +-- chip 									# 芯片资料
+</code></pre>
+
+<h2>架构说明</h2>
+
+<p>涂鸦IoTOS IoT SDK整体框架如下图所示。</p>
+
+<p><img src="C:UsershaitaoAppDataRoamingTyporatypora-user-images1613718526439.png" alt="1613718526439" /></p>
+
+<p><strong>IoTOS Kernel</strong></p>
+
+<p>涂鸦IoTOS Kernel是涂鸦智能围绕操作系统内核打造的一套通用的系统服务组件，对上层屏蔽了硬件和系统的差异，确保上层软件在任意系统和芯片平台上的一致性。同时也提供了通用的系统服务，包括安全数据存储、安全启动、安全内存管理、消息、定时、工作队列、事件等。</p>
+
+<p><strong>IoTOS Protocol</strong></p>
+
+<p>涂鸦IoTOS Protocol是涂鸦IoTOS支持的各种类型的通信协议。涂鸦智能支持通过IoTOS SDK Management来实现通信协议的复合，并定义通信协议的属性，实现同一个产品上支持多种通信协议共存，并能够在适当的条件下使用不同的通信能力实现不同的业务功能。</p>
+
+<p><strong>Middleware</strong></p>
+
+<p>涂鸦IoTOS支持了多种Middleware， Middleware主要是业务无关的、通用的通信能力，主要用于和涂鸦云平台、第三方云平台进行交互、数据传输、实现通用的基础功能。</p>
+
+<p><strong>Service Framework</strong></p>
+
+<p>涂鸦IoTOS提供了各种业务能力，这些业务能力是涂鸦智能在IoT领域的积累与沉淀。涂鸦智能支持通过IoTOS SDK Management来实现业务能力的裁剪与定制，可以对外输出各种能力不同的IoTOS SDK产物，基于这些IoTOS SDK产物，可以快速的实现IoTOS产品的开发与落地。</p>
+
+<p><strong>Applications</strong></p>
+
+<p>使用涂鸦IoTOS可以进行各种品类的物联网产品开发，包括电工、照明、智能家居、IPC、智能语音、安防传感和网关等类型的品类。</p>
+
+<h2>设备状态机</h2>
+
+<pre><code class="language-mermaid">graph TD
+	inited
+	unregistered
+	registing
+	actived
+	upgrading
+	
+	inited--read flash not actived--&gt;unregistered
+	unregistered--bind token--&gt;registing
+	registing--active success--&gt;actived
+	inited--read flash actived--&gt;actived
+	actived--start OTA--&gt;upgrading
+	actived--unactive/unregister--&gt;unregistered
+	upgrading--OTA success--&gt;actived
+</code></pre>
+
+<h2>功能说明</h2>
+
+<h3>初始化</h3>
+
+<p>初始化是指设备上电、启动之后，调用一系列接口，完成设备硬件环境的初始化、涂鸦<code>IoTOS</code>软件的初始化、应用功能初始化等工作。</p>
+
+<p>一般来说，软件启动会执行main函数，对于涂鸦<code>IoTOS</code>来说，不同场景，入口不一样，比如说在<code>Linux</code>操作系统环境下，我们需要自己实现main函数；在<code>RTOS</code>系统下，我们需要实现<code>user_main</code>函数。并在<code>user main</code>函数里对<code>IoTOS</code>软件和设备应用能力进行初始化。</p>
+
+<h4><strong>接口描述</strong></h4>
+
+<h5><strong>IoTOS初始化</strong></h5>
+
+<pre><code>/**
+ * @brief tuya_iot_init_params 
+ * @desc init tuya_iot_sdk
+ *
+ * @param[in] fs_storge_path: filesystem read write storge path
+ *            (if os have no fs,then fs_storge_path is invalid)
+ * @param[in] p_param: custom init params
+ *
+ * @return OPRT_OK: success  Other: fail
+ */
+OPERATE_RET tuya_iot_init_params(IN CONST CHAR_T *fs_storge_path, IN CONST TY_INIT_PARAMS_S *p_param);
+</code></pre>
+
+<p>此接口是涂鸦<code>IoTOS</code>的初始化接口，不区分模式，有线、<code>Wi-Fi</code>、<code>Wi-Fi&amp;BLE</code>、蜂窝网络都会使用。接口内部会对<code>IoTOS</code>的内部基础功能进行资源分配、初始化。一般来说，这个接口会第一个调用，但是在一些场景下，可以在此接口之前进行一些功能配置、事件关注等工作，可以在<code>IoTOS</code>初始化过程中进行一些特殊的业务逻辑处理。例如在开发照明产品的时候，需要基础功能初始化完成之后立即将灯点亮，则可以在调用此接口之前关注一下<code>early_init</code>事件，并在此事件回调里执行点灯逻辑，就可以实现此功能。</p>
+
+<h5><strong>Wi-Fi 设备初始化</strong></h5>
+
+<pre><code>/**
+ * @brief tuya_iot_wf_dev_init 
+ *
+ * @param[in] cfg
+ * @param[in] start_mode
+ * @param[in] cbs: tuya wifi sdk user callbacks
+ * @param[in] firmware_key
+ * @param[in] product_key: product key/proudct id,get from tuya open platform
+ * @param[in] wf_sw_ver: wifi module software version format:xx.xx.xx (0&lt;=x&lt;=9)
+ * @param[in] attr
+ * @param[in] attr_num
+ *
+ * @return OPERATE_RET
+ */
+OPERATE_RET tuya_iot_wf_dev_init(IN CONST GW_WF_CFG_MTHD_SEL cfg, IN CONST GW_WF_START_MODE start_mode,
+                                IN CONST TY_IOT_CBS_S *cbs, IN CONST CHAR_T *firmware_key,
+                                IN CONST CHAR_T *product_key, IN CONST CHAR_T *wf_sw_ver,
+                                IN CONST GW_ATTACH_ATTR_T *attr, IN CONST UINT_T attr_num);
+
+</code></pre>
+
+<p>此接口用来初始化设备能力。在涂鸦物联网开发五步走步骤，会对产品进行定义，得到产品的<code>PID</code>等信息；<code>PID</code>信息在涂鸦云端对应了产品的功能信息，以及设备上其他的附属固件、文件等配置信息。在这个接口里，会对这些信息进行校验，并向尝试配网、网络连接、连接云端，进行设备的激活绑定，在设备激活之后，启动各种涂鸦<code>IoTOS</code>服务，并连接涂鸦云，进行正常的业务交互。</p>
+
+<p>在<code>Wi-Fi</code>设备初始化接口，可以配置初始化的配网模式和<code>Wi-Fi</code>工作模式。</p>
+
+<h5><strong>Wi-Fi 通用对接初始化</strong></h5>
+
+<pre><code>/**
+ * @brief tuya_iot_wf_mcu_dev_init 
+ *
+ * @param[in] cfg
+ * @param[in] start_mode
+ * @param[in] cbs: tuya wifi sdk user callbacks
+ * @param[in] p_firmware_key
+ * @param[in] product_key: product key/proudct id,get from tuya open platform
+ * @param[in] wf_sw_ver: wifi module software version format:xx.xx.xx (0&lt;=x&lt;=9)
+ * @param[in] mcu_sw_ver: mcu software version format:xx.xx.xx (0&lt;=x&lt;=9)
+ *
+ * @return OPERATE_RET
+ */
+OPERATE_RET tuya_iot_wf_mcu_dev_init(IN CONST GW_WF_CFG_MTHD_SEL cfg, IN CONST GW_WF_START_MODE start_mode,
+                                     IN CONST TY_IOT_CBS_S *cbs, IN CONST CHAR_T *p_firmware_key,
+                                     IN CONST CHAR_T *product_key,IN CONST CHAR_T *wf_sw_ver,IN CONST CHAR_T *mcu_sw_ver);
+
+</code></pre>
+
+<p>此接口对<code>tuya_iot_wf_dev_init</code>进行了封装，实现了专门用于<code>mcu</code>通用对接的初始化接口。在<code>mcu</code>通用对接场景下，可以使用该接口，在收到<code>mcu</code>通过串口发送过来的<code>product key</code>和<code>mcu</code>版本信息，对设备进行初始化。</p>
+
+<p>在<code>Wi-Fi</code>设备初始化接口，可以配置初始化的配网模式和<code>Wi-Fi</code>工作模式。</p>
+
+<h5><strong>Wi-Fi SOC初始化</strong></h5>
+
+<pre><code>/**
+ * @brief tuya_iot_wf_soc_dev_init_param 
+ *
+ * @param[in] cfg
+ * @param[in] start_mode
+ * @param[in] cbs: tuya wifi sdk user callbacks,note cbs-&gt;dev_ug_cb is useless
+ * @param[in] firmware_key
+ * @param[in] product_key: product key/proudct id,get from tuya open platform
+ * @param[in] wf_sw_ver: wifi module software version format:xx.xx.xx (0&lt;=x&lt;=9)
+ *
+ * @return OPERATE_RET
+ */
+OPERATE_RET tuya_iot_wf_soc_dev_init_param(IN CONST GW_WF_CFG_MTHD_SEL cfg, IN CONST GW_WF_START_MODE start_mode,
+                                     IN CONST TY_IOT_CBS_S *cbs,IN CONST CHAR_T *firmware_key,
+                                     IN CONST CHAR_T *product_key,IN CONST CHAR_T *wf_sw_ver);
+</code></pre>
+
+<p>此接口对<code>tuya_iot_wf_dev_init</code>进行了封装，实现了专门用于<code>soc</code>方案的初始化接口。在<code>soc</code>场景下，可以使用该接口，用本地保存的<code>product key</code>和固件版本信息，对设备进行初始化。</p>
+
+<p>在<code>Wi-Fi</code>设备初始化接口，可以配置初始化的配网模式和<code>Wi-Fi</code>工作模式。</p>
+
+<h5><strong>Wi-Fi网络状态回调设置</strong></h5>
+
+<pre><code>/**
+ * @brief tuya_iot_reg_get_wf_nw_stat_cb_params 
+ *
+ * @param wf_nw_stat_cb
+ * @param min_interval_s
+ *
+ * @return 
+ */
+OPERATE_RET tuya_iot_reg_get_wf_nw_stat_cb_params(IN CONST GET_WF_NW_STAT_CB wf_nw_stat_cb, IN CONST INT_T min_interval_s);
+
+</code></pre>
+
+<p>此接口注册网络状态变化回调函数，并启轮询有线网络状态的任务。轮询网络连接的状态，并在状态变化的时候，调用此接口注册进来的<code>nw_stat_cb</code>，通知应用进行相应的处理。</p>
+
+<h4>示例代码</h4>
+
+<p>Wi-Fi配网主要是在初始化的时候指定了配网模式，其主要的工作是初始化的时候进行的，以下是一端示例代码，在初始化的时候设置了<code>ap_ssid</code>和<code>ap_passwd</code>，并以<code>GWCM_SPCL_AUTOCFG</code>工作模式和<code>WF_START_AP_FIRST</code>配网模式启动设备。</p>
+
+<pre><code>#define UUID                &quot;f2ef8b136911f4b0&quot;
+#define AUTHKEY             &quot;6PqrvTXJh1ye5tF4SABzl1qNmd53slMX&quot;
+#define PRODUCT_KEY         &quot;U0fxNCEnZptKnQZy&quot;  //DP控制开关
+#define USER_SW_VER         &quot;1.0.0&quot;
+#define AP_SSID				&quot;SmartLife&quot;
+#define AP_PASSWD			&quot;tuya_wf_sample&quot;
+#define CFG_STORAGE_PATH    &quot;./tuya_db_files/&quot;
+#define WIFI_NETCFG_TIMEOUT		3
+
+STATIC VOID __soc_dev_rev_upgrade_info_cb(IN CONST FW_UG_S *fw);// SOC设备升级入口
+STATIC VOID __soc_dev_status_changed_cb(IN CONST GW_STATUS_E status);// SOC设备云端状态变更回调
+STATIC VOID __soc_dev_dp_query_cb(IN CONST TY_DP_QUERY_S *dp_qry);// SOC设备特定数据查询入口
+STATIC VOID __soc_dev_obj_dp_cmd_cb(IN CONST TY_RECV_OBJ_DP_S *dp);// SOC设备格式化指令数据下发入口
+STATIC VOID __soc_dev_raw_dp_cmd_cb(IN CONST TY_RECV_RAW_DP_S *dp);// SOC设备透传指令数据下发入口
+STATIC VOID __soc_dev_restart_req_cb(GW_RESET_TYPE_E type);// SOC设备进程重启请求入口
+STATIC VOID __soc_dev_net_status_cb(IN CONST GW_BASE_NW_STAT_T stat);// SOC外网状态变动回调
+STATIC VOID __soc_dev_reset_cb(event_raw_data_t *data);
+
+int main(int argc, char *argv[])
+{
+    int rt = OPRT_OK;
+
+    // 此处为涂鸦IoTOS初始化之前的一些特殊工作，代码每一个应用场景可能不同，按需实现
+	// TBD
+	
+    // 此处为涂鸦IoTOS基础功能初始化，为IoTOS分配资源，并启动一些最基础的能力
+    TUYA_CALL_ERR_RETURN(tuya_iot_init_param(CFG_STORAGE_PATH, NULL));
+
+    // 此处为涂鸦IoTOS授权信息写入，仅在Linux Demo代码使用，因为正是产品是在生产测试的时候写入授权信息
+    // 此处代码是为了避免使用产测授权
+    WF_GW_PROD_INFO_S prod_info = {UUID, AUTHKEY, AP_SSID, AP_PASSWD};
+    TUYA_CALL_ERR_RETURN(tuya_iot_set_wf_gw_prod_info(&amp;prod_info));
+
+    // 此处为设备初始化，实现了一些基础的回调功能，满足一个设备的基本能力需求，并注册获取连接状态回调函数
+    TY_IOT_CBS_S iot_cbs = {0};
+    iot_cbs.gw_status_cb = __soc_dev_status_changed_cb;
+    iot_cbs.gw_ug_cb = __soc_dev_rev_upgrade_info_cb;
+    iot_cbs.gw_reset_cb = __soc_dev_restart_req_cb;
+    iot_cbs.dev_obj_dp_cb = __soc_dev_obj_dp_cmd_cb;
+    iot_cbs.dev_raw_dp_cb = __soc_dev_raw_dp_cmd_cb;
+    iot_cbs.dev_dp_query_cb = __soc_dev_dp_query_cb;   TUYA_CALL_ERR_RETURN(tuya_iot_wf_soc_dev_init_param(GWCM_SPCL_AUTOCFG,WF_START_AP_FIRST,&amp;iot_cbs,NULL,PRODUCT_KEY,DEV_SW_VERSION));
+    TUYA_CALL_ERR_RETURN(tuya_iot_reg_get_nw_stat_cb_params(__soc_dev_net_status_cb, 1));
+     
+    // 此处为设备初始化后的一些设备应用功能初始化，，代码每一个应用场景可能不同，按需实现
+    // TBD
+    
+    // demo状态监控
+    while (1)
+    {
+        sleep(10);        
+        // 监控设备状态，打印状态提示
+        ty_devos_monitor();
+    }
+
+    return 0;
+}
+</code></pre>
+
+<h3>配网</h3>
+
+<p>配网是<code>Wi-Fi</code>产品特有的一个能力，他的主要目的，是通过具有配网能力的设备，对未配网的<code>Wi-Fi</code>设备进行网络连接配置。在配网过程中，具有配网能力的设备，会通过交互，把指定的Wi-Fi路由器的<code>SSID</code>、<code>Password</code>以及在涂鸦<code>IoT</code>平台上申请创建出来的<code>Token</code>信息，发送给未配网设备；未配网设备拿到这些信息之后，连接Wi-Fi路由器，并通过涂鸦<code>IoT</code>平台提供的<code>IoT-DNS</code>服务获取对应区域的服务器地址，然后通过<code>Atop</code>服务进行激活，并连接到涂鸦<code>IoT</code>平台进行正常的业务交互。</p>
+
+<p>目前按照交互方式，涂鸦<code>IoTOS</code>主要支持以下配网能力。</p>
+
+<ul>
+<li><code>smartcfg</code>配网</li>
+</ul>
+
+<p>根据涂鸦<code>smartcfg</code>规则，将<code>SSID</code>、<code>Password</code>和<code>Token</code>进行编码到<code>udp</code>广播、组播报文中，并在Wi-Fi路由器局域网内部发送，未配网设备在接收到报文，识别特征之后，进行解码，提取出<code>SSID</code>、<code>Password</code>和<code>Token</code>，并进行后续的连接<code>Wi-Fi</code>路由器，并连接涂鸦<code>IoT</code>平台，进行激活绑定。</p>
+
+<ul>
+<li><code>AP</code>配网</li>
+</ul>
+
+<p>未配网设备根据用户配置或者是默认的涂鸦<code>AP</code>配网规则，创建一个<code>Wi-Fi AP</code>热点，并启动涂鸦<code>AP</code>配网协议服务。具备配网能力的设备会连接到这个热点，并连接到该服务端口，根据涂鸦<code>AP</code>配网协议进行交互，将<code>SSID</code>、<code>Password</code>和<code>Token</code>发送给待配网设备。待配网设备拿到<code>SSID</code>、<code>Password</code>和<code>Token</code>之后，连接<code>Wi-Fi</code>路由器，并连接涂鸦<code>IoT</code>平台，进行激活绑定。</p>
+
+<ul>
+<li>蓝牙配网</li>
+</ul>
+
+<p>未配网设备发送蓝牙广播，具备配网能力的设备在接收到蓝牙广播数据之后，会对未配网设备发起配对，配对完成之后，根据涂鸦蓝牙配网协议进行交互，将<code>SSID</code>、<code>Password</code>和<code>Token</code>发送给待配网设备。待配网设备拿到<code>SSID</code>、<code>Password</code>和<code>Token</code>之后，连接<code>Wi-Fi</code>路由器，并连接涂鸦<code>IoT</code>平台，进行激活绑定。</p>
+
+<ul>
+<li>闪电配网</li>
+</ul>
+
+<p>闪电配网是一种伙伴免密配网技术，即一台支持闪电配网的已联网设备，对支持闪电配网的的设备进行配网。支持闪电配网的已联网设备通过Wi-Fi管理帧，按照涂鸦闪电配网协议的定义，发现在设备周边新出现的支持闪电配网的未配网设备，并跟涂鸦<code>APP</code>进行交互，当客户进入涂鸦<code>APP</code>主界面的时候，进行弹窗显示，只需要用户在APP上进行简单的发现、添加操作，即可将设备配网，减少了人为的输入密码操作，优化了配网体验，使得新设备可以做到上电添加之后即可使用。</p>
+
+<ul>
+<li><code>FFS</code>配网</li>
+</ul>
+
+<p>FFS配网是 Alexa Frustration-Free Setup的缩写，也是一种伙伴免密配网技术，在amazon Alexa智能音箱的支持下，按照amazon定义的 Frustration-Free Setup流程，对支持FFS配网的设备进行配网，过程不需要人工介入，设备只要插电即可配网，优化了配网的流程和客户的使用体验。</p>
+
+<ul>
+<li>用户配网</li>
+</ul>
+
+<p>为了支持其他类型的配网，如屏幕输入、声波、扫二维码、局域网等任意开发者自行开发出来的获取<code>SSID</code>、<code>Password</code>和<code>Token</code>的方式，通过这些机制拿到了<code>SSID</code>、<code>Password</code>和<code>Token</code>并调用API设置到涂鸦<code>IoTOS</code>，待配网设备拿到<code>SSID</code>、<code>Password</code>和<code>Token</code>之后，连接<code>Wi-Fi</code>路由器，并连接涂鸦<code>IoT</code>平台，进行激活绑定。</p>
+
+<ul>
+<li>涂鸦万能配网</li>
+</ul>
+
+<p>涂鸦万能配网是指涂鸦<code>IoTOS</code>支持了上述配网方式共存的配网模式，这些配网模式同时启动，只要有一个配网模式激活即可进行配网。</p>
+
+<h4><strong>配网模式</strong></h4>
+
+<p>配网模式是指涂鸦<code>IoTOS</code>根据客户需求，抽象出来的配网方案，包括以下几种。</p>
+
+<table>
+<thead>
+<tr>
+<th>配网模式</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>WF_START_AP_ONLY</code></td>
+<td>仅支持<code>AP</code>配网模式。</td>
+</tr>
+
+<tr>
+<td><code>WF_START_SMART_ONLY</code></td>
+<td>仅支持<code>smartcfg</code>配网模式。</td>
+</tr>
+
+<tr>
+<td><code>WF_START_AP_FIRST</code></td>
+<td>支持<code>AP</code>配网或者<code>smartcfg</code>配网模式，默认<code>AP</code>配网模式，但是经过重置，可以切换成<code>smartcfg</code>配网模式。</td>
+</tr>
+
+<tr>
+<td><code>WF_START_SMART_FIRST</code></td>
+<td>支持<code>AP</code>配网或者<code>smartcfg</code>配网模式，默认<code>smartcfg</code>配网模式，但是经过重置，可以切换成<code>AP</code>配网模式。</td>
+</tr>
+
+<tr>
+<td><code>WF_START_SMART_AP_CONCURRENT</code></td>
+<td>涂鸦万能配网模式，支持<code>AP</code>、<code>smartcfg</code>配网共存，同时根据产品的形态和客户的需求，自定义支持蓝牙配网、闪电配网和<code>FFS</code>配网。</td>
+</tr>
+</tbody>
+</table>
+<p>注意，在以上几个配网模式下，用户配网方式是默认支持的，即在任意模式之下，都是可以通过接口直接设置<code>SSID</code>、<code>Password</code>和<code>Token</code>进行配网操作的。</p>
+
+<h4><strong>Wi-Fi工作模式</strong></h4>
+
+<p>Wi-Fi工作模式是Wi-Fi产品特有的模式，其目的是为了</p>
+
+<table>
+<thead>
+<tr>
+<th>Wi-Fi工作模式</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>GWCM_OLD</code></td>
+<td>主要使用在通用对接类固件上。<br>设备只有在<code>mcu</code>发起产测的时候，才会扫描产测路由器，任意时刻都可以进入产测。</td>
+</tr>
+
+<tr>
+<td><code>GWCM_LOW_POWER</code></td>
+<td>主要使用在<code>soc</code>插座上。<br>配网前上电低功耗常亮，需要手工切换才能进入配网状态；<br>配网状态下，10秒内没配网成功，手工重启保持上次配网状态，10s后未配网，手工重启进入低功耗常亮状态；15分钟未配网，自动进入低功耗常亮状态，其中15分钟可以设置；<br>配网成功后，app移除设备自动重启，进入配网状态，默认<code>smartcfg</code>配网模式，擦除保存的<code>ssid</code>和<code>password</code>；手工移除，设备自动进入配网状态，擦除保存的<code>ssid</code>和<code>password</code>；<br>设备只有在低功耗状态下，重启设备才会扫描产测路由，进入产测模式。</td>
+</tr>
+
+<tr>
+<td><code>GWCM_SPCL_MODE</code></td>
+<td>主要使用在<code>soc</code>照明上。<br>配网前上电低功耗常亮，需要手工切换才能进入配网状态；<br>配网状态下，10秒内没配网成功，手工重启保持上次配网状态，10s后未配网，手工重启进入低功耗常亮状态，15分钟未配网，自动进入低功耗常亮状态，其中15分钟可以设置；<br>配网成功后，app移除设备自动重启，进入配网状态，默认<code>smartcfg</code>配网模式，擦除保存的<code>ssid</code>和<code>password</code>；手工移除，设备自动进入配网状态，进入防误触模式，不擦除保存的<code>ssid</code>和<code>password</code>；<br>设备只有在低功耗状态下，重启设备才会扫描产测路由，进入产测模式。</td>
+</tr>
+
+<tr>
+<td><code>GWCM_OLD_PROD</code></td>
+<td>主要使用在<code>soc</code>照明上。<br/>上电即可进入配网状态，并且一直处于配网状态；<br/>设备在配网状态下，重启设备都会主动扫描产测路由，进入产测模式。</td>
+</tr>
+
+<tr>
+<td><code>GWCM_LOW_POWER_AUTOCFG</code></td>
+<td>配网前上电进入<code>smartcfg</code>配网模式，<code>smartcfg</code>和<code>ap</code>模式来回切换；<br/>配网状态下，15分钟内重启，保持，保持上次配网状态，15分钟未配网自动进入低功耗常亮状态，其中15分钟可以设置；<br/>配网成功后，app移除设备自动重启，进入配网状态，默认<code>smartcfg</code>配网模式；手工移除，设备自动进入配网状态，默认<code>smartcfg</code>配网模式；<br/>设备在配网状态下，重启设备都会主动扫描产测路由，进入产测模式。</td>
+</tr>
+
+<tr>
+<td><code>GWCM_SPCL_AUTOCFG</code></td>
+<td>配网前上电进入<code>smartcfg</code>配网模式，<code>smartcfg</code>和<code>ap</code>模式来回切换；<br/>配网状态下，15分钟内重启，保持上次配网状态，15分钟未配网自动进入低功耗常亮状态，其中15分钟可以设置；<br/>配网成功后，app移除设备自动重启，进入配网状态，默认<code>smartcfg</code>配网模式，擦除保存的<code>ssid</code>和<code>password</code>,15分钟内重启，保持上次配网状态，15分钟未配网自动进入低功耗常亮状态，其中15分钟可以设置；手工移除，设备自动进入配网状态，进入防误触模式，不擦除保存的<code>ssid</code>和<code>password</code>，10秒内重启，保持上次配网状态，10秒后重启，立即连接已经配网路由器，15分钟内重启，保持，保持上次配网状态，15分钟未配网自动进入低功耗常亮状态，其中15分钟可以设置；；<br/>设备在配网状态下，重启设备都会主动扫描产测路由，进入产测模式。</td>
+</tr>
+</tbody>
+</table>
+
+<h4>接口描述</h4>
+
+<h5><strong>Wi-Fi 设置用户自定义AP</strong></h5>
+
+<pre><code>/**
+ * @brief tuya_iot_set_user_def_ap_if 
+ *
+ * @param[in] ssid
+ * @param[in] passwd
+ *
+ * @return OPERATE_RET
+ *
+ * @note need call before tuya_iot_wf_xxx_init
+ */
+OPERATE_RET tuya_iot_set_user_def_ap_if(IN CONST CHAR_T *ssid,IN CONST CHAR_T *passwd);
+</code></pre>
+
+<p>此接口用于设置用户自定义的AP配网的<code>SSID</code>和<code>Password</code>。如果用户设置自动以的AP的<code>SSID</code>和<code>Password</code>之后，<code>AP</code>配网将显示该<code>SSID</code>，并在连接的时候使用该<code>Password</code>进行验证。因此，此接口必须在设备初始化之前调用。</p>
+
+<h5><strong>Wi-Fi 获取用户自定义AP</strong></h5>
+
+<pre><code>/**
+ * @brief tuya_iot_get_dev_ap_if 
+ *
+ * @param[in] ssid
+ * @param[in] passwd
+ *
+ * @return OPERATE_RET
+ *
+ * @note need call before tuya_iot_wf_xxx_init
+ */
+OPERATE_RET tuya_iot_get_dev_ap_if(OUT CHAR_T *ssid,OUT CHAR_T *passwd);
+</code></pre>
+
+<p>此接口用于查询用户设置的AP配网的<code>SSID</code>和<code>Password</code>。如果用户没有设置返回设备烧录授权时写入的默认的<code>SSID</code>和<code>Password</code>。</p>
+
+<h5><strong>Wi-Fi 用户配网</strong></h5>
+
+<pre><code>/**
+ * @brief tuya_iot_gw_wf_user_cfg 
+ *
+ * @param[in] ssid
+ * @param[in] passwd
+ * @param[in] token
+ *
+ * @return OPERATE_RET
+ *
+ * @note use to TY_APP_CFG_WF mode
+ */
+OPERATE_RET tuya_iot_gw_wf_user_cfg(IN CONST CHAR_T *ssid,IN CONST CHAR_T *passwd,IN CONST CHAR_T *token);
+
+</code></pre>
+
+<p>此接口用于配置设备<code>Wi-Fi</code>网络配置，除了通过涂鸦提供的配网能力去获取<code>Wi-Fi</code>网络配置之外，还可以通过用户自己的方式去获取<code>SSID</code>、<code>Password</code>和<code>Token</code>，然后通过此接口设置，进行连接路由器、绑定激活等工作。</p>
+
+<h5><strong>Wi-Fi 配网超时时间设置</strong></h5>
+
+<pre><code>/**
+ * @brief tuya_iot_wf_timeout_set 
+ * @desc set wifi timeout
+ *
+ * @param[in] timeout: time in sec
+ *
+ * @return none
+ *
+ * @note must call first
+ */
+VOID tuya_iot_wf_timeout_set(IN CONST UINT_T timeout);
+</code></pre>
+
+<p><code>Wi-Fi</code>配网超时是指设备进入配网状态之后，一段时间没有完成配网，则退出配网模式的行为。设备配网的过程是一个设备和涂鸦智能APP、路由器频繁交互的一个阶段，功耗很高，长时间处于配网状态会造成设备消耗较多的电力，提高设备的使用成本，也可能会导致设备不稳定。因此涂鸦IoTOS默认进入配网状态15分钟之后，配网超时退出配网，这个时间是可设置的，通过<code>tuya_iot_wf_timeout_set</code>可以修改超时时间。</p>
+
+<h4>示例代码</h4>
+
+<p>Wi-Fi配网主要是在初始化的时候指定了配网模式，其主要的工作是初始化的时候进行的，以下是一端示例代码，在初始化的时候设置了<code>ap_ssid</code>和<code>ap_passwd</code>，并以<code>GWCM_SPCL_AUTOCFG</code>工作模式和<code>WF_START_AP_FIRST</code>配网模式启动设备。</p>
+
+<pre><code>#define UUID                &quot;f2ef8b136911f4b0&quot;
+#define AUTHKEY             &quot;6PqrvTXJh1ye5tF4SABzl1qNmd53slMX&quot;
+#define PRODUCT_KEY         &quot;U0fxNCEnZptKnQZy&quot;  //DP控制开关
+#define USER_SW_VER         &quot;1.0.0&quot;
+#define AP_SSID				&quot;SmartLife&quot;
+#define AP_PASSWD			&quot;tuya_wf_sample&quot;
+#define CFG_STORAGE_PATH    &quot;./tuya_db_files/&quot;
+#define WIFI_NETCFG_TIMEOUT		3
+
+STATIC VOID __soc_dev_rev_upgrade_info_cb(IN CONST FW_UG_S *fw);// SOC设备升级入口
+STATIC VOID __soc_dev_status_changed_cb(IN CONST GW_STATUS_E status);// SOC设备云端状态变更回调
+STATIC VOID __soc_dev_dp_query_cb(IN CONST TY_DP_QUERY_S *dp_qry);// SOC设备特定数据查询入口
+STATIC VOID __soc_dev_obj_dp_cmd_cb(IN CONST TY_RECV_OBJ_DP_S *dp);// SOC设备格式化指令数据下发入口
+STATIC VOID __soc_dev_raw_dp_cmd_cb(IN CONST TY_RECV_RAW_DP_S *dp);// SOC设备透传指令数据下发入口
+STATIC VOID __soc_dev_restart_req_cb(GW_RESET_TYPE_E type);// SOC设备进程重启请求入口
+STATIC VOID __soc_dev_net_status_cb(IN CONST GW_BASE_NW_STAT_T stat);// SOC外网状态变动回调
+STATIC VOID __soc_dev_reset_cb(event_raw_data_t *data);
+
+int main(int argc, char *argv[])
+{
+    int rt = OPRT_OK;
+
+    // 此处为涂鸦IoTOS初始化之前的一些特殊工作，代码每一个应用场景可能不同，按需实现
+    TUYA_CALL_ERR_RETURN(tuya_iot_wf_timeout_set(WIFI_NETCFG_TIMEOUT));
+	TUYA_CALL_ERR_RETURN(tuya_iot_set_user_def_ap_if(&quot;test_ap&quot;, &quot;test_passwd&quot;));
+	
+    // 此处为涂鸦IoTOS基础功能初始化，为IoTOS分配资源，并启动一些最基础的能力
+    TUYA_CALL_ERR_RETURN(tuya_iot_init_param(CFG_STORAGE_PATH, NULL));
+
+    // 此处为涂鸦IoTOS授权信息写入，仅在Linux Demo代码使用，因为正是产品是在生产测试的时候写入授权信息
+    WF_GW_PROD_INFO_S prod_info = {UUID, AUTHKEY, AP_SSID, AP_PASSWD};
+    TUYA_CALL_ERR_RETURN(tuya_iot_set_wf_gw_prod_info(&amp;prod_info));
+
+    // 此处为设备初始化，实现了一些基础的回调功能，满足一个设备的基本能力需求，并注册获取连接状态回调函数
+    TY_IOT_CBS_S iot_cbs = {0};
+    iot_cbs.gw_status_cb = __soc_dev_status_changed_cb;
+    iot_cbs.gw_ug_cb = __soc_dev_rev_upgrade_info_cb;
+    iot_cbs.gw_reset_cb = __soc_dev_restart_req_cb;
+    iot_cbs.dev_obj_dp_cb = __soc_dev_obj_dp_cmd_cb;
+    iot_cbs.dev_raw_dp_cb = __soc_dev_raw_dp_cmd_cb;
+    iot_cbs.dev_dp_query_cb = __soc_dev_dp_query_cb;   TUYA_CALL_ERR_RETURN(tuya_iot_wf_soc_dev_init_param(GWCM_SPCL_AUTOCFG,WF_START_AP_FIRST,&amp;iot_cbs,NULL,PRODUCT_KEY,DEV_SW_VERSION));
+    TUYA_CALL_ERR_RETURN(tuya_iot_reg_get_nw_stat_cb_params(__soc_dev_net_status_cb, 1));
+     
+    // 此处为设备初始化后的一些设备应用功能初始化，，代码每一个应用场景可能不同，按需实现
+    // TBD
+    
+    // demo状态监控
+    while (1)
+    {
+        sleep(10);        
+        // 监控设备状态，打印状态提示
+        ty_devos_monitor();
+    }
+
+    return 0;
+}
+</code></pre>
+
+<h3>激活绑定</h3>
+
+<p>激活绑定，是指涂鸦设备在建立网络连接之后，获取<code>token</code>并连接到涂鸦云的一个过程，一般用于自连网场景。例如有线设备、<code>GPRS</code>设备、<code>LTE</code>设备或者带屏幕的<code>Wi-Fi</code>设备（可以用户输入<code>Wi-Fi</code>的<code>ssid</code>和<code>password</code>），不需要通过配网来联网。这些设备建立网络连接之后，需要到涂鸦<code>IoT</code>平台上执行绑定、激活操作，然后才能正常的使用。</p>
+
+<p>激活绑定的功能是不要客户进行编码，涂鸦IoTOS直接提供了相关的能力。激活绑定目前包含以下几种方式。</p>
+
+<table>
+<thead>
+<tr>
+<th>方式<div style="width: 10pt"></th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>局域网绑定</td>
+<td>设备启动联网成功之后，建立局域网服务，并向周边广播设备信息，当APP自动发现发现到设备之后，通过APP想云端申请<code>Token</code>，拿到<code>Token</code>之后，将其通过涂鸦局域网协议发送给设备，设备拿到<code>Token</code>之后，使用它去涂鸦<code>IoT</code>平台进行绑定、激活。</td>
+</tr>
+
+<tr>
+<td>屏幕扫码绑定</td>
+<td>屏幕扫码绑定是指，带屏幕设备，在启动之后，根据自身信息，生成二维码，并显示在设备屏幕上，通过APP扫描设备屏幕二维码，可以向涂鸦<code>IoT</code>平台发起激活绑定请求，涂鸦<code>IoT</code>平台则会根据二维码信息，向队员设备推送MQTT消息，消息里包含了<code>Token</code>。设备拿到<code>Token</code>之后，使用它去涂鸦<code>IoT</code>平台进行绑定、激活。</td>
+</tr>
+
+<tr>
+<td>机身扫码绑定</td>
+<td>机身扫码绑定是指，设备在生产过程中，生成二维码，并张贴与设备机身，通过APP扫描机身二维码，可以向涂鸦<code>IoT</code>平台发起激活绑定请求，涂鸦<code>IoT</code>平台则会根据二维码信息，向队员设备推送MQTT消息，消息里包含了<code>Token</code>。设备拿到<code>Token</code>之后，使用它去涂鸦<code>IoT</code>平台进行绑定、激活。</td>
+</tr>
+
+<tr>
+<td>蓝牙绑定</td>
+<td>设备通过发送蓝牙广播，通过APP发现之后，向云端申请<code>Token</code>，然后通过蓝牙传输给设备，设备拿到<code>Token</code>之后，通过调用<code>Atop</code>接口去云端进行绑定、激活。</td>
+</tr>
+</tbody>
+</table>
+
+<h3>OTA</h3>
+
+<p>涂鸦IoTOS支持对<code>Powered by Tuya</code>设备的固件进行升级。在涂鸦IoT平台上创建的产品，可以上传固件、绑定升级通道<code>OTA channel</code>，每一个通道对应着设备上的一个可以进行版本升级的固件或者是文件、配置，开发者通过对该固件、文件或配置进行配置升级，然后推送到设备上。设备在接收到升级通知的时候，会去涂鸦IoT平台上获取对应通道所绑定的升级版本固件、文件或者配置，在本地进行校验、写入更新，然后上报新的版本号，完成升级过程。</p>
+
+<p>涂鸦IoTOS的升级操作主要分为以下几种类型：</p>
+
+<table>
+<thead>
+<tr>
+<th>升级类型<div style="width: 10pt"></th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>静默升级</td>
+<td>设备在启动之时以及每运行6小时，都会自动向IoT平台请求检测是否有静默升级任务。<br/>如果存在静默升级任务，则进入升级流程进行升级；<br/>如果不存在静默升级任务，则再等待6个小时重新检测。<br>静默升级中打开设备面板，会有进度框显示，并且无法操作设备。</td>
+</tr>
+
+<tr>
+<td>提醒升级</td>
+<td>用户手机APP首次打开设备面板时，会收到升级提醒弹框，可以选择升级或者不升级。<br>如果用户选择升级，则会推送升级任务到设备，设备并获取升级任务，进入升级流程，并上报升级进度。设备面板显示升级进度，并且无法操作设备。</td>
+</tr>
+
+<tr>
+<td>检测升级</td>
+<td>用户手机APP打开设备面板，点击点击右上角进入设备信息界面，检测设备固件版本，主动更新。<br/>如果检测到有新的固件版本，则会推送升级任务到设备，设备并获取升级任务，进入升级流程，并上报升级进度。设备面板显示升级进度，并且无法操作设备。</td>
+</tr>
+
+<tr>
+<td>强制升级</td>
+<td>用户手机APP首次打开设备面板时，会收到升级提醒弹框，只有确定可以选择，无法取消。<br/>用户选择升级，则会推送升级任务到设备，设备并获取升级任务，进入升级流程，并上报升级进度。设备面板显示升级进度，并且无法操作设备。</td>
+</tr>
+</tbody>
+</table>
+
+<h4>OTA Channel</h4>
+
+<p><code>OTA Channel</code>是涂鸦IoTOS对设备内部可以进行升级的固件、文件或者配置进行升级通道绑定的一种机制，主要分为两种，分别为系统<code>OTA channel</code>和扩展<code>OTA Channel</code>。</p>
+
+<ul>
+<li><p>系统<code>OTA channel</code>：涂鸦IoTOS使用的，固化的一些通道，用于指定类型的固件升级使用。</p></li>
+
+<li><p>扩展<code>OTA Channel</code>：涂鸦IoTOS定义的，开发者可以根据自己的实际需求进行规划使用。</p></li>
+</ul>
+
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>通道号</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>DEV_NM_ATH_SNGL</code></td>
+<td>0</td>
+<td>系统<code>OTA Channel</code>，主联网固件升级通道</td>
+</tr>
+
+<tr>
+<td><code>DEV_BLE_SNGL</code></td>
+<td>1</td>
+<td>系统<code>OTA Channel</code>，蓝牙固件升级通道</td>
+</tr>
+
+<tr>
+<td><code>DEV_ZB_SNGL</code></td>
+<td>3</td>
+<td>系统<code>OTA Channel</code>，ZigBee固件升级通道</td>
+</tr>
+
+<tr>
+<td><code>DEV_NM_NOT_ATH_SNGL</code></td>
+<td>9</td>
+<td>系统<code>OTA Channel</code>，MCU固件升级通道</td>
+</tr>
+
+<tr>
+<td><code>DEV_ATTACH_MOD_x</code></td>
+<td>&gt;=10</td>
+<td>扩展<code>OTA Channel</code>，开发者自定义的升级通道</td>
+</tr>
+</tbody>
+</table>
+<p>在升级过程中，涂鸦IoTOS在获取到升级信息之后，会对升级通道进行一个检查。如果升级通道是主联网固件升级通道，即<code>DEV_NM_ATH_SNGL</code>，涂鸦IoTOS会自行处理；如果升级通道是其他的系统<code>OTA Channel</code>或者是扩展的<code>OTA Channel</code>，则会调用开发者在初始化时候提供的<code>TY_IOT_CBS_S</code>里的回调函数<code>gw_ug_cb</code>。在这个回调函数里，开发者可以根据里面的<code>tp</code>来判断是什么样的<code>OTA Channel</code>，然后进行区分处理。</p>
+
+<p>一些客户对主联网固件的升级也有特殊的定制需求，可以通过一个接口<code>tuya_svc_upgrade_register_pre_cb</code>进行定制，只要注册一个<code>NULL</code>指针即可。</p>
+
+<p>除了回调函数之外，OTA的其他功能不需要用于进行编码开发，涂鸦IoTOS直接提供相关的能力。</p>
+
+<h4>接口描述</h4>
+
+<h5>启动升级</h5>
+
+<pre><code>/**
+ * @brief Start to download the specific firmware
+ * 
+ * @param[in] dev_id ID of sub-device, or NULL for GW
+ * @param[in] fw Firmware info to download
+ * @param[in] get_file_cb Callback to transfer data while downloading
+ * @param[in] pri_data Private data
+ * @param[in] upgrd_nofity_cb Callback when upgrade complete or error
+ * @param[in] upload_upgrade_percent Upload upgrade percent or not
+ * @param[in] download_buf_size Buffer size allocated for OTA
+ * 
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */
+int tuya_svc_upgrade_start(CONST CHAR_T *dev_id,
+						   CONST FW_UG_S *fw,
+						   CONST GET_FILE_DATA_CB get_file_cb,
+						   VOID *pri_data,
+						   CONST UPGRADE_NOTIFY_CB upgrd_nofity_cb, 
+						   CONST BOOL_T upload_upgrade_percent, 
+						   CONST UINT_T download_buf_size);
+
+</code></pre>
+
+<p>此接口用于在开发者提供的<code>gw_ug_cb</code>里启动OTA流程。接口里需要提供<code>get_file_cb</code>，用于获取文件内容写入flash，<code>upgrd_notify_cb</code>用于通知升级结束。</p>
+
+<h5>注册升级回调pre_cb</h5>
+
+<pre><code>/**
+ * @brief Register pre-precess handler to replace the default one
+ * 
+ * @param[in] pre_ug_cb The new handler
+ */
+void tuya_svc_upgrade_register_pre_cb(dev_upgrade_pre_inform_cb pre_ug_cb);
+</code></pre>
+
+<p>此接口用于注册升级回调之前的特殊操作，涂鸦IoTOS内部默认有一个<code>pre_cb</code>，在内部的<code>pre_cb</code>里，涂鸦IoTOS处理了主联网固件的升级逻辑。如果需要关闭此逻辑，把主联网固件的升级也放到开发者在初始化时候提供的回调函数<code>gw_ug_cb</code>里处理，可以通过<code>tuya_svc_upgrade_register_pre_cb(NULL)</code>来替换涂鸦IoTOS内部的默认<code>pre_cb</code>。</p>
+
+<h4>使用示例</h4>
+
+<pre><code>// 通知升级完成
+STATIC VOID __upgrade_notify_cb(IN CONST FW_UG_S *fw, IN CONST INT_T download_result, IN PVOID_T pri_data)
+{
+    FILE *p_upgrade_fd = (FILE *)pri_data;
+    fclose(p_upgrade_fd);
+
+    if(download_result == 0) {
+        PR_DEBUG(&quot;SOC Upgrade File Download Success&quot;);
+        // UserTODO
+        exit(1);
+    }else {
+        PR_ERR(&quot;SOC Upgrade File Download Fail.ret = %d&quot;, download_result);
+    }
+}
+
+// 通知升级文件更新
+STATIC OPERATE_RET __get_file_data_cb(IN CONST FW_UG_S *fw, IN CONST UINT_T total_len, IN CONST UINT_T offset,
+                                      IN CONST BYTE_T *data, IN CONST UINT_T len, OUT UINT_T *remain_len, IN PVOID_T pri_data)
+{
+    FILE *p_upgrade_fd = (FILE *)pri_data;
+    fwrite(data, 1, len, p_upgrade_fd);
+    *remain_len = 0;
+
+    return OPRT_OK;
+}
+
+// cb回调，设备升级入口
+VOID __soc_gw_ug_cb(IN CONST FW_UG_S *fw)
+{
+    PR_DEBUG(&quot;SOC Rev Upgrade Info&quot;);
+    PR_DEBUG(&quot;fw-&gt;tp:%d&quot;, fw-&gt;tp);
+    PR_DEBUG(&quot;fw-&gt;fw_url:%s&quot;, fw-&gt;fw_url);
+    PR_DEBUG(&quot;fw-&gt;fw_hmac:%s&quot;, fw-&gt;fw_hmac);
+    PR_DEBUG(&quot;fw-&gt;sw_ver:%s&quot;, fw-&gt;sw_ver);
+    PR_DEBUG(&quot;fw-&gt;file_size:%u&quot;, fw-&gt;file_size);
+
+    FILE *p_upgrade_fd = fopen(g_devos_virual.ota_path, &quot;w+b&quot;);
+    if(NULL == p_upgrade_fd){
+        PR_ERR(&quot;open upgrade file fail. upgrade fail %s&quot;, g_devos_virual.ota_path);
+        return;
+    }
+    OPERATE_RET op_ret = tuya_iot_upgrade_gw(fw, __get_file_data_cb, __upgrade_notify_cb, p_upgrade_fd);
+    if(OPRT_OK != op_ret) {
+        PR_ERR(&quot;tuya_iot_upgrade_gw err:%d&quot;,op_ret);
+    }
+}
+
+// 设备启动，注册__soc_gw_ug_cb之后，调用test_ota替换涂鸦IoTOS默认的pre_cb，然后发起OTA
+VOID test_ota(VOID)
+{
+	// 重置pre_cb
+	tuya_svc_upgrade_register_pre_cb(NULL);
+	
+	// 发起主联网固件ota，查看主联网固件升级打印
+}
+
+</code></pre>
+
+<h3>蓝牙</h3>
+
+<p>涂鸦IoTOS支持蓝牙作为一个近场通信的功能，和<code>Powered by Tuya</code>设备进行配对、连接，建立蓝牙通道，并对设备进行蓝牙配网、蓝牙绑定激活、蓝牙控制、蓝牙校时、蓝牙遥控等功能。</p>
+
+<h4>蓝牙配网</h4>
+
+<p>未配网设备发送蓝牙广播，涂鸦智能APP在接收到蓝牙广播数据之后，会对未配网设备发起配对，配对完成之后，根据涂鸦蓝牙协议进行配网交互，涂鸦智能APP向云端申请<code>Token</code>，并将<code>SSID</code>、<code>Password</code>和<code>Token</code>发送给待配网设备。待配网设备拿到<code>SSID</code>、<code>Password</code>和<code>Token</code>之后，连接<code>Wi-Fi</code>路由器，并连接涂鸦<code>IoT</code>平台，进行激活绑定。</p>
+
+<p>蓝牙配网功能不需要客户进行编码，涂鸦IoTOS直接提供了相关的能力。</p>
+
+<h4>蓝牙绑定激活</h4>
+
+<p>未绑定单以及连接网络的设备发送蓝牙广播，涂鸦智能APP在接收到蓝牙广播数据之后，会对未绑定设备发起配对，配对完成之后，根据涂鸦蓝牙协议进行绑定交互，涂鸦智能APP向云端申请<code>Token</code>，然后通过蓝牙将<code>Token</code>传输给设备，设备拿到<code>Token</code>之后，连接涂鸦IoT平台，进行激活绑定。</p>
+
+<p>蓝牙绑定激活功能不需要客户进行编码，涂鸦IoTOS直接提供了相关的能力。</p>
+
+<h4>蓝牙控制</h4>
+
+<p>参加<a href="#DP功能">DP功能描述中的蓝牙相关部分</a></p>
+
+<h4>蓝牙校时</h4>
+
+<p>当蓝牙连接建立的时候，通过涂鸦蓝牙协议，对设备进行时间校准。</p>
+
+<p>蓝牙校时功能不需要客户进行编码，涂鸦IoTOS直接提供了相关的能力。</p>
+
+<h4>蓝牙遥控</h4>
+
+<p>蓝牙遥控需要<code>Powered by Tuya</code>设备开启蓝牙扫描能力。设备在绑定激活的时候，如果支持蓝牙遥控器功能，设备从涂鸦IoT平台获取<code>app_key</code>和<code>network_key</code>，用于蓝牙遥控协议数据的解密。</p>
+
+<p>设备在接收到遥控器发送的蓝牙广播数据的时候，会使用<code>app_key</code>对数据进行解密、过滤，并将解密之后的数据发送给开发者，开发者根据蓝牙遥控器协议的定义，解析数据并执行相关的遥控操作。</p>
+
+<h4>接口描述</h4>
+
+<h5>注册蓝牙遥控回调</h5>
+
+<pre><code>//callback function for advertisement scanning data processing
+typedef VOID (*TUYA_BLE_APP_SCAN_HANDLE)(UCHAR_T *data, UCHAR_T len,  UCHAR_T type, UCHAR_T* mac);
+
+/**
+ * @brief Register callback function for advertisement scanning data processing
+ *
+ * @param[in] cb: callback function
+ *
+ * @note This API is used for registering callback function for advertisement scanning data processing
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */
+OPERATE_RET tuya_ble_reg_app_scan_adv_cb(TUYA_BLE_APP_SCAN_HANDLE cb);
+
+</code></pre>
+
+<p>此接口用于注册蓝牙遥控功能的数据接收回调，其中<code>TUYA_BLE_APP_SCAN_HANDLE</code>为回调函数原型。注册该回调之后，设备会的确蓝牙扫描功能，并将接收到的蓝牙广播进行过滤，通过回调通知应用。</p>
+
+<h4>示例代码</h4>
+
+<pre><code>STATIC VOID __bel_scan_handle(UCHAR_T *data, UCHAR_T len,  UCHAR_T type, UCHAR_T* mac)
+{
+	PR_DEBUG(&quot;recv ble remote cntl from %s&quot;, mac);
+	return;
+}
+// 在完成系统初始化之后调用此接口测试蓝牙遥控
+VOID test_ble_remote_cntl()
+{
+	tuya_ble_reg_app_scan_adv_cb(__bel_scan_handle);
+}
+</code></pre>
+
+<h3>局域网</h3>
+
+<h4>局域网广播</h4>
+
+<p>有线、<code>Wi-Fi</code>、<code>Wi-Fi&amp;BLE</code>产品，在连接上网络并检测到局域网连接可用的时候，会在局域网内进行设备的设备信息广播。广播是UDP报文，在局域网内部发送，目的IP为255.255.255.255，端口为6667。域网的广播包含以下信息：</p>
+
+<table>
+<thead>
+<tr>
+<th>内容</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>ip</td>
+<td>设备IP地址</td>
+</tr>
+
+<tr>
+<td>gwId</td>
+<td>如果设备已经激活，gwId=虚拟id；如果设备没有激活，gwId=uuid</td>
+</tr>
+
+<tr>
+<td>active</td>
+<td>2=已经激活，其他=没有激活</td>
+</tr>
+
+<tr>
+<td>ability</td>
+<td>默认为0，尚未使用</td>
+</tr>
+
+<tr>
+<td>encrypt</td>
+<td>默认为true，加密</td>
+</tr>
+
+<tr>
+<td>version</td>
+<td>局域网协议版本号</td>
+</tr>
+
+<tr>
+<td>token</td>
+<td>是否需要token，true=需要，false=不需要</td>
+</tr>
+
+<tr>
+<td>wf_cfg</td>
+<td>是否需要配置Wi-Fi，true=需要，false=不需要</td>
+</tr>
+</tbody>
+</table>
+<p>此时如果APP和设备处于同一个局域网网络，就可以通过APP的自动发现，接收局域网内的设备广播包，解析广播包内容，识别设备类型，发现该设备。然后可以通过密钥交互，建立安全的局域网连接，然后基于涂鸦局域网协议就可以进行相关的协议交互。</p>
+
+<p>默认情况下，涂鸦<code>IoTOS</code>支持3个局域网连接，即可以通过三个不同的APP或者中控对设备进行控制。</p>
+
+<h4><strong>局域网协议</strong></h4>
+
+<p>涂鸦局域网定协议定义了<code>Powered by Tuya</code>设备和涂鸦智能APP之间进行局域网交互的报文格式和协议细节，这些业务逻辑不需要开发者关心，逻辑都是实现在涂鸦<code>IoTOS</code>内部。局域网协议主要包括局域网绑定激活、局域网控制等功能。</p>
+
+<p>局域网绑定是指设备和涂鸦智能APP之间建立局域网连接之后，如果设备尚未激活，则可以通过局域网进行绑定激活。涂鸦智能APP基于涂鸦局域网协议，发送局域网协议报文，设备在收到报文之后进行协议解析、识别之后为用户绑定命令，对设备进行绑定激活，参照<a href="#激活绑定">激活绑定局域网绑定</a>。</p>
+
+<p>局域网控制是指设备和涂鸦智能APP之间建立局域网连接之后，涂鸦智能APP基于涂鸦局域网协议，发送局域网协议报文，设备在收到报文之后进行协议解析、识别之后为局域网控制命令，对设备进行控制操作。局域网控制拥有最高的控制优先级，即当设备和涂鸦智能APP建立局域网连接，会优先走局域网通道进行控制，以保证设备的使用体验，并降低用户的流量成本。</p>
+
+<h4><strong>局域网日志</strong></h4>
+
+<p>参照<a href="#**Online Log**">涂鸦Online Log 服务</a>服务。</p>
+
+<h4><strong>局域网关闭</strong></h4>
+
+<p>局域网可以按照开发者的需求打开和关闭。关闭局域网之后，不会再有局域网广播，也不会启动局域网服务。提高了设备的安全性。</p>
+
+<p>局域网关闭只能在设备激活之后进行，在激活之前设置可能会无效。</p>
+
+<h4>接口描述</h4>
+
+<h5><strong>关闭局域网</strong></h5>
+
+<pre><code>/**
+ * @brief lan protocol diable
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */
+OPERATE_RET lan_pro_cntl_disable(VOID);
+</code></pre>
+
+<p>关闭局域网，停止发送局域网广播，关闭局域网服务。</p>
+
+<h5><strong>打开局域网</strong></h5>
+
+<pre><code>/**
+ * @brief lan protocol enable
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */
+OPERATE_RET lan_pro_cntl_enable(VOID);
+</code></pre>
+
+<p>打开局域网，发送局域网广播，启动局域网服务，能够接受局域网连接请求，并提供涂鸦局域网协议定义的各项功能服务。</p>
+
+<h4>使用示例</h4>
+
+<pre><code>void test_lan()
+{
+	// 关闭局域网
+	TUYA_CALL_ERR_LOG(lan_pro_cntl_disable());
+	
+	// 打开局域网
+	TUYA_CALL_ERR_LOG(lan_pro_cntl_enable());
+}
+</code></pre>
+
+<h3>DP功能</h3>
+
+<p><code>DP</code>点是涂鸦<code>IoT</code>平台对功能点的定义。开发者可以在涂鸦<code>IoT</code>平台创建产品，并根据开发者的需求，定义产品功能和功能点的特征，每一个功能点，就是一个<code>DP</code>点，其特征就是<code>DP</code>点相应的属性。产品的<code>DP</code>点的集合，是产品的<code>Schema</code>。当设备在涂鸦<code>IoT</code>平台激活的时候，通过激活时候所携带的产品创建所得的<code>PID</code>信息，可以获得产品的<code>Schema</code>信息。涂鸦<code>IoTOS</code>会根据<code>Schema</code>信息创建设备的能力列表，并在后续的日常运行过程中根据设备的能力，处理<code>DP</code>的上报和下发。</p>
+
+<p><code>DP</code>点支持布尔型(<code>bool</code>)、数值型(<code>value</code>)、字符串型(<code>string</code>)、枚举型(<code>enum</code>)、故障型(<code>bitmap</code>)，<code>RAW</code> 型数据，像定义 C 变量一样简单。其中布尔型(<code>bool</code>)、数值型(<code>value</code>)、字符串型(<code>string</code>)、枚举型(<code>enum</code>)、故障型(<code>bitmap</code>)又被称为<code>obj</code>型。使用<code>DP</code>点的时候应注意：</p>
+
+<ul>
+<li><p>目前建议每个产品最多创建 35 个<code>dp</code>，复杂功能请用 <code>RAW</code> 型数据实现;</p></li>
+
+<li><p><code>obj</code>型<code>DP</code>上报的时候，会对上报的数值进行过滤，相同则不予上报；</p></li>
+
+<li><p>如果想上报相同的<code>obj</code>型<code>DP</code>，可以通过带<code>force</code>的接口上报，或者将<code>DP</code>点定义为统计类型(<code>stat</code>)</p></li>
+</ul>
+
+<h4><strong>DP下发</strong></h4>
+
+<p>涂鸦<code>IoTOS</code>在初始化的时候，会需要开发者提供<code>TY_IOT_CBS_S</code>，其中包括三个回调函数，用于处理涂鸦<code>IoTOS</code>里接受到的<code>DP</code>相关的命令，具体用途如下。开发者根据自己的实际功能需要，实现相应的回调，并在设备初始化的时候注册到涂鸦<code>IoTOS</code>。</p>
+
+<table>
+<thead>
+<tr>
+<th>回调名称</th>
+<th>功能描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>dev_obj_dp_cb</code></td>
+<td>结构化DP接受处理回调，结构化DP即DP有明确的类型定义</td>
+</tr>
+
+<tr>
+<td><code>dev_raw_dp_cb</code></td>
+<td>raw型DP接受处理回调，raw型DP即二进制数据流</td>
+</tr>
+
+<tr>
+<td><code>dev_dp_query_cb</code></td>
+<td>DP查询回调</td>
+</tr>
+</tbody>
+</table>
+<p>通过向设备下发<code>DP</code>点可以对设备进行控制，涂鸦<code>IoTOS</code>可以支持从蓝牙、局域网、涂鸦云<code>MQTT</code>三条通道来的<code>DP</code>信息，在涂鸦<code>IoTOS</code>里对收到的<code>DP</code>校验处理，然后调用相应的回调接口，告知应用层收到相应的DP命令，交于应用层对DP命令进行处理。</p>
+
+<pre><code class="language-mermaid">graph LR
+	BLE
+	LAN
+	MQTT
+	subgraph device
+		Tuya_IoTOS
+		dev_obj_dp_cb
+		dev_raw_dp_cb
+		dev_dp_query_cb
+		user_dp_implement
+	end
+	BLE--&gt;Tuya_IoTOS
+	LAN--&gt;Tuya_IoTOS
+	MQTT--&gt;Tuya_IoTOS
+	Tuya_IoTOS--&gt;dev_obj_dp_cb
+	Tuya_IoTOS--&gt;dev_raw_dp_cb
+	Tuya_IoTOS--&gt;dev_dp_query_cb
+	dev_obj_dp_cb--&gt;user_dp_implement
+    dev_raw_dp_cb--&gt;user_dp_implement
+    dev_dp_query_cb--&gt;user_dp_implement
+</code></pre>
+
+<h4><strong>DP上报</strong></h4>
+
+<p>设备产生的状态、数据，以及<code>DP</code>下发操作执行结果可以上报，通过涂鸦<code>IoTOS</code>提供的<code>DP</code>上报接口，并在涂鸦<code>IoTOS</code>内部对上报的<code>DP</code>进行校验和流控，然后通过对应通道进行上报。</p>
+
+<pre><code class="language-mermaid">graph LR
+	BLE
+	LAN
+	MQTT
+	subgraph device
+		Tuya_IoTOS
+		dev_report_dp_json_async
+		dev_query_dp_json_async
+		dev_report_dp_raw_sync
+		dev_report_dp_stat_sync
+		user_dp_report
+	end
+	user_dp_report--&gt;dev_report_dp_json_async
+	user_dp_report--&gt;dev_query_dp_json_async
+	user_dp_report--&gt;dev_report_dp_raw_sync
+	user_dp_report--&gt;dev_report_dp_stat_sync
+	dev_report_dp_json_async--&gt;Tuya_IoTOS
+	dev_query_dp_json_async--&gt;Tuya_IoTOS
+	dev_report_dp_raw_sync--&gt;Tuya_IoTOS
+	dev_report_dp_stat_sync--&gt;Tuya_IoTOS
+	Tuya_IoTOS--&gt;BLE
+	Tuya_IoTOS--&gt;LAN
+	Tuya_IoTOS--&gt;MQTT
+	
+</code></pre>
+
+<h4>DP通道</h4>
+
+<p>DP下发和上报支持蓝牙、局域网和涂鸦MQTT三个通道，三个通道同时处理会造成DP处理逻辑复杂化，并造成流量、功耗的增加，因此DP处理的通道存在一定的逻辑策略。</p>
+
+<table>
+<thead>
+<tr>
+<th>通道</th>
+<th>策略</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>MQTT</td>
+<td>上报：当MQTT通道在线的时候，永远会通过MQTT上报<br>下发：当MQTT通道在线，且LAN不在线，会通过MQTT通道下发；LAN在线，不会通过MQTT通道下发</td>
+</tr>
+
+<tr>
+<td>LAN</td>
+<td>上报：当LAN通道在线的时候，永远会通过LAN上报<br>下发：当LAN通道在线，只会通过LAN通道下发</td>
+</tr>
+
+<tr>
+<td>BLE</td>
+<td>上报：仅当MQTT或者LAN不在线的情况，会通过BLE上报<br>下发：仅当MQTT或者LAN不在线的情况，会通过BLE下发</td>
+</tr>
+</tbody>
+</table>
+
+<h4>接口描述</h4>
+
+<h5><strong>obj DP接收回调</strong></h5>
+
+<pre><code>/**
+ * @brief Handler to process structured DP info
+ * 
+ * @param[in] obj dp DP recv info, see TY_RECV_OBJ_DP_S
+ */
+typedef VOID (*DEV_OBJ_DP_CMD_CB)(IN CONST TY_RECV_OBJ_DP_S *dp);
+</code></pre>
+
+<h5><strong>RAW DP接收回调</strong></h5>
+
+<pre><code>/**
+ * @brief Handler to process raw DP info
+ * 
+ * @param[in] raw dp DP recv info, see TY_RECV_RAW_DP_S
+ */
+typedef VOID (*DEV_RAW_DP_CMD_CB)(IN CONST TY_RECV_RAW_DP_S *dp);
+</code></pre>
+
+<h5><strong>DP查询请求回调</strong></h5>
+
+<pre><code>/**
+ * @brief Handler to process structured DP query info
+ * 
+ * @param[in] dp_qry DP query info, see TY_DP_QUERY_S
+ */
+typedef VOID (*DEV_DP_QUERY_CB)(IN CONST TY_DP_QUERY_S *dp_qry);
+
+</code></pre>
+
+<h5><strong>上报DP</strong></h5>
+
+<pre><code>/**
+ * @brief dev_report_dp_json_async 
+ * @desc report dp info a-synced.
+ *
+ * @param[in] dev_id: if sub-device, then devid = sub-device_id
+ *                if gateway/soc/mcu, then devid = NULL
+ * @param[in] dp_data: dp array header
+ * @param[in] cnt: dp array count
+ *
+ * @return OPRT_OK: success  Other: fail
+ */
+OPERATE_RET dev_report_dp_json_async(IN CONST CHAR_T *dev_id,IN CONST TY_OBJ_DP_S *dp_data,IN CONST UINT_T cnt);
+</code></pre>
+
+<p>此接口用于上报在涂鸦<code>IoT</code>平台上定义为<code>obj</code>型类型的<code>DP</code>点，该接口会对需要上报的<code>DP</code>进行重复性校验，即如果<code>DP</code>点的值和上次上报的值一样，不会进行上报。该接口会对上报的数据进行缓存。此接口上报是同步上报，即上报发起即返回，不关心上报的结果。</p>
+
+<h5><strong>强制上报DP</strong></h5>
+
+<pre><code>/**
+ * @brief dev_report_dp_json_async_force 
+ * @desc report dp info a-synced.
+ *
+ * @param[in] dev_id: if sub-device, then devid = sub-device_id
+ *                if gateway/soc/mcu, then devid = NULL
+ * @param[in] dp_data: dp array header
+ * @param[in] cnt: dp array count
+ *
+ * @return OPRT_OK: success  Other: fail
+ */
+OPERATE_RET dev_report_dp_json_async_force(IN CONST CHAR_T *dev_id,IN CONST TY_OBJ_DP_S *dp_data,IN CONST UINT_T cnt);
+</code></pre>
+
+<p>此接口用于上报在涂鸦<code>IoT</code>平台上定义为<code>obj</code>型类型的<code>DP</code>点，该接口不会对需要上报的<code>DP</code>进行重复性校验，即如果<code>DP</code>点的值和上次上报的值一样，也依然会进行上报。该接口会对上报的数据进行缓存。此接口上报是同步上报，即上报发起即返回，不关心上报的结果。</p>
+
+<h5><strong>上报DP查询结果</strong></h5>
+
+<pre><code>/**
+ * @brief dev_query_dp_json_async 
+ * @desc report dp info a-synced.
+ *
+ * @param[in] dev_id: if sub-device, then devid = sub-device_id
+ *                if gateway/soc/mcu, then devid = NULL
+ * @param[in] dp_data: dp array header
+ * @param[in] cnt: dp array count
+ *
+ * @return OPRT_OK: success  Other: fail
+ */
+OPERATE_RET dev_query_dp_json_async(IN CONST CHAR_T *dev_id,IN CONST TY_OBJ_DP_S *dp_data,IN CONST UINT_T cnt);
+</code></pre>
+
+<p>此接口用于上报用户发起的<code>DP</code>查询命令的结果。该接口会对需要上报的<code>DP</code>进行重复性校验，即如果<code>DP</code>点的值和上次上报的值一样，不会进行上报。此接口上报是同步上报，即上报发起即返回，不关心上报的结果。上报<code>DP</code>查询结果的时候，会在<code>DP</code>上报的<code>Json</code>信息里新增一个字段<code>“type”:“query”</code>，用于协助云端进行数据的过滤。</p>
+
+<h5><strong>强制上报DP查询结果</strong></h5>
+
+<pre><code>/**
+ * @brief dev_query_dp_json_async_force 
+ * @desc report dp info a-synced.
+ *
+ * @param[in] dev_id: if sub-device, then devid = sub-device_id
+ *                if gateway/soc/mcu, then devid = NULL
+ * @param[in] dp_data: dp array header
+ * @param[in] cnt: dp array count
+ *
+ * @return OPRT_OK: success  Other: fail
+ */
+OPERATE_RET dev_query_dp_json_async_force(IN CONST CHAR_T *dev_id,IN CONST TY_OBJ_DP_S *dp_data,IN CONST UINT_T cnt);
+
+</code></pre>
+
+<p>此接口用于上报用户发起的<code>DP</code>查询命令的结果。该接口不会对需要上报的<code>DP</code>进行重复性校验，即如果<code>DP</code>点的值和上次上报的值一样，也依然会进行上报。此接口上报是同步上报，即上报发起即返回，不关心上报的结果。上报<code>DP</code>查询结果的时候，会在<code>DP</code>上报的<code>Json</code>信息里新增一个字段<code>“type”:“query”</code>，用于协助云端进行数据的过滤。</p>
+
+<h5><strong>上报RAW型DP信息</strong></h5>
+
+<pre><code>/**
+ * @brief dev_report_dp_raw_sync_extend 
+ * @desc report dp raw info synced.
+ *
+ * @param[in] dev_id: if sub-device, then devid = sub-device_id
+ *                if gateway/soc/mcu, then devid = NULL
+ * @param[in] dpid: raw dp id
+ * @param[in] data: raw data
+ * @param[in] len: len of raw data
+ * @param[in] timeout: function blocks until timeout seconds
+ * @param[in] enable_auto_retrans
+ *
+ * @return OPRT_OK: success  Other: fail
+ */
+OPERATE_RET dev_report_dp_raw_sync_extend(IN CONST CHAR_T *dev_id,IN CONST BYTE_T dpid,\
+                                                      IN CONST BYTE_T *data,IN CONST UINT_T len,\
+                                                      IN CONST UINT_T timeout, IN CONST BOOL_T enable_auto_retrans);
+#define dev_report_dp_raw_sync(dev_id, dpid, data, len, timeout) \
+    dev_report_dp_raw_sync_extend(dev_id, dpid, data, len, timeout, TRUE)
+
+</code></pre>
+
+<p>此接口用于上报在涂鸦<code>IoT</code>平台上定义为<code>RAW</code>型类型的<code>DP</code>点，该接口不会对需要上报的<code>DP</code>进行重复性校验，即如果<code>DP</code>点的值和上次上报的值一样，也依然会进行上报。该接口不会对上报的数据进行缓存，因为数据量一般会比较大。此接口上报是同步上报，即上报成功或者超时时间到了之后才会进行返回。</p>
+
+<h5><strong>上报RAW型DP信息带时间字符串</strong></h5>
+
+<pre><code>/**
+ * @brief dev_report_dp_raw_sync_extend_with_time 
+ * @desc report dp raw info synced.
+ *
+ * @param[in] dev_id: if sub-device, then devid = sub-device_id
+ *                if gateway/soc/mcu, then devid = NULL
+ * @param[in] dpid: raw dp id
+ * @param[in] data: raw data
+ * @param[in] len: len of raw data
+ * @param[in] timeout: function blocks until timeout seconds
+ * @param[in] enable_auto_retrans
+ * @param[in] time_str
+ *
+ * @return OPRT_OK: success  Other: fail
+ */
+OPERATE_RET dev_report_dp_raw_sync_extend_with_time(IN CONST CHAR_T *dev_id,IN CONST BYTE_T dpid,\
+                                                    IN CONST BYTE_T *data,IN CONST UINT_T len,\
+                                                    IN CONST UINT_T timeout, IN CONST BOOL_T enable_auto_retrans,\
+                                                    IN CONST CHAR_T *time_str);
+#define dev_report_dp_raw_sync_with_time(dev_id, dpid, data, len, timeout, time_str) \
+    dev_report_dp_raw_sync_extend_with_time(dev_id, dpid, data, len, timeout, TRUE, time_str)
+
+</code></pre>
+
+<p>此接口用于上报在涂鸦<code>IoT</code>平台上定义为<code>RAW</code>型类型的<code>DP</code>点，并带上DP发生的时间，该接口不会对需要上报的<code>DP</code>进行重复性校验，即如果<code>DP</code>点的值和上次上报的值一样，也依然会进行上报。该接口不会对上报的数据进行缓存，因为数据量一般会比较大。此接口上报是同步上报，即上报成功或者超时时间到了之后才会进行返回。</p>
+
+<h5><strong>上报统计型DP</strong></h5>
+
+<pre><code>/**
+ * @brief dev_report_dp_stat_sync_extend 
+ * @desc: report dp status info synced.
+ *        if time_stamp==0, time_stamp = time of msg arrival of the server
+ *
+ * @param[in] dev_id: if sub-device, then devid = sub-device_id
+ *                    if gateway/soc/mcu, then devid = NULL
+ * @param[in] dp_data: dp status array header
+ * @param[in] cnt: dp status array count
+ * @param[in] timeout: function blocks until timeout seconds
+ * @param[in] enable_auto_retrans
+ *
+ * @return OPRT_OK: success  Other: fail
+ */
+OPERATE_RET dev_report_dp_stat_sync_extend(IN CONST CHAR_T *dev_id,IN CONST TY_OBJ_DP_S *dp_data,\
+                                    IN CONST UINT_T cnt,IN CONST UINT_T timeout, IN CONST BOOL_T enable_auto_retrans);
+#define dev_report_dp_stat_sync(dev_id, dp_data, cnt, timeout) \
+    dev_report_dp_stat_sync_extend(dev_id, dp_data, cnt, timeout, TRUE)
+
+
+</code></pre>
+
+<p>此接口用于上报在涂鸦<code>IoT</code>平台上定义为统计型类型的<code>DP</code>点，该接口不会对需要上报的<code>DP</code>进行重复性校验，即如果<code>DP</code>点的值和上次上报的值一样，也依然会进行上报。此接口上报是同步上报，即上报成功或者超时时间到了之后才会进行返回。</p>
+
+<h4>使用示例</h4>
+
+<pre><code>// rcv obj dp
+VOID test_DEV_OBJ_DP_CMD_CB(IN CONST TY_RECV_OBJ_DP_S *dp)
+{
+    PR_DEBUG(&quot;SOC Rev DP Obj Cmd t1:%d t2:%d CNT:%u&quot;, dp-&gt;cmd_tp, dp-&gt;dtt_tp, dp-&gt;dps_cnt);
+
+    // 简单的把收到的DP上报上去，认为处理全部成功
+    OPERATE_RET rt = OPRT_OK;
+    TUYA_CALL_ERR_LOG(dev_report_dp_json_async(dp-&gt;cid,dp-&gt;dps,dp-&gt;dps_cnt));
+	return;
+}
+
+// rcv raw dp
+VOID test_DEV_RAW_DP_CMD_CB(IN CONST TY_RECV_RAW_DP_S *dp)
+{
+    PR_DEBUG(&quot;SOC Rev DP Raw Cmd t1:%d t2:%d dpid:%d len:%u&quot;, dp-&gt;cmd_tp, dp-&gt;dtt_tp, dp-&gt;dpid, dp-&gt;len);
+    if(dp-&gt;cid != NULL) PR_ERR(&quot;soc not have cid.%s&quot;, dp-&gt;cid);
+
+    // 简单的把收到的DP上报上去，认为处理全部成功
+    OPERATE_RET rt = OPRT_OK;
+    TUYA_CALL_ERR_LOG(dev_report_dp_raw_sync(dp-&gt;cid,dp-&gt;dpid,dp-&gt;data,dp-&gt;len,0));
+	return;
+}
+
+// report obj/stat DP
+void test_objdp_report(void)
+{
+    OPERATE_RET rt = OPRT_OK;
+    INT_T dp_idx = 0;
+
+    TY_OBJ_DP_S *dp_arr = (TY_OBJ_DP_S *)Malloc(2*SIZEOF(TY_OBJ_DP_S));
+    if(NULL == dp_arr) {
+        PR_ERR(&quot;malloc failed&quot;);
+        return OPRT_MALLOC_FAILED;
+    }
+
+    memset(dp_arr, 0, dp_cnt*SIZEOF(TY_OBJ_DP_S));
+
+    dp_arr[dp_idx].dpid = 1;
+    dp_arr[dp_idx].type = PROP_BOOL;
+    dp_arr[dp_idx].time_stamp = 0;
+    dp_arr[dp_idx].value.dp_bool = TRUE;
+    dp_idx ++;
+
+    dp_arr[dp_idx].dpid = get_channel_cddpid(ch_idx);
+    dp_arr[dp_idx].type = PROP_VALUE;
+    dp_arr[dp_idx].time_stamp = 0;
+    dp_arr[dp_idx].value.dp_value = 0; 
+    dp_idx ++;
+
+	// 一次上报两个DP
+    TUYA_CALL_ERR_LOG(dev_report_dp_json_async(get_gw_cntl()-&gt;gw_if.id, dp_arr, 2));
+    TUYA_CALL_ERR_LOG(dev_report_dp_stat_sync(get_gw_cntl()-&gt;gw_if.id, dp_arr, 2, 3, NULL));
+    Free(dp_arr);
+    dp_arr = NULL;
+    
+    return;
+}
+
+// report raw dp
+#define BUFFER_LEN 10
+void test_rawdp_report(void)
+{
+    OPERATE_RET rt = OPRT_OK;    
+    CHAR_T tmp_buf[BUFFER_LEN] = {0x0};
+    TUYA_CALL_ERR_LOG(dev_report_dp_raw_sync(NULL, 1, tmp_buf, BUFFER_LEN, 3));    
+
+    return;
+}
+
+</code></pre>
+
+<h3>日志服务</h3>
+
+<p>涂鸦IoTOS提供按照模块、分级别的日志记录能力，开发者可以根据自己的需求，选择合适的日志级别进行日志记录输出，同时也可以设置默认输出的日志级别，控制只输出默认输出日志级别以上的日志。涂鸦IoTOS的日志模块，支持灵活的添加输出的出口，开发者可以根据自己的需求，将日志输出到串口、文件或者是网络上。</p>
+
+<p>涂鸦IoTOS同时也支持在线日志的模式，开发者可以在涂鸦IoT平台上，通过设备命令，设置日志的级别和输出出口，如果输出出口是MQTT，并且网络正常，客户即可在涂鸦IoT平台上看到设备日志信息。</p>
+
+<h4>日志级别信息</h4>
+
+<pre><code>/**
+ * @brief Definition of log level
+ */
+#define TY_LOG_LEVEL_ERR       0  // error information
+#define TY_LOG_LEVEL_WARN      1  // warnning information
+#define TY_LOG_LEVEL_NOTICE    2  // notice information
+#define TY_LOG_LEVEL_INFO      3  // information
+#define TY_LOG_LEVEL_DEBUG     4  // debug information , should delete in release version
+#define TY_LOG_LEVEL_TRACE     5  // trace information , should delete in release version
+</code></pre>
+
+<h4>接口描述</h4>
+
+<h5>日志输出宏</h5>
+
+<pre><code>PR_ERR(fmt, ...) 		// error information
+PR_WARN(fmt, ...)		// warnning information
+PR_NOTICE(fmt, ...)		// notice information
+PR_INFO(fmt, ...) 		// information
+PR_DEBUG(fmt, ...) 		// debug information , should delete in release version
+R_TRACE(fmt, ...)		// trace information , should delete in release version
+</code></pre>
+
+<h5>日志输出接口</h5>
+
+<pre><code>// error information
+int PrintErrLog(const char* pFile, const int line, const char* pFmt,...);
+// warnning information
+int PrintWarnLog(const char* pFile, const int line, const char* pFmt,...);
+// notice information
+int PrintNoticeLog(const char* pFile, const int line, const char* pFmt,...);
+// information
+int PrintInfoLog(const char* pFile, const int line, const char* pFmt,...);
+// debug information , should delete in release version
+int PrintDebugLog(const char* pFile, const int line, const char* pFmt,...);
+// trace information , should delete in release version
+int PrintTraceLog(const char* pFile, const int line, const char* pFmt,...);
+</code></pre>
+
+<p>此类接口开发者不需要关心，直接使用日志输出宏即可。</p>
+
+<h5>日志output函数原型</h5>
+
+<pre><code>// prototype of log output function
+typedef VOID (*LOG_OUTPUT)(IN CONST      CHAR_T *str);
+</code></pre>
+
+<p>按照此原型定义新的日志输出，例如写入文件、输出到网络等。</p>
+
+<h5>添加日志output</h5>
+
+<pre><code>/**
+ * @brief add one output terminal.
+ *
+ * @param[in] name , terminal name
+ * @param[in] term , output function pointer
+ *
+ * @note This API is used for adding one output terminal.
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */
+OPERATE_RET AddOutputTerm(IN CONST CHAR_T *name,IN CONST LOG_OUTPUT term);
+</code></pre>
+
+<h5>删除日志output</h5>
+
+<pre><code>/**
+ * @brief delete one output terminal.
+ *
+ * @param[in] name , terminal name
+ *
+ * @note This API is used for delete one output terminal.
+ *
+ * @return NONE
+ */
+VOID DelOutputTerm(IN CONST CHAR_T *name);
+</code></pre>
+
+<h5>设置日志输出级别</h5>
+
+<pre><code>/**
+ * @brief set global log level.
+ *
+ * @param[in] curLogLevel , log level
+ *
+ * @note This API is used for setting global log level.
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */
+OPERATE_RET SetLogManageAttr(IN CONST LOG_LEVEL curLogLevel);
+</code></pre>
+
+<h5>获取日志输出级别</h5>
+
+<pre><code>/**
+ * @brief get global log level.
+ *
+ * @param[in] pCurLogLevel, global log level
+ *
+ * @note This API is used for getting global log level.
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */
+OPERATE_RET GetLogManageAttr(OUT LOG_LEVEL *pCurLogLevel);
+</code></pre>
+
+<h4>使用示例</h4>
+
+<pre><code>VOID log_output_to_file(IN CONST      CHAR_T *str)
+{ 
+    uFILE * fp = NULL;
+    
+    // open file
+    fp = ufopen(&quot;log&quot;, &quot;w+&quot;);
+    if(NULL == fp) {
+        PR_ERR(&quot;log uf file can't open and write data!&quot;);
+        return ;
+    }
+
+	// write
+    uiWriteCnt = ufwrite(fp, str, strlen(str));
+    if(uiWriteCnt != strlen(str)) {
+        PR_ERR(&quot;log uf file write data error!&quot;);
+        return ;
+    }
+    
+    // close
+    ufclose(fp);
+	return;
+}
+// 在完成系统初始化之后调用此接口测试内存分配
+VOID test_logoutput()
+{
+	SetLogManageAttr(TY_LOG_LEVEL_DEBUG);
+	PR_DEBUG(&quot;a debug log&quot;);
+	SetLogManageAttr(TY_LOG_LEVEL_NOTICE);
+	PR_DEBUG(&quot;another debug log&quot;);
+	PR_DEBUG(&quot;an error log&quot;);
+	
+	// 新增一个新的output
+	AddOutputTerm(&quot;filelog&quot;, log_output_to_file);
+	PR_DEBUG(&quot;another debug log&quot;);
+	PR_DEBUG(&quot;another error log&quot;);
+    DelOutputTerm(&quot;filelog&quot;);
+    return;
+}
+</code></pre>
+
+<h3>定时任务</h3>
+
+<p>涂鸦IoTOS提供定预约操作的能力，即定时任务能力。通过APP配置操作，并预约该操作的时间，操作的时间精度是分钟级别，可以选择当日，或者是每周、每天级别的循环。该预约操作，会作为一条定时任务，发送云端，并按照定时任务的类型决定是否会通知设备将定时任务信息下载到本地，作为本地定时任务，以确保设备在无网络的情况下都能够正常执行该预约任务。定时任务分为以下几种：</p>
+
+<table>
+<thead>
+<tr>
+<th>定时分类</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>云端定时</td>
+<td>云端定时数据会存储在云端，不会被下载到设备本地。云端会维护定时器，并在定时器老化之后，通过DP控制命令的方式，下发给设备，执行预约的操作。</td>
+</tr>
+
+<tr>
+<td>本地定时</td>
+<td>云端通过MQTT的形式通知设备，或者设备每20s进行查询是否有定时更新，如果存在定时更新，会将这些定时数据下载到本地，通过本地定时器进行定时检测，并执行预约操作。<br>在设备没有和云端、局域网、蓝牙进行时间同步之前，是不会执行本地定时任务的，因为时间可能不准确。</td>
+</tr>
+
+<tr>
+<td>日出日落定时</td>
+<td>日出日落定时是指通过当地的日出、日落的天文现象发生的时间，来预约一些操作行为。日出日落定时的逻辑和本地定时一样。</td>
+</tr>
+</tbody>
+</table>
+<p>定时任务是不需要开发者进行编码的，涂鸦IoTOS和涂鸦IoT平台协同完成了这些功能。</p>
+
+<h3>在线日志</h3>
+
+<p>涂鸦IoTOS提供了日志重定向功能，通过通过涂鸦IoT平台，发送MQTT命令给<code>Powered by Tuya</code>设备，并告知重定向的位置和截止时间，然后就可以在对应的位置，获取到对应的设备实时的日志输出了。</p>
+
+<p>日志重定向分为以下几种：</p>
+
+<table>
+<thead>
+<tr>
+<th>重定向位置</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>MQTT</code></td>
+<td>将设备日志重定向到涂鸦IoT平台的日志平台。</td>
+</tr>
+
+<tr>
+<td><code>LAN</code></td>
+<td>将设备日志重定向到局域网，在局域网<code>255.255.255.255</code>指定的端口进行<code>udp</code>广播</td>
+</tr>
+
+<tr>
+<td><code>LOCAL</code></td>
+<td>设置本地的日志级别，一般配合<code>MQTT</code>和<code>LAN</code>一起操作。</td>
+</tr>
+</tbody>
+</table>
+<p>在线日志不需要开发者进行编码工作，涂鸦IoTOS提供了相关的功能。</p>
+
+<h3>产测</h3>
+
+<p>涂鸦IoTOS提供了产测的协议和连接能力。产测就是生成测试、产品测试，可以对模组、PCBA进行测试，也可以对已经安装好了的成品进行测试，经过测试可以筛选出问题产品，同时也可以进行一些产品的烧录、授权、基本配置等工作。产测的目的是进行批量、规模化、自动化的生成和测试，是产品量产的关键步骤。</p>
+
+<p>涂鸦IoTOS支持统涂鸦产测协议，并提供了进入产测的通道机制，主要分为三者途径：</p>
+
+<table>
+<thead>
+<tr>
+<th>进入产测方式<div style="width: 10pt"></th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>串口</td>
+<td>涂鸦IoTOS在启动的时候，通过<code>mf_init</code>接口启动产测任务，并等待串口进入产测命令，如果在500ms之后没有进入产测，则退出产测任务。<code>mf_init</code>接口需要开发者提供一些产测回调函数，用于处理一些产测命令，具体如下图所示。<br><code>gpio_test</code>：涂鸦内部使用，开发者不需要关心，提供空的实现即可。<br><code>user_enter_mf_callback</code>：进入产测回调，通知开发者已经进入产测，需要停止一些操作，防止影响产测。<br><code>user_callback</code>：涂鸦内部使用，开发者不需要关心，提供空的实现即可。<br><code>mf_user_product_test</code>：成品产测命令，特殊的需要开发者实现的产测命令会通过此回调函数告知开发者进行一些的测试操作。<br><code>user_pre_gpio_test</code>：<code>gpio</code>测试前回调，通知开发者进行一些准备动作，比如对<code>gpio</code>进行一些设置。</td>
+</tr>
+
+<tr>
+<td>扫描信标</td>
+<td>涂鸦IoTOS在按照Wi-Fi模式，扫描指定产测信标，如果发现对应的信标，则进入产测模式，调用开发者通过<code>app_cfg_set</code>接口设置的回调函数。</td>
+</tr>
+</tbody>
+</table>
+
+<h4>接口描述</h4>
+
+<h5>GPIO测试回调</h5>
+
+<pre><code>/**
+ * @brief pre_gpio_test gpio测试前置接口，用于对gpio测试做准备工作，
+ * 例如对gpio进行重新初始化，或者是关闭gpio test，关闭gpio test的时候，
+ * gpio test会返回Ture
+ * 
+ * @return VOID_T 
+ * 
+ * @note 应用必须对其进行实现，如果不需要，则实现空函数
+ */
+extern VOID_T mf_user_pre_gpio_test_cb(VOID_T);
+
+</code></pre>
+
+<h5>进入产测回调</h5>
+
+<pre><code>/**
+ * @brief mf_user_enter_callback 是配置进入产测回调接口
+ * 
+ * @return VOID_T 
+ * 
+ * @note 应用必须对其进行实现，如果不需要，则实现空函数
+ */
+extern VOID_T mf_user_enter_callback(VOID_T);
+
+</code></pre>
+
+<h5>配置写入回调</h5>
+
+<pre><code>/**
+ * @brief mf_user_callback 是配置写入回调接口
+ * 
+ * @return VOID_T 
+ * 
+ * @note 应用必须对其进行实现，如果不需要，则实现空函数
+ */
+extern VOID_T mf_user_callback(VOID_T);
+</code></pre>
+
+<h5>成品产测回调</h5>
+
+<pre><code>/**
+ * @brief mf_user_product_test_cb 是成品产测回调接口
+ * 
+ * @return VOID_T 
+ * 
+ * @note 应用必须对其进行实现，如果不需要，则实现空函数
+ * 
+ */
+extern OPERATE_RET mf_user_product_test_cb(USHORT_T cmd,UCHAR_T *data, UINT_T len, OUT UCHAR_T **ret_data,OUT USHORT_T *ret_len);
+
+</code></pre>
+
+<h5>设置信标产测回调</h5>
+
+<pre><code>/**
+ * @brief 应用设置产测回调和工作模式接口
+ * 
+ * @param mthd 工作模式
+ * @param callback 产测回调
+ * @return VOID_T 
+ */
+VOID app_cfg_set(IN CONST GW_WF_CFG_MTHD_SEL mthd, APP_PROD_CB callback)
+
+</code></pre>
+
+<h5>设置信标产测信标</h5>
+
+<pre><code>/**
+ * @brief 应用设置产测默认ssid
+ * 
+ * @param ssid 产测默认ssid
+ * @return VOID_T 
+ */
+void set_prod_ssid(CHAR_T *ssid)
+
+</code></pre>
+
+<h4>使用示例</h4>
+
+<pre><code>// 进入信标产测回调
+VOID test_mf_test_cb（BOOL_T flag, SCHAR_T rssi）
+{
+	PR_DEBUG(&quot;enter mf test&quot;);
+	// TBD...
+	
+	return;
+}
+
+// 在初始化tuya_iot_init_param调用此接口
+VOID test_mf_test()
+{
+	app_cfg_set(GWCM_OLD, test_mf_test_cb);
+	set_prod_ssid(&quot;tuya_mdev_test2&quot;);
+	
+	return;
+}
+</code></pre>
+
+<h3>KV DB功能</h3>
+
+<p>物联网平台碎片化严重，各种各样的芯片和操作系统，资源、能力差异非常大。但是物联网设备的存储需求又有非常高的安全性，因为涉及到用户的隐私问题；要有非常高的可靠性，因为客户的场景不可控，必须在各种极端的情况下保证用户设备的可用性；还要有性能的要求，保证用户的使用体验。涂鸦IoTOS提供了KV DB支持在文件系统、Flash上实现一套基于Key-Value存储的加密数据库，屏蔽了底层介质、操作系统的差异，为开发者提供了安全、可靠、高效的数据存储服务。</p>
+
+<h4>接口描述</h4>
+
+<h5><strong>KV DB写入</strong></h5>
+
+<pre><code>/**
+ * @brief tuya key-value database write entry
+ * 
+ * @param[in] key key of the entry you want to write
+ * @param[in] value value buffer you want to write 
+ * @param[in] len the numbers of byte you want to write
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h 
+ */
+OPERATE_RET wd_common_write(IN CONST CHAR_T *key, IN CONST BYTE_T *value, IN CONST UINT_T len);
+
+</code></pre>
+
+<h5><strong>KV DB读取</strong></h5>
+
+<pre><code>/**
+ * @brief tuya key-value database read entry
+ * 
+ * @param[in] key  key of the entry you want to read
+ * @param[out] value buffer of the value
+ * @param[out] p_len length of the buffer
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h  
+ * 
+ * @note must free the value buffer with wd_common_free_data when you nolonger need the buffer
+ */
+OPERATE_RET wd_common_read(IN CONST CHAR_T *key, OUT BYTE_T **value, OUT UINT_T *p_len);
+
+</code></pre>
+
+<h5><strong>KV DB模糊读取</strong></h5>
+
+<pre><code>/**
+ * @brief tuya key-value database fuzzy read entry
+ * 
+ * @param[in] fuzzy_name  key of the entry you want to read
+ * @param[in] index index of the value sequnence
+ * @param[out] data buffer of the value
+ * @param[out] p_len length of the buffer
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h  
+ * 
+ * @note if we have three entry &quot;x1&quot;,&quot;x2&quot;,&quot;x3&quot; in database, and read use &quot;x&quot; as the key will got all these 3 entrys
+ * and will chose the return entry by index
+ * 
+ * @note must free the value buffer with wd_common_free_data when you nolonger need the buffer
+ */
+OPERATE_RET wd_common_fuzzy_read(IN CONST CHAR_T *fuzzy_name, INOUT UINT_T *index, OUT BYTE_T **data, OUT UINT_T *len);
+</code></pre>
+
+<p><strong>KV DB模糊读取数据释放</strong></p>
+
+<pre><code>/**
+ * @brief free the buffer which allocated by wd_common_read or wd_common_fuzzy_read 
+ * 
+ * @param[in] data the buffer got from wd_common_read or wd_common_fuzzy_read
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h   
+ */
+OPERATE_RET wd_common_free_data(IN BYTE_T *data);
+</code></pre>
+
+<h5><strong>KV DB删除数据</strong></h5>
+
+<pre><code>/**
+ * @brief delete the entry from key-value database
+ * 
+ * @param[in] key key of the entry you want to delete
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h    
+ */
+OPERATE_RET wd_common_delete(IN CONST CHAR_T *key);
+</code></pre>
+
+<h5><strong>KV DB模糊删除数据</strong></h5>
+
+<pre><code>/**
+ * @brief fuzzy delete the entry from key-value database
+ * 
+ * @param[in] key key of the entry you want to delete
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h  
+ * 
+ * @note delete all entries if the key match the prefix of entry key
+ */
+OPERATE_RET wd_common_fuzzy_delete(IN CONST CHAR_T *key);
+
+</code></pre>
+
+<h5><strong>KV DB写入用户自定义数据</strong></h5>
+
+<pre><code>/**
+ * @brief write the user parameter to tuya key-value database
+ * 
+ * @param[in] data buffer of the data
+ * @param[in] len length of the data
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h   
+ * 
+ * @note the key of user parameter entry is &quot;user_param_key&quot;
+ */
+OPERATE_RET wd_user_param_write(IN CONST BYTE_T *data, IN CONST UINT_T len);
+
+</code></pre>
+
+<h5><strong>KV DB读取用户自定义数据</strong></h5>
+
+<pre><code>/**
+ * @brief read the user parameter from tuya key-value database
+ * 
+ * @param[out] buf buffer of the data
+ * @param[out] len length of the data
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h    
+ * 
+ * @note the key of user parameter entry is &quot;user_param_key&quot;，must free the value buffer with 
+ * wd_common_free_data when you nolonger need the buffer
+ */
+OPERATE_RET wd_user_param_read(OUT BYTE_T **buf, OUT UINT_T *len);
+</code></pre>
+
+<h4>示例代码</h4>
+
+<pre><code>sample_kv()
+{
+    int rt = OPRT_OK;
+ 
+    rt = wd_common_write(&quot;ddi-xxx&quot;, &quot;hello-world-x&quot;, 13);
+    EXPECT_EQ(rt, OPRT_OK);
+ 
+    BYTE_T *value = NULL;
+    UINT_T len = 0;
+    rt = wd_common_read(&quot;ddi-xxx&quot;, &amp;value, &amp;len);
+    EXPECT_EQ(rt, OPRT_OK);
+    EXPECT_EQ(memcmp(value, &quot;hello-world-x&quot;, 13), 0);
+    wd_common_free_data(value);
+    value = NULL;
+    len = 0;
+ 
+    rt = wd_common_write(&quot;ddi-yyy&quot;, &quot;hello-world-y&quot;, 13);
+    EXPECT_EQ(rt, OPRT_OK);
+ 
+    rt = wd_common_write(&quot;ddi-xxx&quot;, &quot;hello-world-z&quot;, 13);
+    EXPECT_EQ(rt, OPRT_OK);
+ 
+    UINT index = 0;
+    while(rt == OPRT_OK) {
+        rt = wd_common_fuzzy_read(&quot;ddi-&quot;, &amp;index, &amp;value, &amp;len);
+        if(value) {
+            wd_common_free_data(value);
+            value = NULL;
+        }
+    }
+ 
+    rt = wd_common_delete(&quot;ddi-xxx&quot;);
+    EXPECT_EQ(rt, OPRT_OK);
+ 
+    rt = wd_common_fuzzy_delete(&quot;ddi-&quot;);
+    EXPECT_EQ(rt, OPRT_OK);
+ 
+    ws_db_uninit();
+    return OPRT_OK;
+}
+
+
+</code></pre>
+
+<h3>文件系统</h3>
+
+<p>涂鸦IoTOS提供了一套文件系统接口，基本上是按照POSIX文件系统标准接口来对外提供文件系统服务。这一套文件系统不仅能够基于Flash来进行文件操作，也可以适配Linux平台的POSIX文件系统接口，同时也可以支持各个芯片平台自己实现的文件系统。</p>
+
+<h4>接口描述</h4>
+
+<h5>打开文件</h5>
+
+<pre><code>/**
+ * @brief open a unique file
+ * 
+ * @param[in] filepath the full file path
+ * @param[in] mode the open mode
+ * @return the handle of the file
+ * 
+ * @note the mode is same as file system open mode, contains &quot;r&quot;,&quot;r+&quot;,&quot;a&quot;,&quot;a+&quot;,&quot;w&quot;,&quot;w+&quot;, 
+ * and also support binary mode.
+ */
+uFILE* ufopen(IN CONST CHAR_T *filepath, IN CONST CHAR_T *mode);
+
+</code></pre>
+
+<h5>关闭文件</h5>
+
+<pre><code>/**
+ * @brief close a unique file
+ * 
+ * @param fd the file handle
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h    
+ */
+OPERATE_RET ufclose(IN uFILE *fd);
+</code></pre>
+
+<h5>读文件</h5>
+
+<pre><code>/**
+ * @brief read from unique file
+ * 
+ * @param[in] fd the file handle
+ * @param[in] buf the buffer used to save the data read from the unique file
+ * @param[in] len the length want to read
+ * @return the number of byte actually read from the unique file
+ * 
+ */
+UINT_T ufread(IN uFILE *fd, IN UCHAR_T *buf, IN CONST UINT_T len);
+</code></pre>
+
+<h5>写文件</h5>
+
+<pre><code>/**
+ * @brief write to unique file
+ * 
+ * @param[in] fd the file handle
+ * @param[in] buf the buffer write to the unique file
+ * @param[in] len the length write to the unique file, in byte
+ * @return characters written to the unique file
+ */
+UINT_T ufwrite(IN uFILE *fd, IN CONST UCHAR_T *buf, IN CONST UINT_T len);
+</code></pre>
+
+<h5>删除文件</h5>
+
+<pre><code>/**
+ * @brief delete the unique file
+ * 
+ * @param[in] filepath the full file path
+ * @return  OPRT_OK on success. Others on error, please refer to tuya_error_code.h     
+ */
+OPERATE_RET ufdelete(IN CONST CHAR_T *filepath);
+</code></pre>
+
+<h4>使用示例</h4>
+
+<pre><code>// test file write&amp;read
+VOID test_fs_write()
+{
+    uFILE * fp = NULL;
+    
+    // open file
+    fp = ufopen(&quot;oem_cfg&quot;, &quot;w+&quot;);
+    if(NULL == fp) {
+        PR_ERR(&quot;oem cfg uf file can't open and write data!&quot;);
+        return ;
+    }
+
+	// write
+    uiWriteCnt = ufwrite(fp, pData, usLen);
+    if(uiWriteCnt != usLen) {
+        PR_ERR(&quot;oem cfg uf file write data error!&quot;);
+        return ;
+    }
+    
+    // read
+    uiReadCnt = ufread(fp, pData, 1024);
+    PR_DEBUG(&quot;oem cfg uf file read data %d!&quot;, uiReadCnt);
+    PR_DEBUG(&quot;oem cfg uf file %s&quot;, pData);
+    *pLen = uiReadCnt;
+    
+    // close
+    opRet = ufclose(fp);    
+    if(opRet != OPRT_OK) {
+        PR_ERR(&quot;oem cfg uf file close error!&quot;);
+        return ;
+    }
+    
+    return;
+}
+</code></pre>
+
+<h3>定时器</h3>
+
+<p>涂鸦IoTOS提供定时器，支持毫秒级的定时功能，开发者可以创建、启动、定制、删除定时器。定时器有两种类型，一种是<code>TIMER_ONCE</code>，即仅执行一次，执行完成之后不再执行，等待开发者删除；另一种是<code>TIMER_CYCLE</code>，会循环执行，一直到开发者停止或者删除这个定时器。</p>
+
+<p>通过定时器和消息队列的结合，可以实现提定时消息处理功能。通过创建一个定时消息，并注册定时消息的回调函数，实现异步的定时消息触发、传递、串行处理能力。</p>
+
+<h4>接口描述</h4>
+
+<h5>创建定时器</h5>
+
+<pre><code>/**
+ * @brief Add a system timer
+ *
+ * @param[in] pTimerFunc: the processing function of the timer
+ * @param[in] pTimerArg: the parameater of the timer function
+ * @param[out] p_timerID: timer id
+ *
+ * @note This API is used for adding a system timer
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */
+OPERATE_RET sys_add_timer(IN CONST P_TIMER_FUNC pTimerFunc,\
+                               IN CONST PVOID_T pTimerArg,\
+                               OUT TIMER_ID *p_timerID);
+</code></pre>
+
+<h5>删除定时器</h5>
+
+<pre><code>/**
+ * @brief Delete the system timer
+ *
+ * @param[in] timerID: timer id
+ *
+ * @note This API is used for deleting the system timer
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */
+OPERATE_RET sys_delete_timer(IN CONST TIMER_ID timerID);
+</code></pre>
+
+<h5>启动定时器</h5>
+
+<pre><code>/**
+ * @brief Start the system timer
+ *
+ * @param[in] timerID: timer id
+ * @param[in] timeCycle: timer running cycle
+ * @param[in] timer_type: timer type
+ *
+ * @note This API is used for starting the system timer
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */
+OPERATE_RET sys_start_timer(IN CONST TIMER_ID timerID,\
+                                  IN CONST TIME_MS timeCycle,\
+                                  IN CONST TIMER_TYPE timer_type);
+</code></pre>
+
+<h5>停止定时器</h5>
+
+<pre><code>/**
+ * @brief Stop the system timer
+ *
+ * @param[in] timerID: timer id
+ *
+ * @note This API is used for stopping the system timer
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */
+OPERATE_RET sys_stop_timer(IN CONST TIMER_ID timerID);
+</code></pre>
+
+<h4>使用示例</h4>
+
+<pre><code>STATIC VOID_T dev_monitor_cb(VOID_T)
+{
+    PR_DEBUG(&quot;sys timer timeout&quot;);
+    return;
+}
+
+// 在完成系统初始化之后调用此接口测试timer
+VOID test_sys_timer(VOID)
+{
+	OPERATE_RET rt = OPRT_OK;
+	TIMER_ID m_dev_monitor_timer;
+    //添加设备检测定时器
+    TUYA_CALL_ERR_LOG(sys_add_timer(dev_monitor_cb, NULL, &amp;m_dev_monitor_timer));
+    
+    //启动10s周期定时器
+    TUYA_CALL_ERR_LOG(sys_start_timer(m_dev_monitor_timer, 10000, TIMER_CYCLE));
+    
+    tuya_hal_sleep(20*1000);
+    
+    //启动10s周期定时器
+    TUYA_CALL_ERR_LOG(sys_stop_timer(m_dev_monitor_timer));
+    
+    //启动10s周期定时器
+    TUYA_CALL_ERR_LOG(sys_start_timer(m_dev_monitor_timer, 10000, TIMER_CYCLE));
+    
+    tuya_hal_sleep(20*1000);
+    
+    //启动10s周期定时器
+    TUYA_CALL_ERR_LOG(sys_stop_timer(m_dev_monitor_timer));
+    TUYA_CALL_ERR_LOG(sys_delete_timer(m_dev_monitor_timer));
+    
+    return;
+}
+</code></pre>
+
+<h3>消息队列</h3>
+
+<p>涂鸦IoTOS 消息队列提供通用的消息处理功能，通过创建一个消息，并注册消息的回调函数，然后发送对应的消息ID的形式，实现异步的消息传递、串行处理能力。涂鸦IoTOS内部维护了一个叫<code>cmmod</code>的任务，所有的消息都是在此任务里处理，因此避免在消息回调里处理复杂的逻辑，否则会阻塞、影响其他消息的效率；避免在回调里采用过于深、复杂的逻辑，否则可能会导致堆栈溢出。</p>
+
+<h4>定时消息</h4>
+
+<p>定时消息是基于消息队列和定时器，提供了通用的定时消息处理功能。通过创建一个定时消息，并注册定时消息的回调函数，实现异步的定时消息触发、传递、串行处理能力。定时消息的逻辑是创建一个定时器，这个定时器的回调函数是一个消息发送函数；同时创建一个消息，消息的回调函数是定时消息的回调函数。当定时器老化的时候，通过触发定时器的回调，发送消息，并在消息队列列处理对应的消息，从而实现定时的消息处理机制。</p>
+
+<h4>接口描述</h4>
+
+<h5><strong>消息注册</strong></h5>
+
+<pre><code>/**
+ * @brief Regist callback function for message.
+ *
+ * @param[in] msg_cb: message callback function
+ * @param[out] msg_id: message id
+ *
+ * @note This API is used for registing message's callback function.
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */
+OPERATE_RET cmmod_reg_msgcb(IN CONST MSG_CALLBACK msg_cb, OUT MSG_ID *msg_id);
+
+</code></pre>
+
+<p>此接口用于创建一个消息并注册回调。接口里会在消息池里选择一个没有被使用的消息ID（判断消息是否被使用的标准是回调函数是否为NULL），并注册回调到此消息ID。</p>
+
+<p>此接口在消息数量满了的时候，会重新分配内存，保证消息可以被正常注册。</p>
+
+<h5><strong>移除消息注册</strong></h5>
+
+<pre><code>/**
+ * @brief Unregist callback function for message.
+ *
+ * @param[in] msgID: message id
+ *
+ * @note This API is used for unRegisting message's callback function.
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */
+OPERATE_RET cmmod_unreg_msgcb(IN CONST MSG_ID msgID);
+
+</code></pre>
+
+<p>此接口用于创建一个消息并注册回调。接口里会将改消息ID对应的回调设置为<code>NULL</code>，下次<code>cmmod_reg_msgcb</code>接口调用即可以使用该消息。</p>
+
+<h5><strong>发送消息</strong></h5>
+
+<pre><code>/**
+ * @brief Post a message.
+ *
+ * @param[in] msgID: message id
+ * @param[in] pMsgData: message data
+ * @param[in] msgDataLen: message data len
+ *
+ * @note This API is used for posting a message
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */
+OPERATE_RET cmmod_post_msg(IN CONST MSG_ID msgID,IN CONST P_MSG_DATA pMsgData, IN CONST MSG_DATA_LEN msgDataLen);
+
+</code></pre>
+
+<h5><strong>发送紧急消息</strong></h5>
+
+<pre><code>/**
+ * @brief Post a message instantly
+ *
+ * @param[in] msgID: message id
+ * @param[in] pMsgData: message data
+ * @param[in] msgDataLen: message data len
+ *
+ * @note This API is used for posting a message instantly
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */
+OPERATE_RET cmmod_post_instancy_msg(IN CONST MSG_ID msgID,IN CONST P_MSG_DATA pMsgData, IN CONST MSG_DATA_LEN msgDataLen);
+
+</code></pre>
+
+<h5><strong>创建定时消息</strong></h5>
+
+<pre><code>/**
+ * @brief Create timer message handle.
+ *
+ * @param[in] cb: callback function
+ * @param[in] data: message data
+ * @param[out] tm_msg: timer message info
+ *
+ * @note This API is used for creating a timer message handle
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */
+OPERATE_RET cmmod_cr_tm_msg_hand(IN CONST TM_MSG_CB cb,IN CONST VOID *data,OUT TM_MSG_S **tm_msg);
+
+</code></pre>
+
+<h5><strong>启动定时消息</strong></h5>
+
+<pre><code>/**
+ * @brief Start the timer message.
+ *
+ * @param[in] tm_msg: timer message info
+ * @param[in] timeCycle: cycle time of the timer
+ * @param[in] timer_type: timer type, cycle or once
+ *
+ * @note This API is used for starting the timer message
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */
+OPERATE_RET cmmod_start_tm_msg(IN CONST TM_MSG_S *tm_msg,IN CONST TIME_MS timeCycle, IN CONST TIMER_TYPE timer_type);
+
+</code></pre>
+
+<h5><strong>停止定时消息</strong></h5>
+
+<pre><code>/**
+ * @brief Stop the timer message.
+ *
+ * @param[in] tm_msg: timer message info
+ *
+ * @note This API is used for stopping the timer message
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */
+OPERATE_RET cmmod_stop_tm_msg(IN CONST TM_MSG_S *tm_msg);
+
+</code></pre>
+
+<h5><strong>释放定时消息节点</strong></h5>
+
+<pre><code>/**
+ * @brief Release the timer message.
+ *
+ * @param[in] tm_msg: timer message info
+ *
+ * @note This API is used for releasing the timer message
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */
+OPERATE_RET cmmod_release_tm_msg(IN CONST TM_MSG_S *tm_msg);
+
+</code></pre>
+
+<h4>示例代码</h4>
+
+<pre><code>// 定义消息处理函数
+STATIC VOID __msg_cb(MESSAGE *msg){
+    ...// 用户自行定义
+}
+
+// 设备初始化
+STATIC OPERATE_RET test_msg_queue(VOID)
+{
+    // 注册一个消息 
+    MSG_ID msg_queue_id;;
+    op_ret = cmmod_reg_msgcb(__msg_cb, &amp;msg_queue_id);
+
+    // post一个消息
+    cmmod_post_msg(msg_queue_id, NULL, 0);
+    return OPRT_OK;
+}
+
+示例2（定时器消息）：
+STATIC VOID __tm_msg_cb(MESSAGE *msg){
+    ...// 用户自行定义
+}
+
+STATIC OPERATE_RET test_tm_msg_queue()
+{
+    // 创建定时器消息处理
+    TM_MSG_S* tmm_gw_if_sync = NULL;
+    op_ret = cmmod_cr_tm_msg_hand(__tm_msg_cb, NULL, &amp;tmm_gw_if_sync);
+    
+    //启动定时器，定时器超时，即向消息队列添加消息节点，1秒执行一次。
+    op_ret = cmmod_start_tm_msg(gw_cntl.tmm_gw_if_sync, 1000, TIMER_ONCE);
+    return OPRT_OK;
+}
+
+</code></pre>
+
+<h3>工作队列</h3>
+
+<p>涂鸦IoTOS 提供通用的异步任务调度机制，将工作任务发送到指定的工作队列，工作队列会串行的执行队列里的工作任务。资源丰富的平台可以根据自身的需求，创建自己的工作队列，并通过工作队列调度一些工作任务。</p>
+
+<h4>接口描述</h4>
+
+<h5><strong>创建工作队列</strong></h5>
+
+<pre><code>/**
+ * @brief createa a workqueue
+ *
+ * @param[out] phand, the handle of the workqueue
+ * @param[in] stack_size, the stack size of the workqueue thread
+ * @param[in] pri, the priority of the workqueue thread
+ * @param[in] work_num, workqueue number need create
+ *
+ * @note This API is used for create workqueue
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */
+OPERATE_RET work_queue_create(OUT WORK_QUEUE_HANDLE *phand,\
+                              IN CONST STACK_SIZE stack_size,\
+                              IN CONST TRD_PRI pri,\
+                              IN CONST UINT_T work_num);
+</code></pre>
+
+<h5>添加工作到工作队列</h5>
+
+<pre><code>/**
+ * @brief add work to work queue
+ *
+ * @param[in] hand, the workqueue handle
+ * @param[in] cb, call back of work
+ * @param[in] data, parameter of call back
+ *
+ * @note This API is used for add work to work queue
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */
+OPERATE_RET work_queue_add(IN CONST WORK_QUEUE_HANDLE hand,IN CONST WK_CALLBACK cb,\
+                                  IN CONST VOID *data);
+</code></pre>
+
+<h4>示例代码</h4>
+
+<pre><code>#define TY_WQ_STACK_SIZE    2048
+#define TY_WQ_TRD_PRIO      3
+#define TY_WQ_WORK_NUM      1
+
+VOID sample_work_cb(VOID *data)
+{
+    PR_DEBUG(&quot;work is here %p&quot;, data);
+}
+ 
+OPERATE_RET test_work_queue()
+{
+    int rt = OPRT_OK;
+        
+    // 初始化工作队列
+    WORK_QUEUE_HANDLE ty_wq_hand = NULL;
+     
+    rt = work_queue_create(&amp;ty_wq_hand, TY_WQ_STACK_SIZE, TY_WQ_TRD_PRIO, TY_WQ_WORK_NUM); 
+    EXPECT_EQ(rt, OPRT_OK);
+     
+    // 添加待执行任务
+    rt = work_queue_add(ty_wq_hand, sample_work_cb， NULL);
+    EXPECT_EQ(rt, OPRT_OK);
+    
+    return OPRT_OK;
+}
+</code></pre>
+
+<h3>事件</h3>
+
+<p>涂鸦IoTOS Event是一个轻量级的事件通知库。其特点是：</p>
+
+<ul>
+<li>支持订阅-发布模式的事件机制，使用非常简单方便，可以在任意位置、任意时间进行时间的订阅；</li>
+<li>轻量级，专注于进程内部的事件通知，代码小巧，仅400行。</li>
+<li>跨平台，基于涂鸦IoTOS的跨平台特性，可以在任意平台上运行。</li>
+<li>有弹性，默认情况下，事件是同步调用，基于涂鸦IoTOS的跨平台特性，可以在订阅函数里使用Work Queue或者Timer Queue实现多线程的异步机制。</li>
+</ul>
+
+<h4>接口描述</h4>
+
+<h5><strong>发布事件</strong></h5>
+
+<pre><code class="language-c">/** 
+ * @brief: 发布指定事件，会通知所有订阅该事件的订阅者处理
+ *
+ * @param[in] name: 事件名，事件标识，字符串，16字节长的
+ * @param[in] data: 事件数据，数据和事件类型绑定，发布事件和订阅事件必须使用同一事件数据类型定义
+ * @param[in] len: 事件数据长度
+ *
+ * @return int: 0成功，非0，请参照tuya error code描述文档 
+ */
+int ty_publish_event(const char* name, void *data);
+</code></pre>
+
+<p>发布一个事件通知，包含了事件的数据，告知所有订阅者进行处理。事件发布首先会去搜索是否当前事件是否已经创建。</p>
+
+<ul>
+<li>没有被创建：说明之前并没有发布过相同的事件，但是可能会存在订阅者，由于他们没有找到事件，会被暂存到<code>free_subscribe_root</code>。因此需要从<code>free_subscribe_root</code>里查找是否有该事件的订阅者，如果有则把这些订阅者从<code>free_subscribe_root</code>里拿出来，挂载到事件的<code>subscribe_root</code>，然后再进行事件的发布。</li>
+<li>已经被创建：说之前已经有发布过相同的事件，所有的订阅者都已经被正常处理，不需要再关心是否有订阅者在<code>free_subscribe_root</code>中，可以直接进行事件发布。</li>
+<li>事件发布，遍历事件<code>subscribe_root</code>，对于每个订阅者，发布事件的数据，调用订阅者的回调函数，判断并记录回调函数的返回值。
+
+<ul>
+<li>如果不存在订阅者，意味着不需要发布，也不需要创建事件的资源</li>
+</ul></li>
+</ul>
+
+<h5><strong>订阅事件</strong></h5>
+
+<pre><code class="language-c">/** 
+ * @brief: 订阅指定事件，会通过回调函数处理消息发布内容
+ *
+ * @param[in] name: 事件名，事件标识，字符串，16字节长的
+ * @param[in] desc: 描述信息，表面订阅者身份、目的，32字节长度，方便定位问题
+ * @param[in] cb: 事件处理回调函数
+ * @param[in] is_emergency: 订阅类型，普通事件，排队处理；紧急事件，立即处理；一次性事件，排队处理，处理一次即释放。
+ *
+ * @note： desc、cb构成了一个二元组，这个二元组标识一个唯一订阅者，同一个desc不同的cb，也会认为是不同的
+ *      订阅。在事件发布之前就订阅的，可以收到事件；在事件发布之后订阅的，收不到之前发布的事件。
+ *
+ * @return int: 0成功，非0，请参照tuya error code描述文档 
+ */
+int ty_subscribe_event(const char *name, const char *desc, const event_subscribe_cb cb,  SUBSCRIBE_TYPE_E type);
+</code></pre>
+
+<p>关注一个事件，包含了事件的名称、关注的用途以及处理数据的回调函数。事件订阅首先会去搜索是否当前事件是否已经创建。</p>
+
+<ul>
+<li>没有被创建：说明此事件没有产生过，需要把订阅者暂存到<code>free_subscribe_root</code>。</li>
+<li>已经被创建：说明此时间已经产生过，可以直接把订阅者挂载到事件的<code>subscribe_root</code></li>
+</ul>
+
+<p>订阅事件不会拿到事件的上一次状态，一个原因是如果暂存数据会消耗较大的资源，另外一个原因是没有必要。</p>
+
+<h5><strong>取消订阅</strong></h5>
+
+<pre><code class="language-c">/** 
+ * @brief: 订阅指定事件，会通过回调函数处理消息发布内容
+ *
+ * @param[in] name: 事件名，事件标识，字符串，16字节长的
+ * @param[in] desc: 描述信息，订阅者身份、目的，32字节长度，方便定位问题
+ * @param[in] cb: 事件处理回调函数
+ *
+ * @note： desc、cb构成了一个二元组，这个二元组标识一个唯一订阅者，同一个desc不同的cb，也会认为是不同的
+ *      订阅
+ *
+ * @return int: 0成功，非0，请参照tuya error code描述文档 
+ */
+int ty_unsubscribe_event(const char *name, const char *desc, event_subscribe_cb cb);
+</code></pre>
+
+<p>取消关注一个事件，包含了事件的名称、关注的用途以及处理数据的回调函数。如果当前订阅者没有绑定事件，则从<code>free_subscribe_root</code>移除；</p>
+
+<p>如果订阅者绑定了事件，且为最后一个订阅者，则需要从事件的<code>subscribe_root</code>移除，并销毁该事件。否则，仅从事件的<code>subscribe_root</code>中移除订阅者。</p>
+
+<h4>示例代码</h4>
+
+<pre><code class="language-c">#define EVENT_SAMPLE &quot;publish.sample&quot;
+OPERATE_RET sample_subcribe_cb(event_data_t *raw_data)
+{
+    event_data_t *data = (event_data_t*)raw_data;
+	
+    PR_DEBUG(&quot;recv event&quot;);
+    return OPRT_OK;
+}
+
+OPERATE_RET sample_subcribe_emergence_cb(event_data_t *raw_data)
+{
+    event_data_t *data = (event_data_t*)raw_data;
+	
+    PR_DEBUG(&quot;recv event emergence&quot;);
+    return OPRT_OK;
+}
+
+OPERATE_RET sample_subcribe_onetime_cb(event_data_t *raw_data)
+{
+    event_data_t *data = (event_data_t*)raw_data;
+	
+    PR_DEBUG(&quot;recv event emergence&quot;);
+    return OPRT_OK;
+}
+
+OPERATE_RET sample_event()
+{
+    OPERATE_RET rt = OPRT_OK;
+       
+     // 发布事件，事件没有订阅者，不会创建
+    rt = ty_publish_event(EVENT_SAMPLE, NULL);  
+    EXPECT_EQ(rt, OPRT_OK);
+    
+    // 订阅事件
+    char desc[] = &quot;subscribe.sample&quot;;
+    rt = ty_subscribe_event(EVENT_SAMPLE, desc, sample_subcribe_cb, EVENT_TYPE_NORMAL);
+    EXPECT_EQ(rt, OPRT_OK);     
+
+    // 发布事件
+    rt = ty_publish_event(EVENT_SAMPLE, NULL);  
+    EXPECT_EQ(rt, OPRT_OK);
+     
+    // 紧急订阅事件
+    rt = ty_subscribe_event(EVENT_SAMPLE, desc, sample_subcribe_emergence_cb, 										SUBSCRIBE_TYPE_EMERGENCY);
+    EXPECT_EQ(rt, OPRT_OK);     
+
+    // 取消紧急订阅
+    rt = ty_unsubscribe_event(EVENT_SAMPLE, desc, sample_subcribe_emergence_cb);
+    EXPECT_EQ(rt, OPRT_OK);
+     
+    // 订阅事件一次性事件，一次性事件不需要手动去掉订阅
+    rt = ty_subscribe_event(EVENT_SAMPLE, desc, sample_subcribe_onetime_cb, 										EVENT_TYPE_ONETIME);
+    EXPECT_EQ(rt, OPRT_OK);     
+
+    // 发布事件
+    rt = ty_publish_event(EVENT_SAMPLE, NULL);  
+    EXPECT_EQ(rt, OPRT_OK);
+
+     // 取消订阅，当事件没有订阅者，会自动销毁
+    rt = ty_unsubscribe_event(EVENT_SAMPLE, desc, sample_subcribe_cb);
+    EXPECT_EQ(rt, OPRT_OK);    
+    
+    return OPRT_OK;
+}
+</code></pre>
+
+<h3>内存管理</h3>
+
+<p>涂鸦IoTOS提供了内存管理接口，开发者可以分配、释放内存。</p>
+
+<h4>接口描述</h4>
+
+<h5>申请内存</h5>
+
+<pre><code>/**
+ * @brief malloc memory
+ * 
+ * @param[in] reqSize the required memory size 
+ * @return  NULL on failed, others on the address of the memory
+ */
+VOID *Malloc(IN SIZE_T reqSize);
+</code></pre>
+
+<h5>释放内存</h5>
+
+<pre><code>/**
+ * @brief free memory
+ * 
+ * @param[in] pReqMem the memory address which got from Malloc or Calloc function
+ * @return VOID 
+ */
+VOID Free(IN PVOID_T pReqMem);
+</code></pre>
+
+<h4>使用示例</h4>
+
+<pre><code>// 在完成系统初始化之后调用此接口测试内存分配
+VOID test_memory()
+{
+	CHAR_T* p = (CHAR_T*)Malloc(100);
+	if (!p) {
+		PR_ERR(&quot;null point&quot;);
+		return;
+	}
+	
+	Free(p);
+	p = NULL;		
+}
+</code></pre>
+
+<h3>驱动框架</h3>
+
+<h4>DRIVER</h4>
+
+<pre><code>typedef enum {
+    TUYA_DRV_UART,			//! 串口
+    TUYA_DRV_PWM,			//! PWM
+    TUYA_DRV_TIMER,			//! 定时器
+    TUYA_DRV_ADC,          	//! ADC
+    TUYA_DRV_I2C,			//! I2C
+} tuya_drv_type_t;
+</code></pre>
+
+<p>驱动查找</p>
+
+<pre><code class="language-c">void *tuya_driver_find(uint8_t type, uint8_t port);
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>type</td>
+<td>tuya_drv_type_t 枚举中的值</td>
+</tr>
+
+<tr>
+<td>port</td>
+<td>端口号，例如TUYA_UART0，TUYA_UART1</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>!= NULL</td>
+<td>查找成功，返回其对应的句柄</td>
+</tr>
+
+<tr>
+<td>== NULL</td>
+<td>查找失败</td>
+</tr>
+</tbody>
+</table>
+
+<h4>PIN</h4>
+
+<h5>PIN接口列表</h5>
+
+<table>
+<thead>
+<tr>
+<th>函数名称</th>
+<th>功能描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>int tuya_pin_init(tuya_pin_name_t pin, tuya_pin_mode_t mode);</td>
+<td>初始化引脚模式</td>
+</tr>
+
+<tr>
+<td>int tuya_pin_write(tuya_pin_name_t pin, tuya_pin_level_t level);</td>
+<td>设置引脚的电平</td>
+</tr>
+
+<tr>
+<td>int tuya_pin_read(tuya_pin_name_t pin);</td>
+<td>读取引脚的电平</td>
+</tr>
+
+<tr>
+<td>int tuya_pin_irq_init(tuya_pin_name_t pin, tuya_pin_mode_t irq_mode, tuya_pin_irq_cb cb, void *arg);</td>
+<td>初始化引脚中断</td>
+</tr>
+
+<tr>
+<td>int tuya_pin_irq_enable(tuya_pin_name_t pin);</td>
+<td>使能引脚中断</td>
+</tr>
+
+<tr>
+<td>int tuya_pin_irq_disable(tuya_pin_name_t pin);</td>
+<td>禁能引脚中断</td>
+</tr>
+
+<tr>
+<td>int tuya_pin_control(tuya_pin_name_t pin, uint8_t cmd, void *arg);</td>
+<td>引脚相关控制</td>
+</tr>
+</tbody>
+</table>
+
+<h5>PIN 访问名字</h5>
+
+<pre><code class="language-c">typedef enum {
+    TUYA_PINS_NAME(TUYA_PA),	//! TUYA_PA -&gt;  TUYA_PA0 - TUYA_PA31
+    TUYA_PINS_NAME(TUYA_PB),	//! TUYA_PB -&gt;  TUYA_PB0 - TUYA_PB31
+    TUYA_PINS_NAME(TUYA_PC),	//! TUYA_PC -&gt;  TUYA_PC0 - TUYA_PC31
+    TUYA_PINS_NAME(TUYA_PD),	//! TUYA_PD -&gt;  TUYA_PD0 - TUYA_PD31
+    TUYA_PINS_NAME(TUYA_PE),	//! TUYA_PE -&gt;  TUYA_PE0 - TUYA_PE31
+} tuya_pin_name_t;
+</code></pre>
+
+<h5>PIN 工作模式</h5>
+
+<pre><code>//! 一站式初始化参数
+typedef enum {
+    //! PU  -&gt;  pull up
+    //! PD  -&gt;  pull dowm
+    //! FL  -&gt;  floating
+    //! PP  -&gt;  push pull
+    //! OD  -&gt;  open drain
+    //! hiz -&gt;  high-impedance level
+    TUYA_PIN_MODE_IN_PU,  					//! 上拉输入
+    TUYA_PIN_MODE_IN_PD,         			//! 下拉输入
+    TUYA_PIN_MODE_IN_FL,            	    //! 浮空输入
+	
+	//! 输入中断触发模式选择，默认带上拉
+    TUYA_PIN_MODE_IN_IRQ_RISE,    			//! 上升沿触发
+    TUYA_PIN_MODE_IN_IRQ_FALL,        		//! 下降沿触发
+    TUYA_PIN_MODE_IN_IRQ_RISE_FALL, 		//! 双边沿触发
+    TUYA_PIN_MODE_IN_IRQ_LOW,        		//! 低电平触发
+    TUYA_PIN_MODE_IN_IRQ_HIGH,        		//! 高电平触发
+    
+    TUYA_PIN_MODE_OUT_PP_LOW,         		//! 推挽输出低电平，不带上拉
+    TUYA_PIN_MODE_OUT_PP_HIGH,        		//! 推挽输出高电平，不带上拉
+
+    TUYA_PIN_MODE_OUT_PP_PU_LOW,       		//! 推挽输出低电平， 带上拉
+    TUYA_PIN_MODE_OUT_PP_PU_HIGH,    		//! 推挽输出高电平， 带上拉
+
+    TUYA_PIN_MODE_OUT_PP_PD_LOW,     		//! 开漏输出低电平，带下拉
+    TUYA_PIN_MODE_OUT_PP_PD_HIGH,    		//! 开漏输出高电平，带下拉
+                                  
+    TUYA_PIN_MODE_OUT_OD_LOW,          		//! 开漏输出低电平，不带上拉
+    TUYA_PIN_MODE_OUT_OD_HIZ,       		//! 开漏输出高组态，不带上拉
+
+    TUYA_PIN_MODE_OUT_OD_PU_LOW,      		//! 开漏输出低，带上拉
+    TUYA_PIN_MODE_OUT_OD_PU_HIGH,     		//! 开漏输出高，带上拉
+} tuya_pin_mode_t;
+</code></pre>
+
+<h5>PIN 电平状态</h5>
+
+<pre><code>typedef enum {
+    TUYA_PIN_LOW  = 0,						//! 设置引脚低电平
+    TUYA_PIN_HIGH							//! 设置引脚高电平
+} tuya_pin_level_t;
+</code></pre>
+
+<h5>PIN接口描述</h5>
+
+<h6>初始化引脚模式</h6>
+
+<pre><code class="language-c">int tuya_pin_init(tuya_pin_name_t pin, tuya_pin_mode_t  mode);
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>pin</td>
+<td>tuya_pin_name_t枚举中的值</td>
+</tr>
+
+<tr>
+<td>mode</td>
+<td>tuya_pin_mode_t枚举中的值</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>初始化成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>执行失败</td>
+</tr>
+</tbody>
+</table>
+
+<h6>设置引脚电平</h6>
+
+<pre><code class="language-c">int tuya_pin_write(tuya_pin_name_t pin, tuya_pin_level_t level);
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>pin</td>
+<td>tuya_pin_name_t枚举中的值</td>
+</tr>
+
+<tr>
+<td>level</td>
+<td>tuya_pin_level_t枚举中的值</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>初始化成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>执行失败</td>
+</tr>
+</tbody>
+</table>
+
+<h6>读取引脚电平</h6>
+
+<pre><code class="language-c">int tuya_pin_read(tuya_pin_name_t pin)
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>pin</td>
+<td>tuya_pin_name_t枚举中的值</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>TUYA_PIN_LOW</td>
+<td>低电平</td>
+</tr>
+
+<tr>
+<td>TUYA_PIN_HIGH</td>
+<td>高电平</td>
+</tr>
+</tbody>
+</table>
+
+<h6>初始化引脚中断模式</h6>
+
+<pre><code class="language-c">int tuya_pin_irq_init(tuya_pin_name_t pin, tuya_pin_mode_t irq_mode, tuya_pin_irq_cb cb, void *arg);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>pin</td>
+<td>tuya_pin_name_t枚举中的值</td>
+</tr>
+
+<tr>
+<td>irq_mode</td>
+<td>tuya_pin_mode_t枚举中的值</td>
+</tr>
+
+<tr>
+<td>cb</td>
+<td>注册的回调函数，参见如下函数原形</td>
+</tr>
+
+<tr>
+<td>arg</td>
+<td>注册的参数</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>初始化成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>执行失败</td>
+</tr>
+</tbody>
+</table>
+<p>注册函数tuya_pin_irq_cb原形</p>
+
+<pre><code>typedef void (*tuya_pin_irq_cb)(void *args);
+
+</code></pre>
+
+<h6>使能引脚中断</h6>
+
+<pre><code class="language-c">int tuya_pin_irq_enable(tuya_pin_name_t pin);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>pin</td>
+<td>tuya_pin_name_t枚举中的值</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>初始化成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>执行失败</td>
+</tr>
+</tbody>
+</table>
+
+<h6>禁能引脚中断</h6>
+
+<pre><code class="language-c">int tuya_pin_irq_disable(tuya_pin_name_t pin);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>pin</td>
+<td>tuya_pin_name_t枚举中的值</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>初始化成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>执行失败</td>
+</tr>
+</tbody>
+</table>
+
+<h5>PIN使用示例</h5>
+
+<pre><code>void tuya_pa5_irq_cb(void *arg)
+{
+    PR_NOTICE(&quot;TUYA_PA5 irq trigger&quot;);
+    tuya_pin_irq_disable(TUYA_PA5);
+}
+
+void tuya_pa12_irq_cb(void *arg)
+{
+    PR_NOTICE(&quot;TUYA_PA12 irq trigger&quot;);
+    //! enable tuya_pa5 irq;
+    PR_NOTICE(&quot;TUYA_PA5 irq enable&quot;);
+    tuya_pin_irq_enable(TUYA_PA5);
+}
+
+void tuya_pin_test(void)
+{
+    STATIC UINT8_T tick   = 0;
+    STATIC UINT8_T stat   = TUYA_PIN_HIGH;
+
+    //! output init high 
+    tuya_pin_init(TUYA_PA22, TUYA_PIN_MODE_OUT_PP_HIGH);
+    tuya_pin_init(TUYA_PA19, TUYA_PIN_MODE_OUT_PP_LOW);
+
+    //! input pull up
+    tuya_pin_init(TUYA_PA14, TUYA_PIN_MODE_IN_PU);
+
+    //! input irq mode
+    tuya_pin_irq_init(TUYA_PA5,  TUYA_PIN_MODE_IN_IRQ_FALL, tuya_pa5_irq_cb, NULL);
+    tuya_pin_irq_disable(TUYA_PA5);
+
+    //! TUYA_PA5 irq enable by TUYA_P12 irq
+    tuya_pin_irq_init(TUYA_PA12, TUYA_PIN_MODE_IN_IRQ_FALL, tuya_pa12_irq_cb, TUYA_PA5);
+
+    while (1) {
+        tuya_hal_system_sleep(200);
+
+        if (++tick &gt;= 3) {
+            tick = 0;
+            //! led toggle
+            stat = stat ? TUYA_PIN_LOW : TUYA_PIN_HIGH;
+            tuya_pin_write(TUYA_PA22, stat);
+        }
+
+        //! led control by key
+        if (tuya_pin_read(TUYA_PA14)) {
+            tuya_pin_write(TUYA_PA19, TUYA_PIN_HIGH);
+        } else {
+            tuya_pin_write(TUYA_PA19, TUYA_PIN_LOW);
+        }
+    }
+}
+
+</code></pre>
+
+<hr>
+
+<h4>UART</h4>
+
+<h5>uart接口列表</h5>
+
+<table>
+<thead>
+<tr>
+<th>函数名称</th>
+<th>功能描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>int tuya_uart_init(tuya_uart_t *uart);</td>
+<td>串口初始化</td>
+</tr>
+
+<tr>
+<td>int tuya_uart_read(tuya_uart_t *uart, void *data, uint16_t len);</td>
+<td>串口发送数据</td>
+</tr>
+
+<tr>
+<td>int tuya_uart_write(tuya_uart_t *uart, void *data, uint16_t len);</td>
+<td>串口读数据</td>
+</tr>
+
+<tr>
+<td>int tuya_uart_control(tuya_uart_t *uart, uint8_t cmd, void *arg);</td>
+<td>串口控制</td>
+</tr>
+
+<tr>
+<td>int tuya_uart_deinit(tuya_uart_t *uart);</td>
+<td>串口反初始化</td>
+</tr>
+</tbody>
+</table>
+
+<h5>串口访问端口</h5>
+
+<pre><code>typedef enum {
+    TUYA_UART0 = 0x00,
+    TUYA_UART1,
+    TUYA_UART2,
+    TUYA_UART3,
+} tuya_uart_port_t;
+
+</code></pre>
+
+<h5>串口配置参数</h5>
+
+<pre><code>//! 串口波特率
+typedef enum {
+    TUYA_UART_BAUDRATE_300        = 300,
+    TUYA_UART_BAUDRATE_600        = 600,
+    TUYA_UART_BAUDRATE_1200       = 1200,
+    TUYA_UART_BAUDRATE_2400       = 2400,
+    TUYA_UART_BAUDRATE_4800       = 4800,
+    TUYA_UART_BAUDRATE_9600       = 9600,
+    TUYA_UART_BAUDRATE_19200      = 19200,
+    TUYA_UART_BAUDRATE_38400      = 38400,
+    TUYA_UART_BAUDRATE_57600      = 57600,
+    TUYA_UART_BAUDRATE_74880      = 74880,
+    TUYA_UART_BAUDRATE_115200     = 115200,
+    TUYA_UART_BAUDRATE_230400     = 230400,
+    TUYA_UART_BAUDRATE_460800     = 460800,
+    TUYA_UART_BAUDRATE_921600     = 921600,
+    TUYA_UART_BAUDRATE_1500000    = 1500000,
+    TUYA_UART_BAUDRATE_1843200    = 1843200,
+    TUYA_UART_BAUDRATE_3686400    = 3686400,
+} tuya_uart_baudrate_t;
+
+//! 串口数据位
+typedef enum {
+    TUYA_UART_DATA_BIT5           = 0x05,
+    TUYA_UART_DATA_BIT6           = 0x06,
+    TUYA_UART_DATA_BIT7           = 0x07,
+    TUYA_UART_DATA_BIT8           = 0x08,
+} tuya_uart_databits_t;
+
+//! 串口停止位
+typedef enum {
+    TUYA_UART_STOP_BIT1           = 0x01,
+    TUYA_UART_STOP_BIT1_5         = 0x02,
+    TUYA_UART_STOP_BIT2           = 0x03,
+} tuya_uart_stopbits_t;
+
+//! 串口校验模式
+typedef enum {
+    TUYA_UART_PARITY_NONE         = 0,   
+    TUYA_UART_PARITY_ODD          = 1,  
+    TUYA_UART_PARITY_EVEN         = 2,   
+} tuya_uart_parity_t;
+
+</code></pre>
+
+<h5>串口简化式配置宏</h5>
+
+<pre><code>//! 配置串口8位数据，无校验，1位停止位的模式
+#define TUYA_UART_8N1_CFG(__UART, __BAUDRATE, __BUFSZ, __FLAG)                \
+        (__UART)-&gt;cfg.baudrate  = __BAUDRATE;                                 \
+        (__UART)-&gt;cfg.flag      = TUYA_DRV_INT_RX_FLAG | __FLAG;              \
+        (__UART)-&gt;cfg.bufsz     = __BUFSZ;                                    \
+        (__UART)-&gt;cfg.databits  = TUYA_UART_DATA_BIT8;                        \
+        (__UART)-&gt;cfg.stopbits  = TUYA_UART_STOP_BIT1;                        \
+        (__UART)-&gt;cfg.parity    = TUYA_UART_PARITY_NONE
+
+</code></pre>
+
+<h5>串口结构体</h5>
+
+<pre><code>struct tuya_uart {    
+    tuya_drv_node_t     node;		//! 串口节点
+    tuya_uart_cfg_t     cfg;		//! 串口配置参数
+    tuya_uart_cb_t      cb;			//! 串口回调函数
+    tuya_uart_ops_t    *ops;
+    void               *rxfifo;
+};
+
+typedef struct tuya_uart tuya_uart_t;
+
+</code></pre>
+
+<h5>串口配置结构体</h5>
+
+<pre><code>typedef struct {
+    uint16_t                flag;		//! 接收或者发送模式，例如轮询,中断,DMA
+    uint16_t                bufsz;		//! 接受缓存大小
+    tuya_uart_baudrate_t    baudrate;	//! 波特率
+    tuya_uart_databits_t    databits;	//! 数据位
+    tuya_uart_stopbits_t    stopbits;	//! 停止位
+    tuya_uart_parity_t      parity;		//!	校验位
+} tuya_uart_cfg_t;
+
+
+</code></pre>
+
+<h5>串口回调结构体</h5>
+
+<pre><code>typedef struct {
+    int   (*tx_finish)  (tuya_uart_t *uart, void *buffer);
+    int   (*rx_notify)  (tuya_uart_t *uart, uint16_t size);
+} tuya_uart_cb_t;
+
+</code></pre>
+
+<h5>串口接口描述</h5>
+
+<h6>串口初始化函数</h6>
+
+<pre><code class="language-c">int tuya_uart_init(tuya_uart_t *uart);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>uart</td>
+<td>串口句柄，需要初始化相关参数</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>初始化成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>执行失败</td>
+</tr>
+</tbody>
+</table>
+
+<h6>串口数据发送函数</h6>
+
+<pre><code class="language-c">int tuya_uart_write(tuya_uart_t *uart, void *data, uint16_t len);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>uart</td>
+<td>串口句柄</td>
+</tr>
+
+<tr>
+<td>data</td>
+<td>要发送数据的指针</td>
+</tr>
+
+<tr>
+<td>len</td>
+<td>要发送的数据字节长度</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>实际发送的数据长度</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h6>串口数据接收函数</h6>
+
+<pre><code class="language-c">int tuya_uart_read(tuya_uart_t *uart, void *data, uint16_t len);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>uart</td>
+<td>串口句柄</td>
+</tr>
+
+<tr>
+<td>data</td>
+<td>要接收数据的指针</td>
+</tr>
+
+<tr>
+<td>len</td>
+<td>要接收的数据字节长度</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>实际读取数据的长度</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h6>串口控制函数</h6>
+
+<pre><code class="language-c">int tuya_uart_control(tuya_uart_t *uart, uint8_t cmd, void *arg);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>uart</td>
+<td>串口句柄</td>
+</tr>
+
+<tr>
+<td>cmd</td>
+<td>命令控制字，可取值：TUYA_DRV_CONFIG_CMD</td>
+</tr>
+
+<tr>
+<td>arg</td>
+<td>控制的参数，类型： tuya_uart_cfg_t</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>控制成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>控制失败</td>
+</tr>
+</tbody>
+</table>
+
+<h6>串口反初始化函数</h6>
+
+<pre><code class="language-c">int tuya_uart_deinit(tuya_uart_t *uart);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>uart</td>
+<td>串口句柄</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>关闭成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>关闭失败</td>
+</tr>
+</tbody>
+</table>
+
+<h5>串口使用示例</h5>
+
+<pre><code>#include &quot;tuya_uart.h&quot;
+
+#define UART_BUFSZ             5
+
+
+void tuya_uart_test(void)
+{
+    int result;
+    uint8_t byte, size;
+
+    uint8_t buffer[UART_BUFSZ + 1];
+
+    tuya_uart_t *uart = (tuya_uart_t *) tuya_driver_find(TUYA_DRV_UART, TUYA_UART1);
+    if (NULL == uart) {
+        PR_DEBUG(&quot;tuya uart find failed&quot;);
+    }
+	//! 配置串口波特率和缓存大小
+    TUYA_UART_8N1_CFG(uart, 115200, 256, 0);
+    //! 初始化
+	tuya_uart_init(uart);
+    //! test multiple data send
+    uint8_t data[] = &quot;uart change baudrate start\r\n&quot;;
+    tuya_uart_write(uart, data, strlen(data));
+    for (;;) {
+        //! echo test
+        int len = tuya_uart_read(uart, &amp;byte, 1);
+        PR_DEBUG_RAW(&quot;%c&quot;, byte);
+        //! test single byte send
+        tuya_uart_write(uart, &amp;byte, 1);
+        if ('q' == byte) {
+            break;
+        }
+	}
+
+    //! test change baudrate
+    TUYA_UART_8N1_CFG_INIT(&amp;uart_cfg, 1500000, 256, 0);
+    result = tuya_uart_control(uart, TUYA_DRV_CONFIG_CMD, &amp;uart_cfg);
+    if (OPRT_OK != result) {
+        PR_ERR(&quot;uart cfg failed&quot;, result);
+    }
+    uint8_t str[] = &quot;uart change baudrate complete\r\n&quot;;
+    tuya_uart_write(uart, str, strlen(str));
+
+	for (;;) {
+        //! echo test
+        int len = tuya_uart_read(uart, &amp;byte, 1);
+
+        PR_DEBUG_RAW(&quot;%c&quot;, byte);
+        //! test single byte send
+        tuya_uart_write(uart, &amp;byte, 1);
+
+        if ('q' == byte) {
+            break;
+        }
+	}
+}
+
+</code></pre>
+
+<h4>硬件TIMER</h4>
+
+<h5>定时器接口列表</h5>
+
+<table>
+<thead>
+<tr>
+<th>函数名称</th>
+<th>功能描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>int tuya_timer_init(tuya_timer_t  *timer);</td>
+<td>定时器初始化</td>
+</tr>
+
+<tr>
+<td>int tuya_timer_start(tuya_timer_t  *timer, uint32_t us);</td>
+<td>启动定时器</td>
+</tr>
+
+<tr>
+<td>int tuya_timer_stop(tuya_timer_t  *timer);</td>
+<td>停止定时器</td>
+</tr>
+
+<tr>
+<td>int tuya_timer_deinit(tuya_timer_t  *timer);</td>
+<td>定时器关闭</td>
+</tr>
+</tbody>
+</table>
+
+<h5>定时器访问端口</h5>
+
+<pre><code>typedef enum {
+    TUYA_TIMER0 = 0,
+    TUYA_TIMER1,
+    TUYA_TIMER2,
+    TUYA_TIMER3,
+} tuya_timer_port_t;
+
+</code></pre>
+
+<h5>定时器配置参数</h5>
+
+<pre><code>typedef enum {
+    TUYA_TIMER_MODE_ONCE = 0,	//! 单次定时
+    TUYA_TIMER_MODE_PERIOD		//! 周期定时
+} tuya_timer_mode_t;
+
+typedef struct {
+    tuya_timer_mode_t    mode;	//! 模式
+    tuya_timer_isr_cb    cb;	//! 回调
+    void                *arg;	//! 参数
+} tuya_timer_cfg_t;
+
+</code></pre>
+
+<h5>定时器回调</h5>
+
+<pre><code>typedef void (*tuya_timer_isr_cb)(void *args);
+
+</code></pre>
+
+<h5>定时器简化配置宏</h5>
+
+<pre><code>//! __TIMER: 定时器句柄
+//! __MODE:  定时器模式	@tuya_timer_mode_t
+//! __CB:    定时器回调	@tuya_timer_isr_cb
+//! __ARG:   定时器回调参数
+#define TUYA_TIMER_CFG(__TIMER, __MODE, __CB, __ARG)                          \
+    (__TIMER)-&gt;cfg.mode = __MODE;                                             \
+    (__TIMER)-&gt;cfg.cb   = __CB;                                               \
+    (__TIMER)-&gt;cfg.arg  = __ARG
+
+</code></pre>
+
+<h5>定时器结构体</h5>
+
+<pre><code>struct tuya_timer {
+    tuya_drv_node_t         node;	//! 节点
+    tuya_timer_cfg_t        cfg;	//! 配置参数，参见tuya_timer_cfg_t
+    tuya_timer_ops_t       *ops;	//! 无需关心
+};
+
+typedef struct tuya_timer tuya_timer_t;
+
+</code></pre>
+
+<h5>定时器接口描述</h5>
+
+<h6>定时器初始化函数</h6>
+
+<pre><code class="language-c">int tuya_timer_init(tuya_timer_t *timer);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>timer</td>
+<td>定时器句柄，需要初始化定时器参数</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>初始化成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>执行失败</td>
+</tr>
+</tbody>
+</table>
+
+<h6>定时器启动函数</h6>
+
+<pre><code class="language-c">int tuya_timer_start(tuya_timer_t *timer, uint32_t us);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>timer</td>
+<td>定时器句柄</td>
+</tr>
+
+<tr>
+<td>us</td>
+<td>超时时间，单位微秒</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>启动成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>启动失败</td>
+</tr>
+</tbody>
+</table>
+
+<h6>定时器停止函数</h6>
+
+<pre><code class="language-c">int tuya_timer_stop(tuya_timer_t *timer);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>timer</td>
+<td>定时器句柄</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>停止成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>停止失败</td>
+</tr>
+</tbody>
+</table>
+
+<h6>定时器关闭函数</h6>
+
+<pre><code class="language-c">int tuya_timer_deinit(tuya_timer_t   *timer);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>timer</td>
+<td>定时器句柄</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>关闭成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h5>定时器使用示例</h5>
+
+<pre><code>#include &quot;tuya_pin.h&quot;
+#include &quot;tuya_timer.h&quot;
+#include &quot;tuya_hal_system.h&quot;
+
+static tuya_timer_t  *timer;
+static uint8_t        led_blink = 1;
+
+void tuya_timer0_cb(void *arg)
+{
+    static  uint32_t tick;
+ 
+    uint8_t *led = (uint8_t *)arg;
+
+    if (tick++ &gt;= 200) {
+        tick = 0;
+        // *led = !*led;
+        led_blink = !led_blink;
+        tuya_pin_write(TUYA_PA22, led_blink);
+    }
+}
+
+
+void tuya_timer_test(void)
+{
+    led_blink = TUYA_PIN_HIGH;
+    tuya_pin_init(TUYA_PA22, TUYA_PIN_MODE_OUT_PP_HIGH);
+
+    timer = (tuya_timer_t *)tuya_driver_find(TUYA_DRV_TIMER, TUYA_TIMER0);
+    TUYA_TIMER_CFG(timer, TUYA_TIMER_MODE_PERIOD, tuya_timer0_cb, &amp;led_blink);
+    tuya_timer_init(timer);
+    tuya_timer_start(timer, 1000);
+
+    uint8_t  duration = 0;
+
+    while (1) {
+        tuya_hal_system_sleep(1000);
+        duration++;
+        if (duration == 3)  {
+            tuya_timer_stop(timer);
+            tuya_timer_start(timer, 3000);   //! 3ms
+        } else if (duration == 6) {
+            tuya_timer_stop(timer);
+            tuya_timer_start(timer, 1000);   //! 1ms
+            duration = 0;
+        } 
+    }
+}
+
+</code></pre>
+
+<h4>PWM</h4>
+
+<h5>pwm接口列表</h5>
+
+<table>
+<thead>
+<tr>
+<th>函数名称</th>
+<th>功能描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>int tuya_pwm_init(tuya_pwm_t *pwm);</td>
+<td>初始化PWM</td>
+</tr>
+
+<tr>
+<td>int tuya_pwm_start(tuya_pwm_t *pwm);</td>
+<td>启动PWM</td>
+</tr>
+
+<tr>
+<td>int tuya_pwm_stop(tuya_pwm_t *pwm);</td>
+<td>停止PWM</td>
+</tr>
+
+<tr>
+<td>int tuya_pwm_set(tuya_pwm_t *pwm, float frequency, float percent);</td>
+<td>设置PWM频率和占空比</td>
+</tr>
+
+<tr>
+<td>int tuya_pwm_frequency_set (tuya_pwm_t *pwm, float frequency);</td>
+<td>设置PWM频率</td>
+</tr>
+
+<tr>
+<td>int tuya_pwm_duty_set(tuya_pwm_t *pwm, float percent);</td>
+<td>设置PWM占空比</td>
+</tr>
+
+<tr>
+<td>int tuya_pwm_polarity_set (tuya_pwm_t *pwm, tuya_pwm_polarity_t polarity);</td>
+<td>设置PWM初始极性</td>
+</tr>
+
+<tr>
+<td>int tuya_pwm_deinit(tuya_pwm_t *pwm);</td>
+<td>关闭PWM</td>
+</tr>
+</tbody>
+</table>
+
+<h5>PWM访问端口</h5>
+
+<pre><code>typedef enum {
+    TUYA_PWM0 = 0x00,
+    TUYA_PWM1,
+    TUYA_PWM2,
+    TUYA_PWM3,
+    TUYA_PWM4,
+    TUYA_PWM5,
+    TUYA_PWM6,
+    TUYA_PWM7,
+    TUYA_PWM8,
+} tuya_pwm_port_t;
+
+</code></pre>
+
+<h5>PWM配置结构体</h5>
+
+<pre><code>typedef struct {
+    uint8_t         pin;			//! PWM输出的引脚号
+    uint8_t         polarity;		//! PWM输出极性
+    uint32_t        period_ns;		//! PWM输出的周期
+    uint32_t        pulse_ns;		//! PWM输出的脉宽
+    float           percent;		//! PWM数据占空比
+} tuya_pwm_cfg_t;
+
+
+typedef enum {		
+    TUYA_PWM_POSITIVE = 0,			//! 初始高电平
+    TUYA_PWM_NEGATIVE,				//! 初始低电平
+} tuya_pwm_polarity_t;
+
+</code></pre>
+
+<h5>PWM简化配置宏</h5>
+
+<pre><code>//! __PWM: 			句柄
+//! __PIN: 			引脚号	
+//! __FREQUENCY:  	频率
+//! __PERCENT:   	占空比
+#define TUYA_PWM_CFG(__PWM, __PIN, __FREQUENCY, __PERCENT)                      \
+    (__PWM)-&gt;cfg.pin       = __PIN;                                             \
+    (__PWM)-&gt;cfg.period_ns = (uint32_t)1000000000 / (__FREQUENCY);              \
+    (__PWM)-&gt;cfg.percent   = __PERCENT;                                         \
+    (__PWM)-&gt;cfg.pulse_ns  = (uint32_t)((__PWM)-&gt;cfg.period_ns * (__PERCENT));  \
+    (__PWM)-&gt;cfg.polarity  = TUYA_PWM_POSITIVE
+
+
+</code></pre>
+
+<h5>PWM结构体</h5>
+
+<pre><code>struct tuya_pwm {
+    tuya_drv_node_t     node;		//! PWM节点
+    tuya_pwm_cfg_t      cfg;		//! PWM配置，参见tuya_pwm_cfg_t
+    tuya_pwm_ops_t     *ops;		//! 无需关心
+};
+
+typedef struct tuya_pwm tuya_pwm_t;
+
+
+</code></pre>
+
+<h5>PWM接口描述</h5>
+
+<h6>PWM初始化函数</h6>
+
+<pre><code class="language-c">int tuya_pwm_init(tuya_pwm_t *pwm);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>pwm</td>
+<td>PWM句柄，需要初始化PWM参数</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>初始化成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>初始化失败</td>
+</tr>
+</tbody>
+</table>
+
+<h6>PWM启动函数</h6>
+
+<pre><code class="language-c">int tuya_pwm_start(tuya_pwm_t *pwm);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>pwm</td>
+<td>PWM句柄</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>启动成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>启动失败</td>
+</tr>
+</tbody>
+</table>
+
+<h6>PWM停止函数</h6>
+
+<pre><code class="language-c">int tuya_pwm_stop(tuya_pwm_t *pwm);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>pwm</td>
+<td>PWM句柄</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>停止成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>停止失败</td>
+</tr>
+</tbody>
+</table>
+
+<h6>PWM频率和占空比设置函数</h6>
+
+<pre><code class="language-c">int tuya_pwm_set(tuya_pwm_t *pwm, float frequency, float percent);
+
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>pwm</td>
+<td>PWM句柄</td>
+</tr>
+
+<tr>
+<td>frequency</td>
+<td>PWM频率</td>
+</tr>
+
+<tr>
+<td>percent</td>
+<td>PWM占空比，0-1</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>执行成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>执行失败</td>
+</tr>
+</tbody>
+</table>
+
+<h6>PWM周期设置函数</h6>
+
+<pre><code class="language-c">int tuya_pwm_frequency_set(tuya_pwm_t *pwm, float frequency);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>pwm</td>
+<td>PWM句柄</td>
+</tr>
+
+<tr>
+<td>frequency</td>
+<td>PWM频率</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>执行成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>执行失败</td>
+</tr>
+</tbody>
+</table>
+
+<h6>PWM脉宽设置函数</h6>
+
+<pre><code class="language-c">int tuya_pwm_duty_set(tuya_pwm_t *pwm, float percent);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>pwm</td>
+<td>PWM句柄</td>
+</tr>
+
+<tr>
+<td>percent</td>
+<td>PWM占空比，0-1</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>执行成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>执行失败</td>
+</tr>
+</tbody>
+</table>
+
+<h6>PWM极性设置函数</h6>
+
+<pre><code class="language-c">int tuya_pwm_polarity_set(tuya_pwm_t *pwm, tuya_pwm_polarity_t polarity);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>pwm</td>
+<td>PWM句柄</td>
+</tr>
+
+<tr>
+<td>polarity</td>
+<td>PWM初始极性，@tuya_pwm_polarity_t中的枚举值</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>执行成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>执行失败</td>
+</tr>
+</tbody>
+</table>
+
+<h6>PWM关闭函数</h6>
+
+<pre><code class="language-c">INT_T ty_pwm_deinit(TY_PWM_DEV_S *pwm);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>pwm</td>
+<td>PWM句柄</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>执行成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>执行失败</td>
+</tr>
+</tbody>
+</table>
+
+<h5>PWM使用示例</h5>
+
+<pre><code>#include &quot;tuya_pin.h&quot;
+#include &quot;tuya_pwm.h&quot;
+#include &quot;tuya_hal_system.h&quot;
+
+static tuya_pwm_t *pwm[5];
+
+void tuya_pwm_test(void)
+{
+    UINT8_T pwm_pin[] = {
+        TUYA_PA14, TUYA_PA15, TUYA_PA0, TUYA_PA5, TUYA_PA12
+    };
+
+#if 1	//! 循环初始化
+    int i;
+    for (i = 0; i &lt; 5; i++) {
+        pwm[i] = (tuya_pwm_t *)tuya_driver_find(TUYA_DRV_PWM, (tuya_pwm_port_t)i);
+        TUYA_PWM_CFG(pwm[i], pwm_pin[i], 10 * 1000, 0.1);
+        tuya_pwm_init(pwm[i]);  
+        tuya_pwm_start(pwm[i]);
+    }
+#else  //! 单个初始化
+    pwm[0] = tuya_driver_find(TUYA_DRV_PWM, TUYA_PWM0);
+    TUYA_PWM_CFG(pwm[0], TUYA_PA14, 10 * 1000, 0.1);
+    tuya_pwm_init(pwm[0]);
+    tuya_pwm_start(pwm[0]);
+
+    pwm[1] = tuya_driver_find(TUYA_DRV_PWM, TUYA_PWM1);
+    TUYA_PWM_CFG(pwm[1], TUYA_PA15, 10 * 1000, 0.1);
+    tuya_pwm_init(pwm[1]);
+    tuya_pwm_start(pwm[1]);
+
+    pwm[2] = tuya_driver_find(TUYA_DRV_PWM, TUYA_PWM2);
+    TUYA_PWM_CFG(pwm[2], TUYA_PA0, 10 * 1000, 0.1);
+    tuya_pwm_init(pwm[2]);
+    tuya_pwm_start(pwm[2]);
+
+    pwm[3] = tuya_driver_find(TUYA_DRV_PWM, TUYA_PWM3);
+    TUYA_PWM_CFG(pwm[3], TUYA_PA5, 10 * 1000, 0.1);
+    tuya_pwm_init(pwm[3]);
+    tuya_pwm_start(pwm[3]);
+
+    pwm[4] = tuya_driver_find(TUYA_DRV_PWM, TUYA_PWM4);
+    TUYA_PWM_CFG(pwm[4], TUYA_PA12, 10 * 1000, 0.1);
+    tuya_pwm_init(pwm[4]);
+    tuya_pwm_start(pwm[4]);
+#endif
+
+    PR_DEBUG(&quot;ns %d us  %d&quot;, pwm[0]-&gt;cfg.period_ns,  pwm[0]-&gt;cfg.period_ns / 1000);
+
+    uint8_t  flag  = 1;
+    float    percent = TUYA_PWM_PERCENT(pwm[0]);
+
+	//! PWM呼吸灯
+    while (1) {
+        if (flag) {
+            if (percent &lt; 1.0) {
+                percent += 0.005; 
+            } else {
+                flag = 0;
+                continue;
+            }
+        } else {
+            if (percent &gt; 0.005) {
+                percent -= 0.005;
+            } else {
+                flag = 1;
+                continue;
+            }
+        }
+        PR_NOTICE(&quot;percent = %d&quot;, (int)(percent * 1000));
+        for (UINT8_T i = 0; i &lt; 5; i ++) {
+            tuya_pwm_duty_set(pwm[i], percent);
+        }
+        tuya_hal_system_sleep(3);
+    }
+}
+
+</code></pre>
+
+<h4>I2C</h4>
+
+<h5>I2C接口列表</h5>
+
+<table>
+<thead>
+<tr>
+<th>函数名称</th>
+<th>功能描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>int tuya_i2c_init(tuya_i2c_t *i2c);</td>
+<td>I2C初始化</td>
+</tr>
+
+<tr>
+<td>int tuya_sw_i2c_register(tuya_i2c_port_t port, tuya_i2c_sw_cfg_t *cfg);</td>
+<td>注册软件I2C初始化</td>
+</tr>
+
+<tr>
+<td>int tuya_i2c_control(tuya_i2c_t *i2c, uint8_t cmd, void *arg);</td>
+<td>I2C自定义数据发送</td>
+</tr>
+
+<tr>
+<td>int tuya_i2c_deinit(tuya_i2c_t *i2c);</td>
+<td>I2C关闭</td>
+</tr>
+
+<tr>
+<td>int tuya_i2c_master_send(tuya_i2c_t *i2c, uint16_t addr, uint16_t flags, void *buf, uint16_t count);</td>
+<td>I2C主机发送函数</td>
+</tr>
+
+<tr>
+<td>int tuya_i2c_master_recv(tuya_i2c_t *i2c, uint16_t addr, uint16_t flags, void *buf, uint16_t count);</td>
+<td>I2C主机接收函数</td>
+</tr>
+</tbody>
+</table>
+
+<h5>I2C访问端口</h5>
+
+<pre><code>typedef enum {
+    TUYA_I2C0 = 0,
+    TUYA_I2C1,
+    TUYA_I2C2,
+    TUYA_I2C3,
+} tuya_i2c_port_t;
+
+</code></pre>
+
+<h5>I2C配置参数</h5>
+
+<pre><code>#define TUYA_I2C_WR                0x0000		//! I2C写
+#define TUYA_I2C_RD               (1 &lt;&lt; 0)		//! I2C读
+#define TUYA_I2C_ADDR_10BIT       (1 &lt;&lt; 2)  	//! I2C地址设置为10位
+#define TUYA_I2C_NO_START         (1 &lt;&lt; 4)		//! I2C跳过地址阶段
+#define TUYA_I2C_IGNORE_NACK      (1 &lt;&lt; 5)		//! I2C产生第九个时钟，但会忽略NACK
+#define TUYA_I2C_NO_READ_ACK      (1 &lt;&lt; 6)  	//! I2C读跳过ACK阶段，不产生第九个时钟
+#define TUYA_I2C_NO_WRITE_ACK     (1 &lt;&lt; 7)  	//! I2C写跳过ACK阶段
+
+
+typedef enum {
+    TUYA_I2C_MODE_MASTER = 0,					//! 主机模式
+    TUYA_I2C_MODE_SLAVE,						//! 从机模式（不支持）
+} tuya_i2c_mode_t;
+
+</code></pre>
+
+<h5>I2C配置结构体</h5>
+
+<pre><code>typedef struct {
+    uint8_t             sda_pin;		//!	SDA引脚号
+    uint8_t             scl_pin;		//!	SCL引脚号
+    uint32_t            delay_count;	//! 软件时钟计数器
+    uint32_t            timeout;    	//! 超时时间，用于检测SCL是否被拉高
+} tuya_i2c_sw_cfg_t;
+
+typedef struct {
+    uint8_t             mode;			//! 只支持主机模式TUYA_I2C_MODE_MASTER
+    uint16_t            dev_addr;		//! 设备地址7位或者10位
+} tuya_i2c_cfg_t;
+
+typedef struct {
+    uint16_t            addr;			//! 器件地址
+    uint16_t            flags;			//! I2C标志，用于支持各种非标I2C（软件模拟支持）
+    uint16_t            len;			//! 数据长度
+    uint8_t             *buf;			//! 数据缓冲区
+} tuya_i2c_msg_t;
+
+</code></pre>
+
+<h5>I2C简化配置宏</h5>
+
+<pre><code>#define TUYA_I2C_MASTER_CFG(__I2C, __ADDR)                                  \
+    (__I2C)-&gt;cfg.dev_addr   = __ADDR;                                       \
+    (__I2C)-&gt;cfg.mode       = TUYA_I2C_MODE_MASTER                          \
+
+#define TUYA_I2C_SW_CFG_INIT(__CFG, __SCL, __SDA, __DELAY)                  \
+    (__CFG)-&gt;scl_pin        = __SCL;                                        \
+    (__CFG)-&gt;sda_pin        = __SDA;                                        \
+    (__CFG)-&gt;delay_count    = __DELAY;                                      \
+    (__CFG)-&gt;timeout        = 100
+
+</code></pre>
+
+<h5>I2C结构体</h5>
+
+<pre><code>struct tuya_i2c {
+    tuya_drv_node_t       node;			//! 节点
+    tuya_i2c_cfg_t        cfg;			//! 配置参数，@tuya_i2c_cfg_t
+    tuya_i2c_ops_t       *ops;			//! 无需关心
+};
+
+typedef struct tuya_i2c tuya_i2c_t;
+
+</code></pre>
+
+<h5>I2C接口描述</h5>
+
+<h6>软件I2C注册函数</h6>
+
+<pre><code class="language-c">int tuya_sw_i2c_register(tuya_i2c_port_t port, tuya_i2c_sw_cfg_t *cfg);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>port</td>
+<td>需要注册的端口号，@tuya_i2c_port_t</td>
+</tr>
+
+<tr>
+<td>cfg</td>
+<td>需要设置的配置， @tuya_i2c_sw_cfg_t</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>执行成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>执行失败</td>
+</tr>
+</tbody>
+</table>
+
+<h6>I2C初始化函数</h6>
+
+<pre><code class="language-c">int tuya_i2c_init(tuya_i2c_t *i2c);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>i2c</td>
+<td>I2C句柄（需要查找）</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>执行成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>执行失败</td>
+</tr>
+</tbody>
+</table>
+
+<h6>I2C主机数据发送函数</h6>
+
+<pre><code class="language-c">int tuya_i2c_master_send(tuya_i2c_t *i2c, uint16_t addr, uint16_t flags, void *buf, uint16_t count);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>i2c</td>
+<td>I2C句柄</td>
+</tr>
+
+<tr>
+<td>addr</td>
+<td>设备地址</td>
+</tr>
+
+<tr>
+<td>flags</td>
+<td>I2C标志</td>
+</tr>
+
+<tr>
+<td>buf</td>
+<td>数据发送缓冲区指针</td>
+</tr>
+
+<tr>
+<td>count</td>
+<td>数据长度</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>执行成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>执行失败</td>
+</tr>
+</tbody>
+</table>
+
+<h6>I2C主机数据接收函数</h6>
+
+<pre><code class="language-c">int tuya_i2c_master_recv(tuya_i2c_t *i2c, uint16_t addr, uint16_t flags, void *buf, uint16_t count);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>i2c</td>
+<td>I2C句柄</td>
+</tr>
+
+<tr>
+<td>addr</td>
+<td>设备地址</td>
+</tr>
+
+<tr>
+<td>flags</td>
+<td>I2C标志</td>
+</tr>
+
+<tr>
+<td>buf</td>
+<td>数据接收缓冲区指针</td>
+</tr>
+
+<tr>
+<td>count</td>
+<td>数据长度</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>执行成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>执行失败</td>
+</tr>
+</tbody>
+</table>
+
+<h6>I2C关闭函数</h6>
+
+<pre><code class="language-c">int tuya_i2c_deinit(tuya_i2c_t *i2c);
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>参数</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>i2c</td>
+<td>I2C句柄</td>
+</tr>
+
+<tr>
+<td><strong>返回</strong></td>
+<td>——</td>
+</tr>
+
+<tr>
+<td>OPRT_OK</td>
+<td>执行成功</td>
+</tr>
+
+<tr>
+<td>其他错误码</td>
+<td>执行失败</td>
+</tr>
+</tbody>
+</table>
+
+<h5>软件I2C使用示例</h5>
+
+<pre><code>/*============================ INCLUDES ======================================*/
+#include &quot;tuya_pin.h&quot;
+#include &quot;tuya_i2c.h&quot;
+#include &quot;tuya_hal_system.h&quot;
+
+/*============================ TYPES =========================================*/
+typedef struct {
+    tuya_i2c_t    *i2c;
+} sm2135e_dev_t;
+
+typedef struct {
+    tuya_i2c_t    *i2c;
+} sm16726b_dev_t;
+/*============================ PROTOTYPES ====================================*/
+void sm2135_init(sm2135e_dev_t *dev);
+void sm2135_rgb_set(sm2135e_dev_t *dev, uint8_t r, uint8_t g, uint8_t b);
+void sm2135_cw_set(sm2135e_dev_t *dev, uint8_t c, uint8_t w);
+void sm16726b_init(sm16726b_dev_t *dev);
+
+void sm2135_test(void);
+void sm16726b_test(void);
+
+/*============================ IMPLEMENTATION ================================*/
+static sm2135e_dev_t sm2135e_dev;
+static sm2135e_dev_t sm16726b_dev;
+
+void tuya_sw_i2c_test(void)
+{
+	//! 注册一个软件I2C0，引脚为PA14和PA15
+    tuya_i2c_sw_cfg_t   sw_cfg;
+    TUYA_I2C_SW_CFG_INIT(&amp;sw_cfg, TUYA_PA14, TUYA_PA15, 1);
+    tuya_sw_i2c_register(TUYA_I2C0, &amp;sw_cfg);
+
+	//! 注册一个软件I2C1，引脚为PA19和PA22
+    TUYA_I2C_SW_CFG_INIT(&amp;sw_cfg, TUYA_PA19, TUYA_PA22, 1);
+    tuya_sw_i2c_register(TUYA_I2C1, &amp;sw_cfg);
+
+    sm2135_init(&amp;sm2135e_dev);
+    sm16726b_init(&amp;sm16726b_dev);
+
+    while(1) {
+        sm16726b_test();
+        sm2135_test();
+    }
+}
+
+void sm16726b_init(sm16726b_dev_t *dev)
+{
+    uint8_t     buffer[2];
+	//! 寻找i2c1的句柄，初始化已经注册了，通过tuya_sw_i2c_register
+    dev-&gt;i2c = tuya_driver_find(TUYA_DRV_I2C, TUYA_I2C1);
+    //! no device addr
+    TUYA_I2C_MASTER_CFG(dev-&gt;i2c, 0x00);
+    tuya_i2c_init(dev-&gt;i2c);
+}
+
+void sm16726b_rgb_set(sm16726b_dev_t *dev, uint8_t r, uint8_t g, uint8_t b)
+{
+    uint8_t     buffer[7 + 3 + 1];
+
+    memset(buffer, 0, 6);
+    buffer[6]  = 0x01;     
+    buffer[7]  = r;
+    buffer[8]  = g;
+    buffer[9]  = b;
+    buffer[10] = 0xFF;
+
+    tuya_i2c_master_send(dev-&gt;i2c, 0x00, TUYA_I2C_NO_START | TUYA_I2C_NO_WRITE_ACK, buffer, 11);
+}
+
+void sm16726b_test(void)
+{
+    //! red
+    sm16726b_rgb_set(&amp;sm16726b_dev, 255, 0, 0);
+    tuya_hal_system_sleep(500);
+    //! green
+    sm16726b_rgb_set(&amp;sm16726b_dev, 0, 255, 0);
+    tuya_hal_system_sleep(500);
+    //! blue 
+    sm16726b_rgb_set(&amp;sm16726b_dev, 0, 0, 255);
+    tuya_hal_system_sleep(500);
+    //! black
+    sm16726b_rgb_set(&amp;sm16726b_dev, 0, 0, 0);
+    // tuya_hal_system_sleep(500);
+}
+
+
+void sm2135_init(sm2135e_dev_t *dev)
+{
+    uint8_t     buffer[2];
+
+	//! 寻找i2c0的句柄，初始化已经注册了，通过tuya_sw_i2c_register
+    dev-&gt;i2c = tuya_driver_find(TUYA_DRV_I2C, TUYA_I2C0);
+    //! no device addr
+    TUYA_I2C_MASTER_CFG(dev-&gt;i2c, 0x00);
+    tuya_i2c_init(dev-&gt;i2c);
+
+    buffer[0] = 0xC0;             //! register addr
+    buffer[1] = 0x20 | 0x04;      //! power set
+
+    tuya_i2c_master_send(dev-&gt;i2c, 0x00, TUYA_I2C_NO_START | TUYA_I2C_NO_WRITE_ACK, buffer, 2);
+}
+
+
+void sm2135_rgb_set(sm2135e_dev_t *dev, uint8_t r, uint8_t g, uint8_t b)
+{
+    uint8_t     buffer[5];
+
+    buffer[0] = 0xC1;   //! register addr
+    buffer[1] = 0;      //! rgb output
+    buffer[2] = r;
+    buffer[3] = g;
+    buffer[4] = b;
+
+    tuya_i2c_master_send(dev-&gt;i2c, 0x00, TUYA_I2C_NO_START | TUYA_I2C_IGNORE_NACK, buffer, 5);
+}
+
+void sm2135_cw_set(sm2135e_dev_t *dev, uint8_t c, uint8_t w)
+{
+    uint8_t     buffer[3];
+
+    buffer[0] = 0xC1;   //! register addr
+    buffer[1] = 0x80;   //! cw output
+
+    tuya_i2c_master_send(dev-&gt;i2c, 0x00, TUYA_I2C_NO_START | TUYA_I2C_IGNORE_NACK, buffer, 2);
+
+    buffer[0] = 0xC5;   //! register addr
+    buffer[1] = c;      
+    buffer[2] = w;      
+
+    tuya_i2c_master_send(dev-&gt;i2c, 0x00, TUYA_I2C_NO_START | TUYA_I2C_IGNORE_NACK, buffer, 3);
+}
+
+
+void sm2135_test(void)
+{
+    //! red
+    sm2135_rgb_set(&amp;sm2135e_dev, 255, 0, 0);
+    tuya_hal_system_sleep(500);
+    //! green
+    sm2135_rgb_set(&amp;sm2135e_dev, 0, 255, 0);
+    tuya_hal_system_sleep(500);
+    //! blue 
+    sm2135_rgb_set(&amp;sm2135e_dev, 0, 0, 255);
+    tuya_hal_system_sleep(500);
+    //! close
+    // sm2135_rgb_set(&amp;sm2135e_dev, 0, 0, 0);
+
+    //! clod
+    sm2135_cw_set(&amp;sm2135e_dev, 255, 0);
+    tuya_hal_system_sleep(500);
+    //! warm
+    sm2135_cw_set(&amp;sm2135e_dev, 0, 255);
+    tuya_hal_system_sleep(500);
+
+    //!close
+    sm2135_cw_set(&amp;sm2135e_dev, 0, 0);
+    // tuya_hal_system_sleep(500);
+}
+
+
+</code></pre>
+
+<h3>HAL</h3>
+
+<p>由于不同产品对应开发平台不同，有Linux系统的，RTOS系统的，等等，由于底层操作系统的接口不尽相同，当某个开发平台的底层接口变化时，必将牵其他开发平台的接口变动。为了解耦，涂鸦IoTOS HAL设计了一套注册机制，提供统一对外的操作系统和驱动接口，供涂鸦IoTOS 各组件和开发者应用代码使用。</p>
+
+<p>不同开发平台通过注册机制向涂鸦IoTOS HAL各自的接口实现。涂鸦IoTOS HAL以此屏蔽各系统差异，彻底成为独立、统一的OS平台，给上层提供稳定的接口定义，同时也为下层开发环境提高可扩展性和灵活性。</p>
+
+<h4>接口描述</h4>
+
+<h5>线程</h5>
+
+<p>线程接口主要有：</p>
+
+<pre><code>//创建线程
+int tuya_hal_thread_create(THREAD_HANDLE* thread,
+                           const char* name,
+                           uint32_t stack_size,
+                           uint32_t priority,
+                           THREAD_FUNC_T func,
+                           void* const arg);
+//释放线程
+int tuya_hal_thread_release(THREAD_HANDLE thread);
+//判断线程是否是自己
+int tuya_hal_thread_is_self(THREAD_HANDLE thread, BOOL_T* is_self);
+//获取线程水线（获取任务剩余栈空间）
+int tuya_hal_thread_get_watermark(THREAD_HANDLE thread, UINT_T* watermark);
+//设置线程名字
+int tuya_hal_thread_set_self_name(const char* name);
+
+</code></pre>
+
+<h5>信号量</h5>
+
+<p>信号量接口主要有：</p>
+
+<pre><code>//创建并初始化信号量
+INT_T tuya_hal_semaphore_create_init(SEM_HANDLE *pHandle, CONST UINT_T semCnt,、
+                                     CONST UINT_T sem_max);
+//信号量等待
+INT_T tuya_hal_semaphore_wait(CONST SEM_HANDLE semHandle);
+//信号量超时等待
+INT_T tuya_hal_semaphore_waittimeout(CONST SEM_HANDLE semHandle, unsigned int timeout);
+//信号量递送
+INT_T tuya_hal_semaphore_post(CONST SEM_HANDLE semHandle);
+//释放信号量
+INT_T tuya_hal_semaphore_release(CONST SEM_HANDLE semHandle);
+</code></pre>
+
+<h5>互斥量</h5>
+
+<p>互斥量接口主要有：</p>
+
+<pre><code>//用于创建并初始化tuya mutex
+OPERATE_RET tuya_hal_mutex_create_init(MUTEX_HANDLE *pMutexHandle);
+//用于lock tuya mutex
+OPERATE_RET tuya_hal_mutex_lock(const MUTEX_HANDLE mutexHandle);
+//用于unlock tuya mutex
+OPERATE_RET tuya_hal_mutex_unlock(const MUTEX_HANDLE mutexHandle);
+//e用于释放tuya mutex
+OPERATE_RET tuya_hal_mutex_release(const MUTEX_HANDLE mutexHandle);
+</code></pre>
+
+<h5>Wi-Fi管理</h5>
+
+<p>wifi接口主要有：</p>
+
+<pre><code>//wifi ap扫描
+OPERATE_RET tuya_hal_wifi_all_ap_scan(AP_IF_S **ap_ary, UINT_T *num);
+//wifi ap扫描获，取指定ap信息
+OPERATE_RET tuya_hal_wifi_assign_ap_scan(CONST SCHAR_T *ssid, AP_IF_S **ap);
+//释放ap
+OPERATE_RET tuya_hal_wifi_release_ap(AP_IF_S *ap);
+//设置wifi信道
+OPERATE_RET tuya_hal_wifi_set_cur_channel(CONST UCHAR_T chan);
+//获取wifi当前信道
+OPERATE_RET tuya_hal_wifi_get_cur_channel(UCHAR_T *chan);
+//设置wifi sniffer模式回调函数
+OPERATE_RET tuya_hal_wifi_sniffer_set(CONST BOOL_T en, CONST SNIFFER_CALLBACK cb);
+//获取wifi的ip地址
+OPERATE_RET tuya_hal_wifi_get_ip(CONST WF_IF_E wf, NW_IP_S *ip);
+//设置wifi的Mac地址
+OPERATE_RET tuya_hal_wifi_set_mac(CONST WF_IF_E wf, CONST NW_MAC_S *mac);
+//获取wifi的Mac地址
+OPERATE_RET tuya_hal_wifi_get_mac(CONST WF_IF_E wf, NW_MAC_S *mac);
+//设置wifi的工作模式
+OPERATE_RET tuya_hal_wifi_set_work_mode(CONST WF_WK_MD_E mode);
+//获取wifi的工作模式
+OPERATE_RET tuya_hal_wifi_get_work_mode(WF_WK_MD_E *mode);
+//启动wifi ap热点
+OPERATE_RET tuya_hal_wifi_ap_start(CONST WF_AP_CFG_IF_S *cfg);
+//关闭wifi ap热点
+OPERATE_RET tuya_hal_wifi_ap_stop(VOID_T);
+//获取wifi快连信息
+OPERATE_RET tuya_hal_wifi_get_connected_ap_info_v2(FAST_WF_CONNECTED_AP_INFO_V2_S **fast_ap_info);
+//wifi快连
+OPERATE_RET tuya_hal_fast_station_connect_v2(CONST FAST_WF_CONNECTED_AP_INFO_V2_S *fast_ap_info);
+//wifi连接
+OPERATE_RET tuya_hal_wifi_station_connect(CONST SCHAR_T *ssid, CONST SCHAR_T *passwd);
+//wifi断连
+OPERATE_RET tuya_hal_wifi_station_disconnect(VOID_T);
+//获取wifi信标
+OPERATE_RET tuya_hal_wifi_station_get_conn_ap_rssi(SCHAR_T *rssi);
+//获取wifi mac
+OPERATE_RET tuya_hal_wifi_get_bssid(UCHAR_T *mac);
+//获取wifi联网状态
+OPERATE_RET tuya_hal_wifi_station_get_status(WF_STATION_STAT_E *stat);
+//获取wifi国家码
+OPERATE_RET tuya_hal_wifi_set_country_code(CONST COUNTRY_CODE_E ccode);
+//发送wifi管理帧
+OPERATE_RET tuya_hal_wifi_send_mgnt(CONST UCHAR_T *buf, CONST UINT_T len);
+//注册wifi接收管理帧回调函数
+OPERATE_RET tuya_hal_wifi_register_recv_mgnt_callback(CONST bool enable, CONST WIFI_REV_MGNT_CB recv_cb);
+//设置wifi低功耗模式
+OPERATE_RET tuya_hal_set_wifi_lp_mode(CONST BOOL_T en, CONST UINT_T dtim);
+//wifi射频校准
+BOOL_T tuya_hal_wifi_rf_calibrated(VOID_T);
+</code></pre>
+
+<h5>有线管理</h5>
+
+<p>有线接口主要有：</p>
+
+<pre><code>//获取有线IP地址
+OPERATE_RET tuya_hal_wired_get_ip(NW_IP_S *ip);
+//判断设备是否已连网
+BOOL_T tuya_hal_wired_station_conn(VOID);
+//获取mac地址
+OPERATE_RET tuya_hal_wired_get_mac(NW_MAC_S *mac);
+//设置Mac地址
+OPERATE_RET tuya_hal_wired_set_mac(const NW_MAC_S *mac);
+//设置设备wifi的ssid和密码
+OPERATE_RET tuya_hal_wired_wifi_set_station_connect(const char *ssid, const char *passwd);
+//判断设备wifi是否配置
+BOOL_T tuya_hal_wired_wifi_need_cfg(VOID);
+//获取设备wifi ap信标
+OPERATE_RET tuya_hal_wired_wifi_station_get_conn_ap_rssi(int8_t *rssi);
+//获取连网状态
+OPERATE_RET tuya_hal_wired_get_nw_stat(GW_BASE_NW_STAT_T *stat);
+//获取有线连接状态
+OPERATE_RET tuya_hal_wired_if_connect_internet(BOOL_T *stat);
+
+</code></pre>
+
+<h5>蓝牙管理</h5>
+
+<p>蓝牙接口主要有：</p>
+
+<pre><code>//蓝牙初始化
+OPERATE_RET tuya_hal_bt_port_init(ty_bt_param_t *p);
+//蓝牙关闭
+OPERATE_RET tuya_hal_bt_port_deinit(void);
+//蓝牙主动断连
+OPERATE_RET tuya_hal_bt_gap_disconnect(void);
+//蓝牙发送
+OPERATE_RET tuya_hal_bt_send(BYTE_T *data, UINT8_T len);
+//更新蓝牙广播参数
+OPERATE_RET tuya_hal_bt_reset_adv(tuya_ble_data_buf_t *adv,\
+                                  tuya_ble_data_buf_t *scan_resp);
+//获取蓝牙rssi
+OPERATE_RET tuya_hal_bt_get_rssi(SCHAR_T *rssi);
+//打开蓝牙广播
+OPERATE_RET tuya_hal_bt_start_adv(void);
+//关闭蓝牙广播
+OPERATE_RET tuya_hal_bt_stop_adv(void);
+//蓝牙产测
+OPERATE_RET tuya_hal_bt_assign_scan(INOUT ty_bt_scan_info_t *info);
+//获取蓝牙能力
+OPERATE_RET tuya_hal_bt_get_ability(VOID_T);
+//蓝牙广播扫描初始化
+OPERATE_RET tuya_hal_bt_scan_init(IN TY_BT_SCAN_ADV_CB scan_adv_cb);
+//启动蓝牙广播扫描功能
+OPERATE_RET tuya_hal_bt_start_scan(VOID_T);
+//关闭蓝牙广播扫描功能
+OPERATE_RET tuya_hal_bt_stop_scan(VOID_T);
+
+</code></pre>
+
+<h5>OS Queue</h5>
+
+<p>OS Queue相关接口有：</p>
+
+<pre><code>/**
+ * @brief tuya_hal_queue_create_init用于创建并初始化tuya 消息队列
+ *
+ * @param[in] msgsize 消息体的大小，msgcount 消息体的个数
+ * @param[out] pQueue_hanle 返回queue句柄
+ * @return int 0=成功，非0=失败
+ */
+OPERATE_RET tuya_hal_queue_create_init(QUEUE_HANDLE *queue, int msgsize,int msgcount);
+
+/**
+ * @brief tuya_hal_queue_post用于发送一个消息到指定的队列中
+ *
+ * @param[in] pQueue_hanle tuya queue句柄，data消息体指针，timeout 超时时间
+ * @return int 0=成功，非0=失败
+ */
+OPERATE_RET tuya_hal_queue_post(CONST QUEUE_HANDLE pQueue_hanle,void *data, unsigned int timeout);
+
+/**
+ * @brief tuya_hal_queue_fetch用于等待一个消息队列
+ *
+ * @param[in] pQueue_hanle  tuya queue句柄，data消息体指针，timeout 超时时间
+ * @return int 0=成功，非0=失败
+ */
+OPERATE_RET tuya_hal_queue_fetch(QUEUE_HANDLE pQueue_hanle, void *msg, unsigned int timeout);
+
+/**
+ * @brief tuya_hal_queue_free 释放消息队列
+ *
+ * @param[in] mutexHandle QUEUE_HANDLE tuya queue句柄
+ * @return int 0=成功，非0=失败
+ */
+OPERATE_RET tuya_hal_queue_free(CONST QUEUE_HANDLE pQueue_hanle);
+
+
+</code></pre>
+
+<h2>FAQ</h2>

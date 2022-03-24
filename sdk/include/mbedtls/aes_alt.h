@@ -1,3 +1,5 @@
+#if defined(MBEDTLS_AES_ALT)
+
 #ifndef MBEDTLS_AES_INF_H
 #define MBEDTLS_AES_INF_H
 
@@ -20,3 +22,4 @@ mbedtls_aes_context;
 #endif
 
 #endif /* aes.h */
+#endif

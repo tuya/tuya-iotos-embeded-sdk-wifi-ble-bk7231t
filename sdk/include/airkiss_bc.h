@@ -14,11 +14,9 @@
 
 
 #include "tuya_os_adapter.h"
-#include "tuya_cloud_error_code.h"
 
 #include "wl_cfg_com.h"
-
-
+#include "netcfg_module.h"
 
 
 
@@ -46,8 +44,8 @@
 *  Return: OPERATE_RET
 ***********************************************************/
 __AIRKISS_BC_MODULE_EXT \
-OPERATE_RET ak_bc_init(IN CONST LOCK_CHAN_CALLBACK lc_cb,IN CONST FN_NETCFG_CB ncf_cb,\
-                       IN CONST AP_IF_S *scan_ap,IN CONST BYTE_T scan_ap_num);
+OPERATE_RET ak_bc_init(IN CONST LOCK_CHAN_CALLBACK lc_cb,IN CONST FN_NETCFG_CB ncf_cb,IN CONST int netcfg_type
+                       /*,IN CONST AP_IF_S *scan_ap,IN CONST BYTE_T scan_ap_num*/);
 
 /***********************************************************
 *  Function: ak_bc_parse

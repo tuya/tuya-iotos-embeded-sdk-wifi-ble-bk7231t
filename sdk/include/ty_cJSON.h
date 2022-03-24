@@ -55,15 +55,6 @@ typedef struct ty_cJSON {
     char *string;				/* The item's name string, if this item is the child of, or is in the list of subitems of an object. */
 } ty_cJSON;
 
-typedef struct ty_cJSON_Hooks {
-      void *(*malloc_fn)(size_t sz);
-      void (*free_fn)(void *ptr);
-} ty_cJSON_Hooks;
-
-/* Supply malloc, realloc and free functions to ty_cJSON */
-extern void ty_cJSON_InitHooks(ty_cJSON_Hooks* hooks);
-
-
 /* Supply a block of JSON, and this returns a ty_cJSON object you can interrogate. Call ty_cJSON_Delete when finished. */
 extern ty_cJSON *ty_cJSON_Parse(const char *value);
 /* Render a ty_cJSON entity to text for transfer/storage. Free the char* when finished. */
@@ -133,6 +124,10 @@ extern ty_cJSON * ty_cJSON_GetObjectItemCaseSensitive( ty_cJSON *object, const c
 extern int  ty_cJSON_IsObject( const ty_cJSON * object );
 extern int  ty_cJSON_IsArray( const ty_cJSON * object );
 extern int  ty_cJSON_IsString( const ty_cJSON * object );
+extern int  ty_cJSON_IsNumber( const ty_cJSON * object );
+extern int  ty_cJSON_IsBool( const ty_cJSON * object );
+
+
 
 /* Macros for creating things quickly. */
 #define ty_cJSON_AddNullToObject(object,name)		ty_cJSON_AddItemToObject(object, name, ty_cJSON_CreateNull())

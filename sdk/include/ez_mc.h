@@ -36,7 +36,7 @@
 *  Return: OPERATE_RET
 ***********************************************************/
 __EZ_MC_MODULE_EXT \
-OPERATE_RET ez_mc_init(IN CONST LOCK_CHAN_CALLBACK lc_cb,IN CONST FN_NETCFG_CB ncf_cb);
+OPERATE_RET ez_mc_init(IN CONST LOCK_CHAN_CALLBACK lc_cb,IN CONST FN_NETCFG_CB ncf_cb,IN CONST int netcfg_type);
 
 /***********************************************************
 *  Function: ez_mc_parse

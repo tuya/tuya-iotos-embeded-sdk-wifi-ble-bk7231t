@@ -1,0 +1,535 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+    <style>
+    /* base */
+    html,
+    body,
+    .container {
+      width: 100%;
+      height: 100%;
+    }
+
+    a,
+    a:link,
+    a:visited {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    *,
+    ::before,
+    ::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    *:focus {
+      outline: 0;
+    }
+
+    .container {
+      display: flex;
+      padding-top: 20px;
+    }
+
+    /* Nav */
+    .container .doc-nav {
+      position: fixed;
+      height: 100%;
+      margin: 0 30px 0 40px;
+      width: 280px;
+    }
+
+    .doc-nav .nav-header {
+      display: flex;
+      align-items: center;
+      box-sizing: border-box;
+      background-color: rgb(240, 241, 242);
+      height: 40px;
+      padding: 16px;
+      font-size: 18px;
+      font-weight: 500;
+      color: rgb(62, 64, 66);
+      cursor: pointer;
+    }
+
+    .doc-nav .nav-content {
+      height: calc(100% - 40px);
+      overflow-y: auto;
+      color: rgb(32, 34, 36);
+    }
+
+    .doc-nav .nav-content .nav-list,
+    .doc-nav .nav-content .nav-sub-list {
+      line-height: 1.5rem;
+    }
+
+    .doc-nav .nav-content .nav-label {
+      display: inline-block;
+      position: relative;
+      padding: 2px 0 2px 20px;
+      margin-bottom: 4px;
+    }
+
+    .doc-nav .nav-content .nav-sub-label {
+      position: relative;
+      padding: 2px 0 2px 40px;
+      font-size: 14px;
+    }
+
+    .doc-nav .nav-content .nav-sub-label:hover {
+      text-decoration: underline;
+    }
+
+    .doc-nav .nav-content .nav-list .nav-label.group::before {
+      border-bottom: 0.25rem solid transparent;
+      border-left: 0.25rem solid #6e7072;
+      border-right: 0;
+      border-top: 0.25rem solid transparent;
+      content: '';
+      display: block;
+      height: 0;
+      left: 0.5rem;
+      position: absolute;
+      top: 0.625rem;
+      transition: transform 0.1s linear;
+      width: 0;
+    }
+
+    .doc-nav .nav-content .nav-list .nav-label.group.active::before {
+      transform: rotate(90deg);
+    }
+
+    /* doc content */
+    .container .doc-content {
+      position: fixed;
+      height: 100%;
+      width: calc(100% - 80px - 40px - 30px - 240px);
+      right: 0%;
+      overflow-y: auto;
+    }
+
+    .doc-title {
+      border-bottom: 1px solid #dcdee0;
+      font-size: 22px;
+      margin: 8px 0 0;
+      padding-bottom: 16px;
+    }
+
+    .doc-content h3 {
+      font-size: 24px;
+      font-weight: 600;
+      margin: 24px 0;
+    }
+
+    .doc-content h4 {
+      font-size: 22px;
+      font-weight: 500;
+      margin: 30px 0 8px;
+    }
+
+    .doc-content h4 span {
+      color: #007d9c;
+    }
+
+    .doc-content .doc-declare {
+      background-color: #fafafa;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      overflow-x: auto;
+      padding: 10px;
+      tab-size: 4;
+      line-height: 20px;
+    }
+
+    .doc-content .doc-comment {
+      font-size: 16px;
+      margin: 16px 0;
+      line-height: 24px;
+      word-break: break-word;
+    }
+  </style>
+
+</head>
+<body>
+  <div class="container">
+    <div class="doc-nav">
+      <a href="#Documentation" class="nav-header">Documentation</a>
+      <nav class="nav-content">
+        <ul class="nav-list">
+          <li>
+            <a href="#includes" class="nav-label">Includes</a>
+             
+            <ul class="nav-sub-list">
+
+              <li>
+                <a href="#tuya_cloud_types.h" class="nav-sub-label">tuya_cloud_types.h</a>
+              </li>
+      
+
+              <li>
+                <a href="#tuya_mcast_public.h" class="nav-sub-label">tuya_mcast_public.h</a>
+              </li>
+      
+            </ul>
+            
+          </li>
+          <li>
+            <a href="#macros" class="nav-label">Macros</a>
+             
+            <ul class="nav-sub-list">
+
+              <li>
+                <a href="#__TUYA_MULTICAST_MASTER_H__" class="nav-sub-label">__TUYA_MULTICAST_MASTER_H__</a>
+              </li>
+      
+            </ul>
+            
+          </li>
+          <li>
+            <a href="#functions" class="nav-label">Functions</a>
+             
+            <ul class="nav-sub-list">
+
+              <li>
+                <a href="#tuya_mcast_do_scan" class="nav-sub-label">tuya_mcast_do_scan</a>
+              </li>
+      
+
+              <li>
+                <a href="#tuya_mcast_create_group" class="nav-sub-label">tuya_mcast_create_group</a>
+              </li>
+      
+
+              <li>
+                <a href="#tuya_mcast_master_init" class="nav-sub-label">tuya_mcast_master_init</a>
+              </li>
+      
+
+              <li>
+                <a href="#tuya_mcast_master_deinit" class="nav-sub-label">tuya_mcast_master_deinit</a>
+              </li>
+      
+
+              <li>
+                <a href="#tuya_mcast_dump_master_info" class="nav-sub-label">tuya_mcast_dump_master_info</a>
+              </li>
+      
+
+              <li>
+                <a href="#tuya_mcast_ctrl_cmd_send" class="nav-sub-label">tuya_mcast_ctrl_cmd_send</a>
+              </li>
+      
+
+              <li>
+                <a href="#tuya_mcast_master_get_group_cnt" class="nav-sub-label">tuya_mcast_master_get_group_cnt</a>
+              </li>
+      
+
+              <li>
+                <a href="#tuya_mcast_master_get_result_cnt" class="nav-sub-label">tuya_mcast_master_get_result_cnt</a>
+              </li>
+      
+
+              <li>
+                <a href="#tuya_master_reg_scan_cb" class="nav-sub-label">tuya_master_reg_scan_cb</a>
+              </li>
+      
+
+              <li>
+                <a href="#tuya_master_reg_group_cb" class="nav-sub-label">tuya_master_reg_group_cb</a>
+              </li>
+      
+            </ul>
+            
+          </li>
+          <li>
+            <a href="#vars" class="nav-label">Vars</a>
+            
+            <ul class="nav-sub-list">
+            
+            </ul>
+            
+          </li>
+          <li>
+            <a href="#consts" class="nav-label">Consts</a>
+            
+            <ul class="nav-sub-list">
+            
+            </ul>
+            
+          </li>
+          <li>
+            <a href="#types" class="nav-label">Types</a>
+            
+            <ul class="nav-sub-list">
+            
+            </ul>
+            
+          </li>
+          <li>
+            <a href="#typedefs" class="nav-label">Typedefs</a>
+             
+            <ul class="nav-sub-list">
+
+              <li>
+                <a href="#create_group_info_t;
+" class="nav-sub-label">create_group_info_t;
+</a>
+              </li>
+      
+
+              <li>
+                <a href="#scan_data_t;
+" class="nav-sub-label">scan_data_t;
+</a>
+              </li>
+      
+
+              <li>
+                <a href="#group_negotiate_result_t;
+" class="nav-sub-label">group_negotiate_result_t;
+</a>
+              </li>
+      
+
+              <li>
+                <a href="#ctrl_cmd_info_t;
+#pragma pack()
+
+" class="nav-sub-label">ctrl_cmd_info_t;
+#pragma pack()
+
+</a>
+              </li>
+      
+
+              <li>
+                <a href="#mcast_master_scan_cb" class="nav-sub-label">mcast_master_scan_cb</a>
+              </li>
+      
+
+              <li>
+                <a href="#mcast_master_create_group_cb" class="nav-sub-label">mcast_master_create_group_cb</a>
+              </li>
+      
+            </ul>
+            
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <div class="doc-content">
+      <h2 id="Documentation" class="doc-title">Documentation</h2>
+      <h3 id="includes">Includes</h3>
+      
+
+      <h4 id="tuya_cloud_types.h"><span>tuya_cloud_types.h</span></h4>
+      <pre class="doc-declare"><code>#include "tuya_cloud_types.h"
+</code></pre>
+      <pre class="doc-comment">#include "tuya_cloud_types.h"
+</pre>
+
+      <h4 id="tuya_mcast_public.h"><span>tuya_mcast_public.h</span></h4>
+      <pre class="doc-declare"><code>#include "tuya_mcast_public.h"
+</code></pre>
+      <pre class="doc-comment">#include "tuya_mcast_public.h"
+</pre>
+      <h3 id="macros">Macros</h3>
+      
+
+      <h4 id="__TUYA_MULTICAST_MASTER_H__">Marco <span>__TUYA_MULTICAST_MASTER_H__</span></h4>
+      <pre class="doc-declare"><code>#define __TUYA_MULTICAST_MASTER_H__
+</code></pre>
+      <pre class="doc-comment"></pre>
+      <h3 id="functions">Functions</h3>
+      
+
+      <h4 id="tuya_mcast_do_scan">Func <span>tuya_mcast_do_scan</span></h4>
+      <pre class="doc-declare"><code>OPERATE_RET tuya_mcast_do_scan(UINT_T timeout, UINT_T maxDevNum);</code></pre>
+      <pre class="doc-comment">/**
+ * @brief multicast scan
+ *
+ * @param[in] timeout time out,unit was ms
+ * @param[in] maxDevNum max slave num
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */</pre>
+
+      <h4 id="tuya_mcast_create_group">Func <span>tuya_mcast_create_group</span></h4>
+      <pre class="doc-declare"><code>OPERATE_RET tuya_mcast_create_group(UINT_T group_cnt, UINT_T checked_cnt, create_group_info_t *group_data, UINT_T timeout, UCHAR_T *token);</code></pre>
+      <pre class="doc-comment">/**
+ * @brief multicast create group
+ *
+ * @param[in] group_cnt group cnt
+ * @param[in] checked_cnt checked cnt
+ * @param[in] group_data group data
+ * @param[in] timeout time out,unit was ms
+ * @param[in] token token
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */</pre>
+
+      <h4 id="tuya_mcast_master_init">Func <span>tuya_mcast_master_init</span></h4>
+      <pre class="doc-declare"><code>OPERATE_RET tuya_mcast_master_init(mcast_master_scan_cb scan_cb, mcast_master_create_group_cb group_cb);</code></pre>
+      <pre class="doc-comment">/**
+ * @brief multicast master init
+ *
+ * @param[in] scan_cb scan report cb
+ * @param[in] group_cb create group cb
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */</pre>
+
+      <h4 id="tuya_mcast_master_deinit">Func <span>tuya_mcast_master_deinit</span></h4>
+      <pre class="doc-declare"><code>VOID tuya_mcast_master_deinit();</code></pre>
+      <pre class="doc-comment">/**
+ * @brief multicast master deinit
+ *
+ */</pre>
+
+      <h4 id="tuya_mcast_dump_master_info">Func <span>tuya_mcast_dump_master_info</span></h4>
+      <pre class="doc-declare"><code>VOID tuya_mcast_dump_master_info();</code></pre>
+      <pre class="doc-comment">/**
+ * @brief dump master ctrl info
+ *
+ */</pre>
+
+      <h4 id="tuya_mcast_ctrl_cmd_send">Func <span>tuya_mcast_ctrl_cmd_send</span></h4>
+      <pre class="doc-declare"><code>OPERATE_RET tuya_mcast_ctrl_cmd_send(UINT_T cnt, ctrl_cmd_info_t *cmd_data);</code></pre>
+      <pre class="doc-comment">/**
+ * @brief master send ctrl command
+ *
+ * @param[in] cnt ctrl num
+ * @param[in] cmd_data ctrl command data
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */</pre>
+
+      <h4 id="tuya_mcast_master_get_group_cnt">Func <span>tuya_mcast_master_get_group_cnt</span></h4>
+      <pre class="doc-declare"><code>UINT_T tuya_mcast_master_get_group_cnt();</code></pre>
+      <pre class="doc-comment">/**
+ * @brief get create group num
+ *
+ * @return group num
+ */</pre>
+
+      <h4 id="tuya_mcast_master_get_result_cnt">Func <span>tuya_mcast_master_get_result_cnt</span></h4>
+      <pre class="doc-declare"><code>UINT_T tuya_mcast_master_get_result_cnt();</code></pre>
+      <pre class="doc-comment">/**
+ * @brief get negotiate result num
+ *
+ * @return result num
+ */</pre>
+
+      <h4 id="tuya_master_reg_scan_cb">Func <span>tuya_master_reg_scan_cb</span></h4>
+      <pre class="doc-declare"><code>VOID tuya_master_reg_scan_cb(mcast_master_scan_cb cb);</code></pre>
+      <pre class="doc-comment">/**
+ * @brief reg scan cb
+ *
+ * @param[in] cb scan callback
+ *
+ */</pre>
+
+      <h4 id="tuya_master_reg_group_cb">Func <span>tuya_master_reg_group_cb</span></h4>
+      <pre class="doc-declare"><code>VOID tuya_master_reg_group_cb(mcast_master_create_group_cb cb);</code></pre>
+      <pre class="doc-comment">/**
+ * @brief reg create group cb
+ *
+ * @param[in] cb create group callback
+ *
+ */</pre>
+      <h3 id="vars">Vars</h3>
+      
+      <h3 id="consts">Consts</h3>
+      
+      <h3 id="types">Types</h3>
+      
+      <h3 id="typedefs">Typedefs</h3>
+      
+
+      <h4 id="create_group_info_t;
+">Typedef <span>create_group_info_t;
+</span></h4>
+      <pre class="doc-declare"><code>typedef struct {
+   BOOL_T checked;
+   BYTE_T slave_devid[GW_ID_LEN + 1];
+   BYTE_T negotiate_key[MULTICAST_KEY_LEN];
+} create_group_info_t;
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="scan_data_t;
+">Typedef <span>scan_data_t;
+</span></h4>
+      <pre class="doc-declare"><code>typedef struct {
+   BYTE_T slave_devid[GW_ID_LEN + 1];
+} scan_data_t;
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="group_negotiate_result_t;
+">Typedef <span>group_negotiate_result_t;
+</span></h4>
+      <pre class="doc-declare"><code>typedef struct {
+   BOOL_T result;
+   BYTE_T slave_devid[GW_ID_LEN + 1];
+} group_negotiate_result_t;
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="ctrl_cmd_info_t;
+#pragma pack()
+
+">Typedef <span>ctrl_cmd_info_t;
+#pragma pack()
+
+</span></h4>
+      <pre class="doc-declare"><code>typedef struct {
+   BYTE_T slave_devid[GW_ID_LEN + 1];
+   UINT_T len;
+   CHAR_T data[0];
+} ctrl_cmd_info_t;
+#pragma pack()
+
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="mcast_master_scan_cb">Typedef <span>mcast_master_scan_cb</span></h4>
+      <pre class="doc-declare"><code>typedef OPERATE_RET(*mcast_master_scan_cb)(UINT_T num, scan_data_t *data);
+</code></pre>
+      <pre class="doc-comment">/**
+ * @brief multicast scan cb
+ *
+ * @param[in] num data num
+ * @param[in] data scan data
+ *
+ */</pre>
+
+      <h4 id="mcast_master_create_group_cb">Typedef <span>mcast_master_create_group_cb</span></h4>
+      <pre class="doc-declare"><code>typedef OPERATE_RET(*mcast_master_create_group_cb)(UINT_T num, group_negotiate_result_t *data);
+</code></pre>
+      <pre class="doc-comment">/**
+ * @brief multicast create group cb
+ *
+ * @param[in] num negotiate result num
+ * @param[in] data negotiate result data
+ *
+ */</pre>
+    </div>
+  </body>
+</html>
+            

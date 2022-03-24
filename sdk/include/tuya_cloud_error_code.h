@@ -6,24 +6,26 @@ Copyright(C),2018-2020, 涂鸦科技 www.tuya.comm
 #ifndef TUYA_CLOUD_ERROR_CODE_H
 #define TUYA_CLOUD_ERROR_CODE_H
 
+#include "tuya_error_code.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* tuya sdk definition of error code */
-typedef int OPERATE_RET;
+//typedef int OPERATE_RET;
 
-#define OPRT_OK                             (0)
-#define OPRT_COM_ERROR                      (-1)
-#define OPRT_INVALID_PARM                   (-2)
-#define OPRT_MALLOC_FAILED                  (-3)
-#define OPRT_NOT_SUPPORTED                  (-4)
-#define OPRT_NETWORK_ERROR                  (-5)
-#define OPRT_TIMEOUT                        (-6)
-#define OPRT_FILE_NOT_FIND                  (-7)
-#define OPRT_INIT_MORE_THAN_ONCE			(-8)
-#define OPRT_INDEX_OUT_OF_BOUND				(-9)
-#define OPRT_RESOURCE_NOT_READY  			(-10)
+//#define OPRT_OK                             (0)
+//#define OPRT_COM_ERROR                      (-1)
+//#define OPRT_INVALID_PARM                   (-2)
+//#define OPRT_MALLOC_FAILED                  (-3)
+//#define OPRT_NOT_SUPPORTED                  (-4)
+//#define OPRT_NETWORK_ERROR                  (-5)
+//#define OPRT_TIMEOUT                        (-6)
+//#define OPRT_FILE_NOT_FIND                  (-7)
+//#define OPRT_INIT_MORE_THAN_ONCE            (-8)
+//#define OPRT_INDEX_OUT_OF_BOUND             (-9)
+//#define OPRT_RESOURCE_NOT_READY             (-10)
 
 #define OPRT_INIT_MUTEX_ATTR_FAILED         (-101)
 #define OPRT_SET_MUTEX_ATTR_FAILED          (-102)
@@ -34,7 +36,7 @@ typedef int OPERATE_RET;
 #define OPRT_MUTEX_LOCK_BUSY                (-107)
 #define OPRT_MUTEX_UNLOCK_FAILED            (-108)
 #define OPRT_MUTEX_RELEASE_FAILED           (-109)
-#define OPRT_CR_MUTEX_ERR                   (-110)
+//#define OPRT_CR_MUTEX_ERR                   (-110)
 #define OPRT_MEM_PARTITION_EMPTY            (-111)
 #define OPRT_MEM_PARTITION_FULL             (-112)
 #define OPRT_MEM_PARTITION_NOT_FOUND        (-113)
@@ -66,9 +68,9 @@ typedef int OPERATE_RET;
 #define OPRT_DISCONNECTED_WITH_ROUTER       (-607)
 
 
-#define OPRT_SOCK_ERR                       (-701)
-#define OPRT_SET_SOCK_ERR                   (-702)
-#define OPRT_SOCK_CONN_ERR                  (-703)
+//#define OPRT_SOCK_ERR                       (-701)
+//#define OPRT_SET_SOCK_ERR                   (-702)
+//#define OPRT_SOCK_CONN_ERR                  (-703)
 #define OPRT_BUF_NOT_ENOUGH                 (-704)
 #define OPRT_URL_PARAM_OUT_LIMIT            (-705)
 #define OPRT_HTTP_OS_ERROR                  (-706)
@@ -97,11 +99,11 @@ typedef int OPERATE_RET;
 
 
 
-#define OPRT_CR_CJSON_ERR                   (-801)
-#define OPRT_CJSON_PARSE_ERR                (-802)
-#define OPRT_CJSON_GET_ERR                  (-803)
+//#define OPRT_CR_CJSON_ERR                   (-801)
+//#define OPRT_CJSON_PARSE_ERR                (-802)
+//#define OPRT_CJSON_GET_ERR                  (-803)
 
-#define OPRT_NOT_FOUND                      (-901)
+//#define OPRT_NOT_FOUND                      (-901)
 #define OPRT_DP_ATTR_ILLEGAL                (-902)
 #define OPRT_DP_TYPE_PROP_ILLEGAL           (-903)
 #define OPRT_DP_REPORT_CLOUD_ERR            (-904)
@@ -109,7 +111,7 @@ typedef int OPERATE_RET;
 #define OPRT_NW_INVALID                     (-906)
 #define OPRT_SELECT_ERR                     (-907)
 #define OPRT_SELECT_TM                      (-908)
-#define OPRT_SEND_ERR                       (-909)
+//#define OPRT_SEND_ERR                       (-909)
 #define OPRT_DEV_NOT_BIND                   (-910)
 #define OPRT_FW_UG_FAILED                   (-911)
 #define OPRT_VER_FMT_ERR                    (-912)
@@ -118,7 +120,7 @@ typedef int OPERATE_RET;
 #define OPRT_SELECT_TIMEOUT                 (-915)
 #define OPRT_GW_MQ_OFFLILNE                 (-916)
 #define OPRT_NOT_SPT_CLX_DP                 (-917)
-#define OPRT_RECV_ERR                       (-918)
+//#define OPRT_RECV_ERR                       (-918)
 #define OPRT_UG_PKG_NOT_ENOUGH              (-919)
 #define OPRT_SCMA_INVALID                   (-920)
 #define OPRT_PRODECT_KEY_NULL               (-921)
@@ -132,14 +134,14 @@ typedef int OPERATE_RET;
 #define OPRT_DEV_DP_CNT_INVALID             (-929)
 #define OPRT_TOKEN_OVERTIME                 (-930)
 #define OPRT_WF_NW_CFG_RECV_CONTINUE        (-931)
-#define OPRT_RECV_DA_NOT_ENOUGH             (-932)
+//#define OPRT_RECV_DA_NOT_ENOUGH             (-932)
 #define OPRT_SERV_VRFY_FAIL                 (-933)
-#define OPRT_KVS_WR_FAIL                    (-934)
-#define OPRT_KVS_RD_FAIL                    (-935)
+//#define OPRT_KVS_WR_FAIL                    (-934)
+//#define OPRT_KVS_RD_FAIL                    (-935)
 #define OPRT_NO_AUTHENTICATION              (-936)
 #define OPRT_CMD_OUT_OF_TIME_NOT_EXEC       (-937)
 #define OPRT_CMD_NOT_EXEC                   (-938)
-#define OPRT_CRC32_FAILED                   (-939)
+//#define OPRT_CRC32_FAILED                   (-939)
 #define OPRT_LAN_NO_CLIENT                  (-940)
 #define OPRT_WF_INTF_LACK_REG_CB            (-941)
 #define OPRT_WF_INTF_NO_REG_CB              (-942)
@@ -164,7 +166,7 @@ typedef int OPERATE_RET;
 #define OPRT_WR_FLASH_ERROR                 (-1005)
 
 #define OPRT_ROUTER_NOT_FIND                (-1006)
-#define OPRT_EXCEED_UPPER_LIMIT             (-1007)
+//#define OPRT_EXCEED_UPPER_LIMIT             (-1007)
 #define OPRT_SECURITY_VERIFY_NOT_OK         (-1008)
 #define OPRT_FLASH_NOT_ENOUGH_PAGE          (-1009)
 #define OPRT_ERASE_FLASH_ERROR              (-1088) // check the return value by custom
@@ -207,6 +209,8 @@ typedef int OPERATE_RET;
 #define OPRT_LOCAL_AI_FACE_NOT_INIT         (-2013)
 #define OPRT_LOCAL_AI_FACE_DB_ERROR         (-2014)
 #define OPRT_UPLOAD_INTERRUPT_ERROR         (-2015)
+
+#define OPRT_DEVICE_IS_SUB_NODE_OR_IN_ELECTION         (-2016)
 
 
 #define OPRT_WARN_LIVING_CHROMECAST         (148)

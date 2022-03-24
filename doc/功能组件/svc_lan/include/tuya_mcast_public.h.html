@@ -1,0 +1,821 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+    <style>
+    /* base */
+    html,
+    body,
+    .container {
+      width: 100%;
+      height: 100%;
+    }
+
+    a,
+    a:link,
+    a:visited {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    *,
+    ::before,
+    ::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    *:focus {
+      outline: 0;
+    }
+
+    .container {
+      display: flex;
+      padding-top: 20px;
+    }
+
+    /* Nav */
+    .container .doc-nav {
+      position: fixed;
+      height: 100%;
+      margin: 0 30px 0 40px;
+      width: 280px;
+    }
+
+    .doc-nav .nav-header {
+      display: flex;
+      align-items: center;
+      box-sizing: border-box;
+      background-color: rgb(240, 241, 242);
+      height: 40px;
+      padding: 16px;
+      font-size: 18px;
+      font-weight: 500;
+      color: rgb(62, 64, 66);
+      cursor: pointer;
+    }
+
+    .doc-nav .nav-content {
+      height: calc(100% - 40px);
+      overflow-y: auto;
+      color: rgb(32, 34, 36);
+    }
+
+    .doc-nav .nav-content .nav-list,
+    .doc-nav .nav-content .nav-sub-list {
+      line-height: 1.5rem;
+    }
+
+    .doc-nav .nav-content .nav-label {
+      display: inline-block;
+      position: relative;
+      padding: 2px 0 2px 20px;
+      margin-bottom: 4px;
+    }
+
+    .doc-nav .nav-content .nav-sub-label {
+      position: relative;
+      padding: 2px 0 2px 40px;
+      font-size: 14px;
+    }
+
+    .doc-nav .nav-content .nav-sub-label:hover {
+      text-decoration: underline;
+    }
+
+    .doc-nav .nav-content .nav-list .nav-label.group::before {
+      border-bottom: 0.25rem solid transparent;
+      border-left: 0.25rem solid #6e7072;
+      border-right: 0;
+      border-top: 0.25rem solid transparent;
+      content: '';
+      display: block;
+      height: 0;
+      left: 0.5rem;
+      position: absolute;
+      top: 0.625rem;
+      transition: transform 0.1s linear;
+      width: 0;
+    }
+
+    .doc-nav .nav-content .nav-list .nav-label.group.active::before {
+      transform: rotate(90deg);
+    }
+
+    /* doc content */
+    .container .doc-content {
+      position: fixed;
+      height: 100%;
+      width: calc(100% - 80px - 40px - 30px - 240px);
+      right: 0%;
+      overflow-y: auto;
+    }
+
+    .doc-title {
+      border-bottom: 1px solid #dcdee0;
+      font-size: 22px;
+      margin: 8px 0 0;
+      padding-bottom: 16px;
+    }
+
+    .doc-content h3 {
+      font-size: 24px;
+      font-weight: 600;
+      margin: 24px 0;
+    }
+
+    .doc-content h4 {
+      font-size: 22px;
+      font-weight: 500;
+      margin: 30px 0 8px;
+    }
+
+    .doc-content h4 span {
+      color: #007d9c;
+    }
+
+    .doc-content .doc-declare {
+      background-color: #fafafa;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      overflow-x: auto;
+      padding: 10px;
+      tab-size: 4;
+      line-height: 20px;
+    }
+
+    .doc-content .doc-comment {
+      font-size: 16px;
+      margin: 16px 0;
+      line-height: 24px;
+      word-break: break-word;
+    }
+  </style>
+
+</head>
+<body>
+  <div class="container">
+    <div class="doc-nav">
+      <a href="#Documentation" class="nav-header">Documentation</a>
+      <nav class="nav-content">
+        <ul class="nav-list">
+          <li>
+            <a href="#includes" class="nav-label">Includes</a>
+             
+            <ul class="nav-sub-list">
+
+              <li>
+                <a href="#tuya_cloud_types.h" class="nav-sub-label">tuya_cloud_types.h</a>
+              </li>
+      
+
+              <li>
+                <a href="#tuya_cloud_com_defs.h" class="nav-sub-label">tuya_cloud_com_defs.h</a>
+              </li>
+      
+            </ul>
+            
+          </li>
+          <li>
+            <a href="#macros" class="nav-label">Macros</a>
+             
+            <ul class="nav-sub-list">
+
+              <li>
+                <a href="#__TUYA_MULTICAST_PUBLIC_H__" class="nav-sub-label">__TUYA_MULTICAST_PUBLIC_H__</a>
+              </li>
+      
+
+              <li>
+                <a href="#LAN_MCAST_ADDR" class="nav-sub-label">LAN_MCAST_ADDR</a>
+              </li>
+      
+
+              <li>
+                <a href="#LAN_MCAST_PORT" class="nav-sub-label">LAN_MCAST_PORT</a>
+              </li>
+      
+
+              <li>
+                <a href="#MULTICAST_KEY_LEN" class="nav-sub-label">MULTICAST_KEY_LEN</a>
+              </li>
+      
+
+              <li>
+                <a href="#MULTICAST_TOKEN_LEN" class="nav-sub-label">MULTICAST_TOKEN_LEN</a>
+              </li>
+      
+
+              <li>
+                <a href="#MULTICAST_HMAC_LEN" class="nav-sub-label">MULTICAST_HMAC_LEN</a>
+              </li>
+      
+
+              <li>
+                <a href="#MULTICAST_RAND_LEN" class="nav-sub-label">MULTICAST_RAND_LEN</a>
+              </li>
+      
+
+              <li>
+                <a href="#KV_MCAST_MASTER_GROUP_INFO" class="nav-sub-label">KV_MCAST_MASTER_GROUP_INFO</a>
+              </li>
+      
+
+              <li>
+                <a href="#KV_MCAST_SLAVE_GROUP_INFO" class="nav-sub-label">KV_MCAST_SLAVE_GROUP_INFO</a>
+              </li>
+      
+
+              <li>
+                <a href="#MCAST_FRAME_HEAD_SIZE" class="nav-sub-label">MCAST_FRAME_HEAD_SIZE</a>
+              </li>
+      
+
+              <li>
+                <a href="#MCAST_FRAME_VERSION_SIZE" class="nav-sub-label">MCAST_FRAME_VERSION_SIZE</a>
+              </li>
+      
+
+              <li>
+                <a href="#MCAST_FRAME_RESERVE_SIZE" class="nav-sub-label">MCAST_FRAME_RESERVE_SIZE</a>
+              </li>
+      
+
+              <li>
+                <a href="#MCAST_FRAME_SEQUENCE_SIZE" class="nav-sub-label">MCAST_FRAME_SEQUENCE_SIZE</a>
+              </li>
+      
+
+              <li>
+                <a href="#MCAST_FRAME_TYPE_SIZE" class="nav-sub-label">MCAST_FRAME_TYPE_SIZE</a>
+              </li>
+      
+
+              <li>
+                <a href="#MCAST_FRAME_ID_SIZE" class="nav-sub-label">MCAST_FRAME_ID_SIZE</a>
+              </li>
+      
+
+              <li>
+                <a href="#MCAST_FRAME_TOTAL_LEN_SIZE" class="nav-sub-label">MCAST_FRAME_TOTAL_LEN_SIZE</a>
+              </li>
+      
+
+              <li>
+                <a href="#MCAST_FRAME_FRAME_NUM_SIZE" class="nav-sub-label">MCAST_FRAME_FRAME_NUM_SIZE</a>
+              </li>
+      
+
+              <li>
+                <a href="#MCAST_FRAME_NONCE_SIZE" class="nav-sub-label">MCAST_FRAME_NONCE_SIZE</a>
+              </li>
+      
+
+              <li>
+                <a href="#MCAST_FRAME_DATALEN_SIZE" class="nav-sub-label">MCAST_FRAME_DATALEN_SIZE</a>
+              </li>
+      
+
+              <li>
+                <a href="#MCAST_FRAME_TAG_SIZE" class="nav-sub-label">MCAST_FRAME_TAG_SIZE</a>
+              </li>
+      
+
+              <li>
+                <a href="#MCAST_FRAME_TAIL_SIZE" class="nav-sub-label">MCAST_FRAME_TAIL_SIZE</a>
+              </li>
+      
+            </ul>
+            
+          </li>
+          <li>
+            <a href="#functions" class="nav-label">Functions</a>
+             
+            <ul class="nav-sub-list">
+
+              <li>
+                <a href="#tuya_mcast_encrypt_and_send" class="nav-sub-label">tuya_mcast_encrypt_and_send</a>
+              </li>
+      
+
+              <li>
+                <a href="#tuya_mcast_is_in_packet_vaild" class="nav-sub-label">tuya_mcast_is_in_packet_vaild</a>
+              </li>
+      
+
+              <li>
+                <a href="#tuya_mcast_frame_parse" class="nav-sub-label">tuya_mcast_frame_parse</a>
+              </li>
+      
+
+              <li>
+                <a href="#tuya_mcast_single_frame_send" class="nav-sub-label">tuya_mcast_single_frame_send</a>
+              </li>
+      
+
+              <li>
+                <a href="#tuya_mcast_create_negotiate_key" class="nav-sub-label">tuya_mcast_create_negotiate_key</a>
+              </li>
+      
+
+              <li>
+                <a href="#tuya_create_mcast_seesion_key" class="nav-sub-label">tuya_create_mcast_seesion_key</a>
+              </li>
+      
+
+              <li>
+                <a href="#tuya_make_mcast_key_encode" class="nav-sub-label">tuya_make_mcast_key_encode</a>
+              </li>
+      
+
+              <li>
+                <a href="#tuya_mcast_report_mate" class="nav-sub-label">tuya_mcast_report_mate</a>
+              </li>
+      
+
+              <li>
+                <a href="#tuya_mcast_get_group_token" class="nav-sub-label">tuya_mcast_get_group_token</a>
+              </li>
+      
+            </ul>
+            
+          </li>
+          <li>
+            <a href="#vars" class="nav-label">Vars</a>
+            
+            <ul class="nav-sub-list">
+            
+            </ul>
+            
+          </li>
+          <li>
+            <a href="#consts" class="nav-label">Consts</a>
+            
+            <ul class="nav-sub-list">
+            
+            </ul>
+            
+          </li>
+          <li>
+            <a href="#types" class="nav-label">Types</a>
+            
+            <ul class="nav-sub-list">
+            
+            </ul>
+            
+          </li>
+          <li>
+            <a href="#typedefs" class="nav-label">Typedefs</a>
+             
+            <ul class="nav-sub-list">
+
+              <li>
+                <a href="#MULTICAST_FRAME_TYPE" class="nav-sub-label">MULTICAST_FRAME_TYPE</a>
+              </li>
+      
+
+              <li>
+                <a href="#mcast_scan_request_t;
+" class="nav-sub-label">mcast_scan_request_t;
+</a>
+              </li>
+      
+
+              <li>
+                <a href="#mcast_scan_response_t;
+" class="nav-sub-label">mcast_scan_response_t;
+</a>
+              </li>
+      
+
+              <li>
+                <a href="#mcast_bind_response_t;
+" class="nav-sub-label">mcast_bind_response_t;
+</a>
+              </li>
+      
+
+              <li>
+                <a href="#mcast_syn_t;
+" class="nav-sub-label">mcast_syn_t;
+</a>
+              </li>
+      
+
+              <li>
+                <a href="#mcast_syn_ack_t;
+" class="nav-sub-label">mcast_syn_ack_t;
+</a>
+              </li>
+      
+
+              <li>
+                <a href="#mcast_ack_t;
+" class="nav-sub-label">mcast_ack_t;
+</a>
+              </li>
+      
+
+              <li>
+                <a href="#mcast_fixed_head_t;
+" class="nav-sub-label">mcast_fixed_head_t;
+</a>
+              </li>
+      
+
+              <li>
+                <a href="#mcast_additional_data_t" class="nav-sub-label">mcast_additional_data_t</a>
+              </li>
+      
+
+              <li>
+                <a href="#mcast_frame_object_t;
+" class="nav-sub-label">mcast_frame_object_t;
+</a>
+              </li>
+      
+
+              <li>
+                <a href="#kv_mcast_group_t;
+" class="nav-sub-label">kv_mcast_group_t;
+</a>
+              </li>
+      
+            </ul>
+            
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <div class="doc-content">
+      <h2 id="Documentation" class="doc-title">Documentation</h2>
+      <h3 id="includes">Includes</h3>
+      
+
+      <h4 id="tuya_cloud_types.h"><span>tuya_cloud_types.h</span></h4>
+      <pre class="doc-declare"><code>#include "tuya_cloud_types.h"
+</code></pre>
+      <pre class="doc-comment">#include "tuya_cloud_types.h"
+</pre>
+
+      <h4 id="tuya_cloud_com_defs.h"><span>tuya_cloud_com_defs.h</span></h4>
+      <pre class="doc-declare"><code>#include "tuya_cloud_com_defs.h"
+</code></pre>
+      <pre class="doc-comment">#include "tuya_cloud_com_defs.h"
+</pre>
+      <h3 id="macros">Macros</h3>
+      
+
+      <h4 id="__TUYA_MULTICAST_PUBLIC_H__">Marco <span>__TUYA_MULTICAST_PUBLIC_H__</span></h4>
+      <pre class="doc-declare"><code>#define __TUYA_MULTICAST_PUBLIC_H__
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="LAN_MCAST_ADDR">Marco <span>LAN_MCAST_ADDR</span></h4>
+      <pre class="doc-declare"><code>#define LAN_MCAST_ADDR 0xE300000B
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="LAN_MCAST_PORT">Marco <span>LAN_MCAST_PORT</span></h4>
+      <pre class="doc-declare"><code>#define LAN_MCAST_PORT 40001
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="MULTICAST_KEY_LEN">Marco <span>MULTICAST_KEY_LEN</span></h4>
+      <pre class="doc-declare"><code>#define MULTICAST_KEY_LEN  16
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="MULTICAST_TOKEN_LEN">Marco <span>MULTICAST_TOKEN_LEN</span></h4>
+      <pre class="doc-declare"><code>#define MULTICAST_TOKEN_LEN 16
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="MULTICAST_HMAC_LEN">Marco <span>MULTICAST_HMAC_LEN</span></h4>
+      <pre class="doc-declare"><code>#define MULTICAST_HMAC_LEN 32
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="MULTICAST_RAND_LEN">Marco <span>MULTICAST_RAND_LEN</span></h4>
+      <pre class="doc-declare"><code>#define MULTICAST_RAND_LEN 16
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="KV_MCAST_MASTER_GROUP_INFO">Marco <span>KV_MCAST_MASTER_GROUP_INFO</span></h4>
+      <pre class="doc-declare"><code>#define KV_MCAST_MASTER_GROUP_INFO "multicast_master_group"
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="KV_MCAST_SLAVE_GROUP_INFO">Marco <span>KV_MCAST_SLAVE_GROUP_INFO</span></h4>
+      <pre class="doc-declare"><code>#define KV_MCAST_SLAVE_GROUP_INFO "multicast_slave_group"
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="MCAST_FRAME_HEAD_SIZE">Marco <span>MCAST_FRAME_HEAD_SIZE</span></h4>
+      <pre class="doc-declare"><code>#define MCAST_FRAME_HEAD_SIZE       4
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="MCAST_FRAME_VERSION_SIZE">Marco <span>MCAST_FRAME_VERSION_SIZE</span></h4>
+      <pre class="doc-declare"><code>#define MCAST_FRAME_VERSION_SIZE    1
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="MCAST_FRAME_RESERVE_SIZE">Marco <span>MCAST_FRAME_RESERVE_SIZE</span></h4>
+      <pre class="doc-declare"><code>#define MCAST_FRAME_RESERVE_SIZE    1
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="MCAST_FRAME_SEQUENCE_SIZE">Marco <span>MCAST_FRAME_SEQUENCE_SIZE</span></h4>
+      <pre class="doc-declare"><code>#define MCAST_FRAME_SEQUENCE_SIZE   4
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="MCAST_FRAME_TYPE_SIZE">Marco <span>MCAST_FRAME_TYPE_SIZE</span></h4>
+      <pre class="doc-declare"><code>#define MCAST_FRAME_TYPE_SIZE       4
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="MCAST_FRAME_ID_SIZE">Marco <span>MCAST_FRAME_ID_SIZE</span></h4>
+      <pre class="doc-declare"><code>#define MCAST_FRAME_ID_SIZE         4
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="MCAST_FRAME_TOTAL_LEN_SIZE">Marco <span>MCAST_FRAME_TOTAL_LEN_SIZE</span></h4>
+      <pre class="doc-declare"><code>#define MCAST_FRAME_TOTAL_LEN_SIZE  4
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="MCAST_FRAME_FRAME_NUM_SIZE">Marco <span>MCAST_FRAME_FRAME_NUM_SIZE</span></h4>
+      <pre class="doc-declare"><code>#define MCAST_FRAME_FRAME_NUM_SIZE  4
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="MCAST_FRAME_NONCE_SIZE">Marco <span>MCAST_FRAME_NONCE_SIZE</span></h4>
+      <pre class="doc-declare"><code>#define MCAST_FRAME_NONCE_SIZE      12
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="MCAST_FRAME_DATALEN_SIZE">Marco <span>MCAST_FRAME_DATALEN_SIZE</span></h4>
+      <pre class="doc-declare"><code>#define MCAST_FRAME_DATALEN_SIZE    4
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="MCAST_FRAME_TAG_SIZE">Marco <span>MCAST_FRAME_TAG_SIZE</span></h4>
+      <pre class="doc-declare"><code>#define MCAST_FRAME_TAG_SIZE        16
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="MCAST_FRAME_TAIL_SIZE">Marco <span>MCAST_FRAME_TAIL_SIZE</span></h4>
+      <pre class="doc-declare"><code>#define MCAST_FRAME_TAIL_SIZE       4
+</code></pre>
+      <pre class="doc-comment"></pre>
+      <h3 id="functions">Functions</h3>
+      
+
+      <h4 id="tuya_mcast_encrypt_and_send">Func <span>tuya_mcast_encrypt_and_send</span></h4>
+      <pre class="doc-declare"><code>OPERATE_RET tuya_mcast_encrypt_and_send(UINT_T fd, UINT_T sequence, UINT_T type, UINT_T frame_num, mcast_frame_object_t *frame);</code></pre>
+      <pre class="doc-comment">/**
+ * @brief multicast encry and send
+ *
+ * @param[in] fd socket
+ * @param[in] sequence sequence
+ * @param[in] type frame type
+ * @param[in] frame_num frame num
+ * @param[in] frame frame data
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */</pre>
+
+      <h4 id="tuya_mcast_is_in_packet_vaild">Func <span>tuya_mcast_is_in_packet_vaild</span></h4>
+      <pre class="doc-declare"><code>BOOL_T tuya_mcast_is_in_packet_vaild(BYTE_T* frame_buffer, UINT_T recv_datalen);</code></pre>
+      <pre class="doc-comment">/**
+ * @brief check incoming packet is vaild
+ *
+ * @param[in] frame_buffer frame buf
+ * @param[in] recv_datalen len
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */</pre>
+
+      <h4 id="tuya_mcast_frame_parse">Func <span>tuya_mcast_frame_parse</span></h4>
+      <pre class="doc-declare"><code>OPERATE_RET tuya_mcast_frame_parse(BYTE_T* key, UINT_T key_len, BYTE_T* input, BYTE_T** out_data, UINT_T *olen);</code></pre>
+      <pre class="doc-comment">/**
+ * @brief frame parse
+ *
+ * @param[in] key key
+ * @param[in] key_len key len
+ * @param[in] input data
+ * @param[out] out_data decrypt data
+ * @param[out] olen decrypt data len
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */</pre>
+
+      <h4 id="tuya_mcast_single_frame_send">Func <span>tuya_mcast_single_frame_send</span></h4>
+      <pre class="doc-declare"><code>OPERATE_RET tuya_mcast_single_frame_send(UINT_T fd, BYTE_T *key, BYTE_T *src, UINT_T ilen, UINT_T sequence, UINT_T type, UINT_T mate_id);</code></pre>
+      <pre class="doc-comment">/**
+ * @brief one frame send
+ *
+ * @param[in] fd socket
+ * @param[in] key key
+ * @param[in] src data
+ * @param[in] ilen src len
+ * @param[in] sequence sequence
+ * @param[in] type frame type
+ * @param[in] mate_id mate id
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */</pre>
+
+      <h4 id="tuya_mcast_create_negotiate_key">Func <span>tuya_mcast_create_negotiate_key</span></h4>
+      <pre class="doc-declare"><code>OPERATE_RET tuya_mcast_create_negotiate_key(UCHAR_T *data, UCHAR_T *src_key, UCHAR_T *dst_key);</code></pre>
+      <pre class="doc-comment">/**
+ * @brief create negotiate key
+ *
+ * @param[in] data data
+ * @param[in] src_key src key
+ * @param[in] dst_key negotiate key
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */</pre>
+
+      <h4 id="tuya_create_mcast_seesion_key">Func <span>tuya_create_mcast_seesion_key</span></h4>
+      <pre class="doc-declare"><code>OPERATE_RET tuya_create_mcast_seesion_key(BYTE_T *randA, BYTE_T *randB, BYTE_T *negotiate_key, BYTE_T *session_key);</code></pre>
+      <pre class="doc-comment">/**
+ * @brief create seesion key
+ *
+ * @param[in] randA random A
+ * @param[in] randB random B
+ * @param[in] negotiate_key negotiate key
+ * @param[out] session_key session key
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */</pre>
+
+      <h4 id="tuya_make_mcast_key_encode">Func <span>tuya_make_mcast_key_encode</span></h4>
+      <pre class="doc-declare"><code>VOID tuya_make_mcast_key_encode(UCHAR_T *key_out);</code></pre>
+      <pre class="doc-comment">/**
+ * @brief create multicast key
+ *
+ * @param[out] key_out out key
+ *
+ */</pre>
+
+      <h4 id="tuya_mcast_report_mate">Func <span>tuya_mcast_report_mate</span></h4>
+      <pre class="doc-declare"><code>OPERATE_RET tuya_mcast_report_mate(TM_MSG_S *tmm_meta_sync);</code></pre>
+      <pre class="doc-comment">/**
+ * @brief report mate info to cloud
+ *
+ * @param[out] tmm_meta_sync msg
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */</pre>
+
+      <h4 id="tuya_mcast_get_group_token">Func <span>tuya_mcast_get_group_token</span></h4>
+      <pre class="doc-declare"><code>VOID tuya_mcast_get_group_token(CHAR_T *dst);</code></pre>
+      <pre class="doc-comment">/**
+ * @brief get create group token
+ *
+ * @param[out] dst token
+ *
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */</pre>
+      <h3 id="vars">Vars</h3>
+      
+      <h3 id="consts">Consts</h3>
+      
+      <h3 id="types">Types</h3>
+      
+      <h3 id="typedefs">Typedefs</h3>
+      
+
+      <h4 id="MULTICAST_FRAME_TYPE">Typedef <span>MULTICAST_FRAME_TYPE</span></h4>
+      <pre class="doc-declare"><code>typedef UINT8_T MULTICAST_FRAME_TYPE;
+#define MULTICAST_FRAME_SCAN_REQUEST 1
+#define MULTICAST_FRAME_SCAN_RESPONSE 2
+#define MULTICAST_FRAME_BIND_REQUEST 3
+#define MULTICAST_FRAME_BIND_RESPONSE 4
+#define MULTICAST_FRAME_SESSION_KEY_SYN 5
+#define MULTICAST_FRAME_SESSION_KEY_SYN_ACK 6
+#define MULTICAST_FRAME_SESSION_KEY_ACK 7
+#define MULTICAST_FRAME_CMD 16
+
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="mcast_scan_request_t;
+">Typedef <span>mcast_scan_request_t;
+</span></h4>
+      <pre class="doc-declare"><code>typedef struct {
+   CHAR_T token[MULTICAST_TOKEN_LEN];//随机数,由主控设备产生
+} mcast_scan_request_t;
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="mcast_scan_response_t;
+">Typedef <span>mcast_scan_response_t;
+</span></h4>
+      <pre class="doc-declare"><code>typedef struct {
+   CHAR_T token[MULTICAST_TOKEN_LEN];
+   CHAR_T devid[GW_ID_LEN + 1];
+} mcast_scan_response_t;
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="mcast_bind_response_t;
+">Typedef <span>mcast_bind_response_t;
+</span></h4>
+      <pre class="doc-declare"><code>typedef struct {
+   UCHAR_T token[MULTICAST_TOKEN_LEN];
+   UCHAR_T hmac[MULTICAST_HMAC_LEN];
+} mcast_bind_request_t, mcast_bind_response_t;
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="mcast_syn_t;
+">Typedef <span>mcast_syn_t;
+</span></h4>
+      <pre class="doc-declare"><code>typedef struct {
+   CHAR_T randA[MULTICAST_RAND_LEN];
+} mcast_syn_t;
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="mcast_syn_ack_t;
+">Typedef <span>mcast_syn_ack_t;
+</span></h4>
+      <pre class="doc-declare"><code>typedef struct {
+   CHAR_T randB[MULTICAST_RAND_LEN];
+   CHAR_T randA_hmac[MULTICAST_HMAC_LEN];
+} mcast_syn_ack_t;
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="mcast_ack_t;
+">Typedef <span>mcast_ack_t;
+</span></h4>
+      <pre class="doc-declare"><code>typedef struct {
+   CHAR_T randB_hmac[MULTICAST_HMAC_LEN];
+} mcast_ack_t;
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="mcast_fixed_head_t;
+">Typedef <span>mcast_fixed_head_t;
+</span></h4>
+      <pre class="doc-declare"><code>typedef struct {
+   uint8_t version: 4;
+   uint8_t reserved: 4;
+   uint8_t reserved2;
+   uint32_t sequence;
+   uint32_t type;
+   uint32_t id;//主控或者受控设备自己的id
+   uint32_t total_len;//报文总的长度,从head到tail
+   uint32_t frame_num;//frame的个数
+} mcast_fixed_head_t;
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="mcast_additional_data_t">Typedef <span>mcast_additional_data_t</span></h4>
+      <pre class="doc-declare"><code>typedef mcast_fixed_head_t mcast_additional_data_t;
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="mcast_frame_object_t;
+">Typedef <span>mcast_frame_object_t;
+</span></h4>
+      <pre class="doc-declare"><code>typedef struct {
+   UINT_T key_len;
+   BYTE_T* key;
+   UINT_T mate_id;//对端的devid的crc32
+   UINT_T data_len;//单个frame的长度
+   BYTE_T* data;
+} mcast_frame_object_t;
+</code></pre>
+      <pre class="doc-comment"></pre>
+
+      <h4 id="kv_mcast_group_t;
+">Typedef <span>kv_mcast_group_t;
+</span></h4>
+      <pre class="doc-declare"><code>typedef struct {
+   UINT_T cnt;
+   CHAR_T data[0];
+} kv_mcast_group_t;
+</code></pre>
+      <pre class="doc-comment"></pre>
+    </div>
+  </body>
+</html>
+            

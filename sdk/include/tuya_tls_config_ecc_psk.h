@@ -33,7 +33,8 @@
 #define TUYA_ECP_MUL_COMB_OPTIM 1			//打开ECP点乘优化
 #define TUYA_ECP_MUL_COMB_ROM_TABLES 1		//使用ROM代替RAM
 //#define MBEDTLS_ECP_FIXED_POINT_OPTIM      0	//调试性能使用
-
+#define TUYA_TLS_DEBUG_THRDSHOLD    5			//TLS 调试等级
+#define TUYA_TLS_DYNAMIC_MEMORY_ALLOCATION 	1	//允许连接单独设置BUFF大小
 
 #include "tuya_iot_config.h"
 
@@ -263,7 +264,7 @@
  * Uncomment to get errors on using deprecated functions.
  */
 #if !defined(ENABLE_IPC) || (ENABLE_IPC==0)
-#define MBEDTLS_DEPRECATED_REMOVED
+//#define MBEDTLS_DEPRECATED_REMOVED
 #endif
 /**
  * \def MBEDTLS_CHECK_PARAMS
@@ -578,7 +579,7 @@
  *
  * Uncomment this macro to use less memory for Camellia.
  */
-//#define MBEDTLS_CAMELLIA_SMALL_MEMORY
+#define MBEDTLS_CAMELLIA_SMALL_MEMORY
 
 /**
  * \def MBEDTLS_CIPHER_MODE_CBC
@@ -723,19 +724,19 @@
  *
  * Comment macros to disable the curve and functions for it
  */
-//#define MBEDTLS_ECP_DP_SECP192R1_ENABLED
-//#define MBEDTLS_ECP_DP_SECP224R1_ENABLED
+#define MBEDTLS_ECP_DP_SECP192R1_ENABLED
+#define MBEDTLS_ECP_DP_SECP224R1_ENABLED
 #define MBEDTLS_ECP_DP_SECP256R1_ENABLED
-//#define MBEDTLS_ECP_DP_SECP384R1_ENABLED
-//#define MBEDTLS_ECP_DP_SECP521R1_ENABLED
-//#define MBEDTLS_ECP_DP_SECP192K1_ENABLED
-//#define MBEDTLS_ECP_DP_SECP224K1_ENABLED
-//#define MBEDTLS_ECP_DP_SECP256K1_ENABLED
-//#define MBEDTLS_ECP_DP_BP256R1_ENABLED
-//#define MBEDTLS_ECP_DP_BP384R1_ENABLED
-//#define MBEDTLS_ECP_DP_BP512R1_ENABLED
-//#define MBEDTLS_ECP_DP_CURVE25519_ENABLED
-//#define MBEDTLS_ECP_DP_CURVE448_ENABLED
+#define MBEDTLS_ECP_DP_SECP384R1_ENABLED
+#define MBEDTLS_ECP_DP_SECP521R1_ENABLED
+#define MBEDTLS_ECP_DP_SECP192K1_ENABLED
+#define MBEDTLS_ECP_DP_SECP224K1_ENABLED
+#define MBEDTLS_ECP_DP_SECP256K1_ENABLED
+#define MBEDTLS_ECP_DP_BP256R1_ENABLED
+#define MBEDTLS_ECP_DP_BP384R1_ENABLED
+#define MBEDTLS_ECP_DP_BP512R1_ENABLED
+#define MBEDTLS_ECP_DP_CURVE25519_ENABLED
+#define MBEDTLS_ECP_DP_CURVE448_ENABLED
 
 /**
  * \def MBEDTLS_ECP_NIST_OPTIM
@@ -1073,7 +1074,7 @@
  *
  * Disable if you only need to support RFC 5915 + 5480 key formats.
  */
-//#define MBEDTLS_PK_PARSE_EC_EXTENDED
+#define MBEDTLS_PK_PARSE_EC_EXTENDED
 
 /**
  * \def MBEDTLS_ERROR_STRERROR_DUMMY
@@ -1097,7 +1098,8 @@
  *
  * Requires: MBEDTLS_BIGNUM_C
  */
-//#define MBEDTLS_GENPRIME
+#define MBEDTLS_GENPRIME
+
 /**
  * \def MBEDTLS_FS_IO
  *
@@ -1203,7 +1205,7 @@
  *
  * Comment this macro to disable support for external private RSA keys.
  */
-//#define MBEDTLS_PK_RSA_ALT_SUPPORT
+#define MBEDTLS_PK_RSA_ALT_SUPPORT
 
 /**
  * \def MBEDTLS_PKCS1_V15
@@ -1352,7 +1354,7 @@
  *
  * Comment this macro to disable support for FALLBACK_SCSV
  */
-//#define MBEDTLS_SSL_FALLBACK_SCSV
+#define MBEDTLS_SSL_FALLBACK_SCSV
 
 /**
  * \def MBEDTLS_SSL_HW_RECORD_ACCEL
@@ -1897,7 +1899,7 @@
  *          library/x509write_crt.c
  *          library/x509write_csr.c
  */
-//#define MBEDTLS_ASN1_WRITE_C
+#define MBEDTLS_ASN1_WRITE_C
 
 /**
  * \def MBEDTLS_BASE64_C
@@ -2056,7 +2058,7 @@
  * This module enables the AES-CCM ciphersuites, if other requisites are
  * enabled as well.
  */
-//#define MBEDTLS_CCM_C
+#define MBEDTLS_CCM_C
 
 /**
  * \def MBEDTLS_CERTS_C
@@ -2193,7 +2195,7 @@
  *             See dhm.h for more details.
  *
  */
-//#define MBEDTLS_DHM_C
+#define MBEDTLS_DHM_C
 
 /**
  * \def MBEDTLS_ECDH_C
@@ -2224,7 +2226,7 @@
  *
  * Requires: MBEDTLS_ECP_C, MBEDTLS_ASN1_WRITE_C, MBEDTLS_ASN1_PARSE_C
  */
-//#define MBEDTLS_ECDSA_C
+#define MBEDTLS_ECDSA_C
 
 /**
  * \def MBEDTLS_ECJPAKE_C
@@ -2296,6 +2298,7 @@
  * requisites are enabled as well.
  */
 #define MBEDTLS_GCM_C
+//
 /**
  * \def MBEDTLS_HAVEGE_C
  *
@@ -2332,7 +2335,7 @@
  * This module adds support for the Hashed Message Authentication Code
  * (HMAC)-based key derivation function (HKDF).
  */
-//#define MBEDTLS_HKDF_C
+#define MBEDTLS_HKDF_C
 
 /**
  * \def MBEDTLS_HMAC_DRBG_C
@@ -2515,7 +2518,7 @@
  *
  * This modules adds support for decoding / parsing PEM files.
  */
-//#define MBEDTLS_PEM_PARSE_C
+#define MBEDTLS_PEM_PARSE_C
 
 /**
  * \def MBEDTLS_PEM_WRITE_C
@@ -2576,7 +2579,7 @@
  *
  * Uncomment to enable generic public key write functions.
  */
-//#define MBEDTLS_PK_WRITE_C
+#define MBEDTLS_PK_WRITE_C
 
 /**
  * \def MBEDTLS_PKCS5_C
@@ -2702,7 +2705,7 @@
  *            on it, and considering stronger message digests instead.
  *
  */
-#if ((ENABLE_ECHO_SHOW ==1) || (ENABLE_CHROMECAST==1) || (TUYA_OPERATOR_TYPE == TUYA_OPERATOR_CMCC_ANDLINK) )
+#if 1//((ENABLE_ECHO_SHOW ==1) || (ENABLE_CHROMECAST==1) || (TUYA_OPERATOR_TYPE == TUYA_OPERATOR_CMCC_ANDLINK) )
 #define MBEDTLS_SHA1_C
 #endif
 
@@ -2737,7 +2740,7 @@
  *
  * This module adds support for SHA-384 and SHA-512.
  */
-//#define MBEDTLS_SHA512_C
+#define MBEDTLS_SHA512_C
 
 /**
  * \def MBEDTLS_SSL_CACHE_C
@@ -2931,7 +2934,7 @@
  *
  * This module is used for reading X.509 certificate request.
  */
-//#define MBEDTLS_X509_CSR_PARSE_C
+#define MBEDTLS_X509_CSR_PARSE_C
 
 /**
  * \def MBEDTLS_X509_CREATE_C
@@ -3000,8 +3003,8 @@
  */
 
 /* MPI / BIGNUM options */
-#define MBEDTLS_MPI_WINDOW_SIZE           1 /**< Maximum windows size used. */
-#define MBEDTLS_MPI_MAX_SIZE            256 /**< Maximum number of bytes for usable MPIs. */
+//#define MBEDTLS_MPI_WINDOW_SIZE            6 /**< Maximum windows size used. */
+//#define MBEDTLS_MPI_MAX_SIZE            1024 /**< Maximum number of bytes for usable MPIs. */
 
 /* CTR_DRBG options */
 //#define MBEDTLS_CTR_DRBG_ENTROPY_LEN               48 /**< Amount of entropy used per seed by default (48 with SHA-512, 32 with SHA-256) */
@@ -3018,7 +3021,7 @@
 //#define MBEDTLS_HMAC_DRBG_MAX_SEED_INPUT      384 /**< Maximum size of (re)seed buffer */
 
 /* ECP options */
-#define MBEDTLS_ECP_MAX_BITS             256 /**< Maximum bit size of groups */
+//#define MBEDTLS_ECP_MAX_BITS             521 /**< Maximum bit size of groups */
 //#define MBEDTLS_ECP_WINDOW_SIZE            6 /**< Maximum window size used */
 //#define MBEDTLS_ECP_FIXED_POINT_OPTIM      1 /**< Enable fixed-point speed-up */
 
@@ -3125,6 +3128,12 @@
 #else
 #define MBEDTLS_SSL_MAX_CONTENT_LEN             16384
 #endif
+
+#if defined(TUYA_TLS_DYNAMIC_MEMORY_ALLOCATION)
+	#define MBEDTLS_SSL_IN_CONTENT_LEN (ssl->in_content_len)
+	#define MBEDTLS_SSL_OUT_CONTENT_LEN (ssl->out_content_len)
+#endif
+
 /** \def MBEDTLS_SSL_IN_CONTENT_LEN
  *
  * Maximum length (in bytes) of incoming plaintext fragments.
@@ -3242,46 +3251,7 @@
  *            on it, and considering stronger message digests instead.
  *
  */
-//#define MBEDTLS_TLS_DEFAULT_ALLOW_SHA1_IN_KEY_EXCHANGE
-
-/**
- * Uncomment the macro to let mbed TLS use your alternate implementation of
- * mbedtls_platform_zeroize(). This replaces the default implementation in
- * platform_util.c.
- *
- * mbedtls_platform_zeroize() is a widely used function across the library to
- * zero a block of memory. The implementation is expected to be secure in the
- * sense that it has been written to prevent the compiler from removing calls
- * to mbedtls_platform_zeroize() as part of redundant code elimination
- * optimizations. However, it is difficult to guarantee that calls to
- * mbedtls_platform_zeroize() will not be optimized by the compiler as older
- * versions of the C language standards do not provide a secure implementation
- * of memset(). Therefore, MBEDTLS_PLATFORM_ZEROIZE_ALT enables users to
- * configure their own implementation of mbedtls_platform_zeroize(), for
- * example by using directives specific to their compiler, features from newer
- * C standards (e.g using memset_s() in C11) or calling a secure memset() from
- * their system (e.g explicit_bzero() in BSD).
- */
-//#define MBEDTLS_PLATFORM_ZEROIZE_ALT
-
-/**
- * Uncomment the macro to let Mbed TLS use your alternate implementation of
- * mbedtls_platform_gmtime_r(). This replaces the default implementation in
- * platform_util.c.
- *
- * gmtime() is not a thread-safe function as defined in the C standard. The
- * library will try to use safer implementations of this function, such as
- * gmtime_r() when available. However, if Mbed TLS cannot identify the target
- * system, the implementation of mbedtls_platform_gmtime_r() will default to
- * using the standard gmtime(). In this case, calls from the library to
- * gmtime() will be guarded by the global mutex mbedtls_threading_gmtime_mutex
- * if MBEDTLS_THREADING_C is enabled. We recommend that calls from outside the
- * library are also guarded with this mutex to avoid race conditions. However,
- * if the macro MBEDTLS_PLATFORM_GMTIME_R_ALT is defined, Mbed TLS will
- * unconditionally use the implementation for mbedtls_platform_gmtime_r()
- * supplied at compile time.
- */
-//#define MBEDTLS_PLATFORM_GMTIME_R_ALT
+#define MBEDTLS_TLS_DEFAULT_ALLOW_SHA1_IN_KEY_EXCHANGE
 
 /* \} name SECTION: Customisation configuration options */
 

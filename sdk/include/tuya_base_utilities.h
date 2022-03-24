@@ -1,15 +1,15 @@
-/***********************************************************
-*  File: tuya_base_utilities.h
-*  Author: 愚者
-*  Date: 20190808
-*  Desc: 本文件提供了统一的utilities头文件引用（包括了全局的
-*  错误码定义以及相关的操作宏），并提供了utilities  的一些必要
-*  初始化操作。
-***********************************************************/
+/**
+ * @file tuya_base_utilities.h
+ * @brief tuya utilities module
+ * @version 1.0
+ * @date 2019-10-30
+ * 
+ * @copyright Copyright (c) tuya.inc 2019
+ * 
+ */
 #ifndef _TUYA_BASE_UTILITIES_H
 #define _TUYA_BASE_UTILITIES_H
 
-#include "tuya_base_utilities_error_code.h"
 #include "mem_pool.h"
 #include "cJSON.h"
 #include "ty_cJSON.h"
@@ -29,8 +29,12 @@
 extern "C" {
 #endif
 
-
-OPERATE_RET tuya_base_utilities_init(UNW_QUERY_CUSTOM_DNS_CB dns_query_cb, UNW_SAVE_DNS_INFO_CB dns_save_cb);
+/**
+ * @brief utilites initialization
+ * 
+ * @return OPRT_OK on success, others on failed, please refer to tuya_error_code.h  
+ */
+OPERATE_RET tuya_base_utilities_init(VOID);
 
 
 #ifdef __cplusplus
