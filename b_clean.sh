@@ -1,0 +1,1 @@
+./build_app.sh apps/OpenBK7231T_App OpenBK7231T_App git clean
