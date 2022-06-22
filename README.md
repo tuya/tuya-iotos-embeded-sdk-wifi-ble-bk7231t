@@ -1,31 +1,10 @@
 
-## OpenBK7231T is an open source firmware for BK7231T-based Tuya modules, including WB2S, WB3S and much more
-Our goal is to provide Tasmota-like system for BK7231T smart devices.
+## OpenBK7231T SDK needed to compile OpenBK7231T_App for BK7231T
 
-For compiling and generic SDK information see here:
-https://www.elektroda.com/rtvforum/topic3850712.html
+See: https://github.com/openshwprojects/OpenBK7231T_App
 
-To support project, send a donation:
-https://paypal.me/openshwprojects
 
-If you have a device and want to get it support, send me message in:
-https://www.elektroda.com/rtvforum/topic3850712.html
 
-## Installation
-Installation instruction is here, in post #10 (2022.01.28): https://www.elektroda.com/rtvforum/viewtopic.php?p=19849072#19849072
-
-## Supported devices
-[WB2S] NF101A "Intelligent Life" https://www.elektroda.pl/rtvforum/viewtopic.php?p=19743751#19743751
-
-[WB2S] WiFi Tuya SmartLife 4CH 10A https://www.elektroda.pl/rtvforum/topic3822484.html
-
-[WB3S] SmartSwitch Tuya WL-SW01_16 16A https://www.elektroda.pl/rtvforum/topic3804553.html
-
-## Devices coming soon
-	
-[WB3S] TH06 Humidity Temperature Sensor with LCD https://www.elektroda.pl/rtvforum/viewtopic.php?p=19532446#19532446
-
-[WB3S] Bakeey WiFi LED Dimmer WIFI 371 https://www.elektroda.pl/rtvforum/topic3798114.html
 
 ## Original Tuya Readme below
 
