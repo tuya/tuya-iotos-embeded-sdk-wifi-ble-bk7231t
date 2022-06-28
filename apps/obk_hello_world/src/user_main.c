@@ -38,6 +38,11 @@ static int g_secondsElapsed = 0;
 
 beken_timer_t led_timer;
 
+const char *CFG_GetDeviceName() {
+	return "obk_demo_helloWorld";
+}
+
+
 static void app_led_timer_handler(void *data)
 {
 	g_secondsElapsed ++;

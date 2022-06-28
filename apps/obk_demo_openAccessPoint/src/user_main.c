@@ -43,6 +43,9 @@ static int openAPAfterDelay = 5;
 
 beken_timer_t led_timer;
 
+const char *CFG_GetDeviceName() {
+	return "obk_demo_accessPoint";
+}
 
 static int setup_wifi_open_access_point(void)
 {
