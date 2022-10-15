@@ -9,7 +9,8 @@
  *
  ****************************************************************************************
  */	
-	.globl entry_main
+/*	.globl entry_main */
+	.globl main
 	.globl intc_irq
 	.globl intc_fiq
 	.globl boot_reset
@@ -334,7 +335,7 @@ boot_reset:
     MOV R11, #0
     MOV R12, #0
 
-    B entry_main
+    B main
 
 		
 /* ========================================================================
