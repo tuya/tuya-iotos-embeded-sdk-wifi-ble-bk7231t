@@ -580,7 +580,7 @@ CCFLAGS += -g -mthumb -mcpu=arm968e-s -march=armv5te -mthumb-interwork -mlittle-
 CCFLAGS += -ffunction-sections -fsigned-char -fdata-sections -Wno-unused-function -Wno-unused-but-set-variable
 
 CXXFLAGS = $(CCFLAGS)
-CXXFLAGS += -std=gnu++11 -MMD -fno-exceptions -fno-rtti -Wno-literal-suffix
+CXXFLAGS += -std=gnu++11 -MMD -fno-exceptions -fno-rtti -Wno-literal-suffix -Wno-attributes
 
 CFLAGS = $(CCFLAGS)
 CFLAGS += -std=c99 -Wunknown-pragmas -nostdlib -Wall
