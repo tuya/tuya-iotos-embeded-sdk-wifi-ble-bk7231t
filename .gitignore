@@ -18,4 +18,5 @@ apps/*
 !apps/bk*
 !apps/template*
 !apps/openBK7231T_app_location.txt
+!platforms/bk7231t/toolchain/**/*.o
 
