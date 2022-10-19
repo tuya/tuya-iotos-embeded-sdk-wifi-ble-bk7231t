@@ -74,8 +74,10 @@ SECTIONS
 	
 	.ARM.exidx :
 	{
+			__exidx_start = .;
 	    *(.ARM.exidx*)
 	    *(.gnu.linkonce.armexidx.*)
+			__exidx_end = .;
 	} > flash
 	
 /* globals.for example: int ram_data[3]={4,5,6}; */		/* VMA in RAM, but keep LMA in flash */

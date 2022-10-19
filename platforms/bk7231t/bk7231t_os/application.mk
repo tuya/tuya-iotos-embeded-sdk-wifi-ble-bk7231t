@@ -175,6 +175,7 @@ INCLUDES += -I./beken378/os/FreeRTOSv9.0.0
 SRC_C =
 DRAM_C =
 SRC_OS =
+SRC_CPP =
 
 #application layer
 SRC_C += ./beken378/app/app_bk.c
@@ -563,13 +564,26 @@ SRC_OS_LIST = $(notdir $(SRC_OS))
 OBJ_OS_LIST = $(addprefix $(OBJ_DIR)/,$(patsubst %.c,%.o,$(SRC_OS_LIST)))
 DEPENDENCY_OS_LIST = $(addprefix $(OBJ_DIR)/,$(patsubst %.c,%.d,$(SRC_OS_LIST)))
 
+SRC_CPP_O = $(patsubst %.cpp,%.o,$(SRC_CPP))
+SRC_CPP_LIST = $(notdir $(SRC_CPP)) 
+OBJ_CPP_LIST = $(addprefix $(OBJ_DIR)/,$(patsubst %.cpp,%.o,$(SRC_CPP_LIST)))
+DEPENDENCY_CPP_LIST = $(addprefix $(OBJ_DIR)/,$(patsubst %.cpp,%.d,$(SRC_CPP_LIST)))
+
 # Compile options
 # -------------------------------------------------------------------
-CFLAGS =
-CFLAGS += -g -mthumb -mcpu=arm968e-s -march=armv5te -mthumb-interwork -mlittle-endian -Os -std=c99 -ffunction-sections -Wall -fsigned-char -fdata-sections -Wunknown-pragmas -nostdlib -Wno-unused-function -Wno-unused-but-set-variable
+CPPDEFINES = 
+CPPDEFINES += -DPLATFORM_BK7231T=1
+CPPDEFINES += -DPLATFORM_BEKEN=1
 
-CFLAGS += -DPLATFORM_BK7231T=1
-CFLAGS += -DPLATFORM_BEKEN=1
+CCFLAGS = $(CPPDEFINES)
+CCFLAGS += -g -mthumb -mcpu=arm968e-s -march=armv5te -mthumb-interwork -mlittle-endian -Os
+CCFLAGS += -ffunction-sections -fsigned-char -fdata-sections -Wno-unused-function -Wno-unused-but-set-variable
+
+CXXFLAGS = $(CCFLAGS)
+CXXFLAGS += -std=gnu++11 -MMD -fno-exceptions -fno-rtti -Wno-literal-suffix -Wno-attributes
+
+CFLAGS = $(CCFLAGS)
+CFLAGS += -std=c99 -Wunknown-pragmas -nostdlib -Wall
 
 OSFLAGS =
 OSFLAGS += -g -marm -mcpu=arm968e-s -march=armv5te -mthumb-interwork -mlittle-endian -Os -std=c99 -ffunction-sections -Wall -fsigned-char -fdata-sections -Wunknown-pragmas
@@ -578,11 +592,16 @@ ASMFLAGS =
 ASMFLAGS += -g -marm -mthumb-interwork -mcpu=arm968e-s -march=armv5te -x assembler-with-cpp
 
 LFLAGS = 
-LFLAGS += -g -Wl,--gc-sections -marm -mcpu=arm968e-s -mthumb-interwork -nostdlib -Xlinker -Map=tuya.map  -Wl,-wrap,malloc -Wl,-wrap,free  -Wl,-wrap,zalloc
+LFLAGS += -g -Wl,--gc-sections -marm -mcpu=arm968e-s -mthumb-interwork 
+# LFLAGS += -nostdlib
+LFLAGS += -Xlinker -Map=tuya.map  -Wl,-wrap,malloc -Wl,-wrap,free  -Wl,-wrap,zalloc
+# ??
+#LFLAGS += --specs=nano.specs
 
 LIBFLAGS =
 LIBFLAGS += -L./beken378/lib/ -lrwnx
 LIBFLAGS += -L./beken378/lib/ -lble
+LIBFLAGS += -lstdc++
 
 # Compile
 # -------------------------------------------------------------------
@@ -614,9 +633,9 @@ TY_SRC_DIRS += $(shell find $(TOP_DIR)/apps/$(APP_BIN_NAME)/src -type d)
 TY_SRC_DIRS += $(shell find ../tuya_os_adapter/src -type d)
 
 SRC_C += $(foreach dir, $(TY_SRC_DIRS), $(wildcard $(dir)/*.c)) # need export
-SRC_C += $(foreach dir, $(TY_SRC_DIRS), $(wildcard $(dir)/*.cpp)) 
 SRC_C += $(foreach dir, $(TY_SRC_DIRS), $(wildcard $(dir)/*.s)) 
 SRC_C += $(foreach dir, $(TY_SRC_DIRS), $(wildcard $(dir)/*.S)) 
+SRC_CPP += $(foreach dir, $(TY_SRC_DIRS), $(wildcard $(dir)/*.cpp)) 
 
 #TY_INC_DIRS += $(shell find $(TOP_DIR)/sdk -type d)
 SDK_INCLUDE_DIRS := $(shell find $(TOP_DIR)/sdk -name include -type d)
@@ -639,9 +658,9 @@ sinclude $(TY_DEPENDENCY_LIST)
 
 CUR_PATH = $(shell pwd)	
 .PHONY: application
-application: prerequirement $(SRC_O) $(SRC_S_O) $(SRC_OS_O) $(TY_IOT_LIB)
+application: prerequirement $(SRC_O) $(SRC_S_O) $(SRC_OS_O) $(SRC_CPP_O) $(TY_IOT_LIB)
 ifeq ("${ota_idx}", "1")
-	$(LD) $(LFLAGS) -o $(TY_OUTPUT)/$(APP_BIN_NAME)_$(APP_VERSION).axf  $(OBJ_LIST) $(OBJ_S_LIST) $(OBJ_OS_LIST) $(LIBFLAGS) -T./beken378/build/bk7231_ota.ld
+	$(LD) $(LFLAGS) -o $(TY_OUTPUT)/$(APP_BIN_NAME)_$(APP_VERSION).axf  $(OBJ_LIST) $(OBJ_S_LIST) $(OBJ_OS_LIST) $(OBJ_CPP_LIST) $(LIBFLAGS) -T./beken378/build/bk7231_ota.ld
 else ifeq ("${ota_idx}", "2")
 else
 	@echo ===========================================================
@@ -687,9 +706,16 @@ $(SRC_OS_O): %.o : %.c
 	@cp $@ $(OBJ_DIR)/$(notdir $@)
 	@chmod 777 $(OBJ_DIR)/$(notdir $@)
 
+$(SRC_CPP_O): %.o : %.cpp
+	@$(CC) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+	@$(CC) $(CXXFLAGS) $(INCLUDES) -c $< -MM -MT $@ -MF $(OBJ_DIR)/$(notdir $(patsubst %.o,%.d,$@))
+	@cp $@ $(OBJ_DIR)/$(notdir $@)
+	@chmod 777 $(OBJ_DIR)/$(notdir $@)
+
 -include $(DEPENDENCY_LIST)
 -include $(DEPENDENCY_S_LIST)
 -include $(DEPENDENCY_OS_LIST)
+-include $(DEPENDENCY_CPP_LIST)
 
 # -------------------------------------------------------------------	
 # Generate build info
@@ -716,6 +742,7 @@ clean:
 	rm -f $(SRC_O)
 	rm -f $(SRC_S_O)
 	rm -f $(SRC_OS_O)
+	rm -f $(SRC_CPP_O)
 	rm -rf $(TY_OBJS)
 	rm -f $(TY_IOT_LIB)
 	rm -rf $(TY_OUTPUT)

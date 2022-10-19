@@ -19,11 +19,12 @@ beken_semaphore_t extended_app_sema = NULL;
 uint32_t  extended_app_stack_size = 2048;
 
 extern void user_main_entry(void);
+extern int bk_misc_init_start_type();
 
 #if CFG_SUPPORT_BOOTLOADER
 void entry_set_world_flag(void)
 {
-    *(volatile uint32_t *)0x00400000 = 1;
+	*(volatile uint32_t *)0x00400000 = 1;
 }
 #endif // CFG_SUPPORT_BOOTLOADER
 
@@ -34,7 +35,7 @@ void extended_app_launch_over(void)
 	
 	(void)ret;
 }
-    
+	
 void extended_app_waiting_for_launch(void)
 {
 	OSStatus ret;
@@ -47,69 +48,68 @@ void extended_app_waiting_for_launch(void)
 
 static void extended_app_task_handler(void *arg)
 {
-    /* step 0: function layer initialization*/
-    func_init_extended();  
+	/* step 0: function layer initialization*/
+	func_init_extended();  
 
-    /* step 1: startup application layer*/
+	/* step 1: startup application layer*/
 	#if CFG_ENABLE_ATE_FEATURE
-    if(get_ate_mode_state())
-    {
-	    ate_start();
-    }
-    else
+	if(get_ate_mode_state())
+	{
+		ate_start();
+	}
+	else
 	#endif // CFG_ENABLE_ATE_FEATURE
-    {
-	    app_start();
-    }
-         
+	{
+		app_start();
+	}
+		
 	extended_app_launch_over();
 	
-    rtos_delete_thread( NULL );
+	rtos_delete_thread( NULL );
 }
 
 void extended_app_launch(void)
 {
 	OSStatus ret;
 	
-    ret = rtos_init_semaphore(&extended_app_sema, 1);
+	ret = rtos_init_semaphore(&extended_app_sema, 1);
 	ASSERT(kNoErr == ret);
 
 	ret = rtos_create_thread(NULL,
-					   THD_EXTENDED_APP_PRIORITY,
-					   "extended_app",
-					   (beken_thread_function_t)extended_app_task_handler,
-					   extended_app_stack_size,
-					   (beken_thread_arg_t)0);
+					THD_EXTENDED_APP_PRIORITY,
+					"extended_app",
+					(beken_thread_function_t)extended_app_task_handler,
+					extended_app_stack_size,
+					(beken_thread_arg_t)0);
 	ASSERT(kNoErr == ret);
 }
 
 void entry_main(void)
 {
 #if ATE_APP_FUN  
-    ate_app_init();
+	ate_app_init();
 #endif
 	
-    #if CFG_SUPPORT_BOOTLOADER
-    entry_set_world_flag();
-    #endif
+	#if CFG_SUPPORT_BOOTLOADER
+	entry_set_world_flag();
+	#endif
 
-    bk_misc_init_start_type();
-    
-    /* step 1: driver layer initialization*/
-    driver_init();
+	bk_misc_init_start_type();
+	
+	/* step 1: driver layer initialization*/
+	driver_init();
 	func_init_basic();
 
 #if ATE_APP_FUN
-   	if(!get_ate_mode_state())
+	if(!get_ate_mode_state())
 #endif
-   	{
+	{
 		user_main_entry();	
-   	}
+	}
 	extended_app_launch();
 	
 #if (!CFG_SUPPORT_RTT)
-    vTaskStartScheduler();
+	vTaskStartScheduler();
 #endif
 }
 // eof
-
