@@ -85,7 +85,7 @@
 #define configUSE_TIMERS                            ( 1 )
 #define configTIMER_TASK_PRIORITY                   ( 6 )
 #define configTIMER_QUEUE_LENGTH                    ( 32 )
-#define configTIMER_TASK_STACK_DEPTH                ( ( unsigned short ) (3000 / sizeof( portSTACK_TYPE )) )
+#define configTIMER_TASK_STACK_DEPTH                ( ( unsigned short ) (5000 / sizeof( portSTACK_TYPE )) )
 
 /* Task */
 #define configMAX_PRIORITIES		                ( 10 )
