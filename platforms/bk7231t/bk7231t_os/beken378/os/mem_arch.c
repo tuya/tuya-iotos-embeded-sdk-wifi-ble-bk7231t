@@ -110,22 +110,4 @@ void os_free(void *ptr)
     }
 }
 
-void *__wrap_malloc(size_t size)
-{    
-	os_printf("__wrap_malloc\r\n");
-    return (void *)os_malloc(size);
-}
-
-void * __wrap_zalloc(size_t size)
-{
-	os_printf("__wrap_zalloc\r\n");
-	return os_zalloc(size);
-}
-
-void __wrap_free(void *ptr)
-{
-	os_printf("__wrap_free\r\n");
-	os_free(ptr);
-}
-
 // EOF
