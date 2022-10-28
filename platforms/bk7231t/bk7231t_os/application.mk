@@ -626,6 +626,7 @@ SRC_OS += ./beken378/os/FreeRTOSv9.0.0/FreeRTOS/Source/tasks.c
 SRC_OS += ./beken378/os/FreeRTOSv9.0.0/FreeRTOS/Source/timers.c
 SRC_OS += ./beken378/os/FreeRTOSv9.0.0/rtos_pub.c
 SRC_C += ./beken378/os/mem_arch.c
+SRC_C += ./beken378/os/platform_stub.c
 SRC_C += ./beken378/os/str_arch.c
 
 #examples for customer
@@ -682,7 +683,15 @@ ASMFLAGS += -g -marm -mthumb-interwork -mcpu=arm968e-s -march=armv5te -x assembl
 LFLAGS = 
 LFLAGS += -g -Wl,--gc-sections -marm -mcpu=arm968e-s -mthumb-interwork 
 # LFLAGS += -nostdlib
-LFLAGS += -Xlinker -Map=tuya.map  -Wl,-wrap,malloc -Wl,-wrap,free  -Wl,-wrap,zalloc
+LFLAGS += -Xlinker -Map=tuya.map  
+LFLAGS += -Wl,-wrap,malloc -Wl,-wrap,_malloc_r -Wl,-wrap,free -Wl,-wrap,_free_r -Wl,-wrap,zalloc -Wl,-wrap,calloc -Wl,-wrap,realloc  -Wl,-wrap,_realloc_r
+
+# uncomment for malloc debug and protection
+# CFLAGS += -DOBK_HEAPGUARD=1
+# LFLAGS += -Wl,-wrap,pvPortMalloc -Wl,-wrap,vPortFree
+# LFLAGS += -Wl,-wrap,pvPortRealloc
+
+
 # ??
 #LFLAGS += --specs=nano.specs
 
