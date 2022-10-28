@@ -12,8 +12,8 @@ ARM_GCC_TOOLCHAIN = $(TOOLCHAIN_DIR)/gcc-arm-none-eabi-4_9-2015q1/bin
 CROSS_COMPILE = $(ARM_GCC_TOOLCHAIN)/arm-none-eabi-
 
 CFG_WRAP_LIBC  ?= 1
-CFG_LWIP_2_0_2 ?= 1
-CFG_LWIP_2_1_3 ?= 0
+CFG_LWIP_2_0_2 ?= 0
+CFG_LWIP_2_1_3 ?= 1
 
 ota_idx = 1
 
