@@ -1,0 +1,1 @@
+./build_app.sh apps/obk_test_loop obk_test_loop git
