@@ -1,0 +1,1 @@
+./build_app.sh apps/obk_demo_scanNetworks obk_demo_scanNetworks git
