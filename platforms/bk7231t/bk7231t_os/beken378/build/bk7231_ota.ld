@@ -71,7 +71,8 @@ SECTIONS
 		*(.rodata.*)
 		*(.gnu.linkonce.r*)
 	} > flash
-	
+
+    __exidx_start = .;	
 	.ARM.exidx :
 	{
 			__exidx_start = .;
@@ -79,7 +80,8 @@ SECTIONS
 	    *(.gnu.linkonce.armexidx.*)
 			__exidx_end = .;
 	} > flash
-	
+	__exidx_end = .;
+
 /* globals.for example: int ram_data[3]={4,5,6}; */		/* VMA in RAM, but keep LMA in flash */
 	_begin_data = .;
 	.data : AT ( _begin_data )
